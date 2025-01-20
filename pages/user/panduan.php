@@ -5,9 +5,8 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Skydash Admin</title>
+  <title>Panduan</title>
   <!-- plugins:css -->
-  <link rel="stylesheet" href="../../Template/skydash/vendors/feather/feather.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/css/vendor.bundle.base.css">
   <!-- endinject -->
@@ -20,6 +19,7 @@
   <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
+</head>
 </head>
 <body>
   <div class="container-scroller">
@@ -95,13 +95,13 @@
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="dashboard.php">
               <i class="icon-grid menu-icon"></i>
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="pages/documentation/documentation.html">
+            <a class="nav-link" href="panduan.php">
               <i class="icon-paper menu-icon"></i>
               <span class="menu-title">Alur & Panduan</span>
             </a>
@@ -115,7 +115,7 @@
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Upload TA</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Upload Sempro</a></li>
+                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Upload Seminar</a></li>
                 <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Upload Ujian</a></li>
                 <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Lampiran</a></li>
               </ul>
@@ -130,7 +130,7 @@
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
               <i class="icon-columns menu-icon"></i>
-              <span class="menu-title">Pengajuan Sempro</span>
+              <span class="menu-title">Pengajuan Seminar</span>
             </a>
           </li>
           <li class="nav-item">
@@ -154,8 +154,8 @@
             <div class="col-md-12 grid-margin">
               <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                  <h3 class="font-weight-bold">Welcome Aamir</h3>
-                  <h6 class="font-weight-normal mb-0">Website Pengumpulan Tugas Akhir <span class="text-primary">Politeknik NEST Sukoharjp</span></h6>
+                  <h3 class="font-weight-bold">Alur dan Panduan</h3>
+                  <h6 class="font-weight-normal mb-0">Alur dan Panduan Pengajuan Tugas Akhir, Seminar Proposal, dan Ujian</h6>
                 </div>
               </div>
             </div>
@@ -248,7 +248,7 @@
   <!-- container-scroller -->
 
   <!-- plugins:js -->
-  <script src="../../Template/skydash/skydash/vendors/js/vendor.bundle.base.js"></script>
+  <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
   <!-- endinject -->
   <!-- Plugin js for this page -->
   <script src="../../Template/skydash/vendors/chart.js/Chart.min.js"></script>
