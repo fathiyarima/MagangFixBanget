@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Skydash Admin</title>
+  <title>Dosen Pembimbing </title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="../../Template/skydash/vendors/feather/feather.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
@@ -21,13 +21,14 @@
   <!-- endinject -->
   <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
 </head>
+
 <body>
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo mr-5" href="index.php"><img src="../../Template/skydash/images/logo.svg" class="mr-2" alt="logo"/></a>
-        <a class="navbar-brand brand-logo-mini" href="index.php"><img src="../../Template/skydash/images/logo-mini.svg" alt="logo"/></a>
+        <a class="navbar-brand brand-logo mr-5" href="dospem.html"><img src="../../Template/skydash/images/logo2.png" class="mr-2" alt="logo" /></a>
+        <a class="navbar-brand brand-logo-mini" href="dospem.html"><img src="../../Template/skydash/images/Logo.webp" alt="logo" /></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -96,7 +97,7 @@
           </li>
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-              <img src="../../Template/skydash/images/faces/face28.jpg" alt="profile"/>
+              <img src="../../Template/skydash/images/faces/face28.jpg" alt="profile" />
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
               <a class="dropdown-item">
@@ -128,8 +129,12 @@
         <div id="theme-settings" class="settings-panel">
           <i class="settings-close ti-close"></i>
           <p class="settings-heading">SIDEBAR SKINS</p>
-          <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
-          <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
+          <div class="sidebar-bg-options selected" id="sidebar-light-theme">
+            <div class="img-ss rounded-circle bg-light border mr-3"></div>Light
+          </div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme">
+            <div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark
+          </div>
           <p class="settings-heading mt-2">HEADER SKINS</p>
           <div class="color-tiles mx-0 px-4">
             <div class="tiles success"></div>
@@ -262,30 +267,7 @@
                 </div>
                 <small class="text-muted my-auto">14 min</small>
               </li>
-              <li class="list">
-                <div class="profile"><img src="../../Template/skydash/images/faces/face4.jpg" alt="image"><span class="offline"></span></div>
-                <div class="info">
-                  <p>James Richardson</p>
-                  <p>Away</p>
-                </div>
-                <small class="text-muted my-auto">2 min</small>
-              </li>
-              <li class="list">
-                <div class="profile"><img src="../../Template/skydash/images/faces/face5.jpg" alt="image"><span class="online"></span></div>
-                <div class="info">
-                  <p>Madeline Kennedy</p>
-                  <p>Available</p>
-                </div>
-                <small class="text-muted my-auto">5 min</small>
-              </li>
-              <li class="list">
-                <div class="profile"><img src="../../Template/skydash/images/faces/face6.jpg" alt="image"><span class="online"></span></div>
-                <div class="info">
-                  <p>Sarah Graves</p>
-                  <p>Available</p>
-                </div>
-                <small class="text-muted my-auto">47 min</small>
-              </li>
+
             </ul>
           </div>
           <!-- chat tab ends -->
@@ -302,44 +284,46 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="daftarMahasiswa.php">
-              <i class="icon-grid menu-icon"></i>
-              <span class="menu-title">Daftar Mahasiswa</span>
+            <a class="nav-link" href="alurpanduan.php">
+              <i class="icon-paper menu-icon"></i>
+              <span class="menu-title">Alur Panduan </span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="daftarDosen.php">
-              <i class="icon-grid menu-icon"></i>
-              <span class="menu-title">Daftar Dosen</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+            <a class="nav-link" data-toggle="collapse" href="javascript:void(0);" data-target="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
               <i class="icon-layout menu-icon"></i>
-              <span class="menu-title">Pendaftaran</span>
+              <span class="menu-title">Dokumen</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pendaftaranta.php">Tugas Akhir</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pendaftaranseminar.php">Seminar</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pendaftaranujian.php">Ujian</a></li>
+                <li class="nav-item"> <a class="nav-link" href="dokumenTA.php">Tugas Akhir</a></li>
+                <li class="nav-item"> <a class="nav-link" href="dokumenSempro.php">Seminar Proposal</a></li>
+                <li class="nav-item"> <a class="nav-link" href="dokumenUjian.php">Ujian Akhir</a></li>
+              </ul>
+            </div>
+          </li>
+
+
+
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#error" aria-expanded="false" aria-controls="error">
+              <i class="icon-ban menu-icon"></i>
+              <span class="menu-title">Error pages</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="error">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="Template/skydash/pages/samples/error-404.html"> 404 </a></li>
+                <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
               </ul>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
-              <i class="icon-columns menu-icon"></i>
-              <span class="menu-title">Dokumen</span>
-              <i class="menu-arrow"></i>
+            <a class="nav-link" href="pages/documentation/documentation.html">
+              <i class="icon-paper menu-icon"></i>
+              <span class="menu-title">Documentation</span>
             </a>
-            <div class="collapse" id="form-elements">
-              <ul class="nav flex-column sub-menu">
-              <li class="nav-item"> <a class="nav-link" href="pendaftaranTA.php">Tugas Akhir</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pendaftaranSeminar.phpl">Seminar</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pendaftaranUjian.php">Ujian</a></li>
-              </ul>
-            </div>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="pages/documentation/documentation.html">
@@ -350,56 +334,43 @@
         </ul>
       </nav>
       <!-- partial -->
-      
-          <!--Advanced-->
       <div class="main-panel">
         <div class="content-wrapper">
-          <!--Advanced-->
           <div class="row">
-            <div class="col-md-12 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <p class="card-title">Daftar Dosen</p>
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="table-responsive">
-                        <table id="example" class="display expandable-table" style="width:100%">
-                          <thead>
-                            <tr>
-                              <th>No.</th>
-                              <th>Nama</th>
-                              <th>NIP</th>
-                              <th>Program Studi</th>
-                              <th>Nomor Telepon</th>
-                              <th></th>
-                            </tr>
-                          </thead>
-                      </table>
-                      </div>
-                    </div>
-                  </div>
-                  </div>
+            <div class="col-md-12 grid-margin">
+              <div class="row">
+                <div class="col-12 col-xl-8 mb-4 mb-xl-0">
+                  <h3 class="font-weight-bold">Welcome .......</h3>
+                  <h6 class="font-weight-normal mb-0">Website Sistem Informasi <br> <br> <span class="text-primary">Politeknik Nest Sukoharjo</span></h6>
                 </div>
-
-                
               </div>
             </div>
+          </div>
+
         </div>
         <!-- content-wrapper ends -->
         <!-- partial:partials/_footer.html -->
         <footer class="footer">
           <div class="d-sm-flex justify-content-center justify-content-sm-between">
-            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2021.  Premium <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap admin template</a> from BootstrapDash. All rights reserved.</span>
-            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="ti-heart text-danger ml-1"></i></span>
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">
+              Copyright © 2025.
+              <a href="https://www.bootstrapdash.com/" target="_blank">Politeknik Nest Sukoharjo</a>.
+              All rights reserved.
+            </span>
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="20" height="20" class="me-2">
+              +6281 1295 1003
+            </span>
           </div>
+
           <div class="d-sm-flex justify-content-center justify-content-sm-between">
-            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Distributed by <a href="https://www.themewagon.com/" target="_blank">Themewagon</a></span> 
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Distributed by <a href="https://www.themewagon.com/" target="_blank">Anak Magang UNS</a></span>
           </div>
-        </footer> 
+        </footer>
         <!-- partial -->
       </div>
       <!-- main-panel ends -->
-    </div>   
+    </div>
     <!-- page-body-wrapper ends -->
   </div>
   <!-- container-scroller -->
@@ -409,7 +380,7 @@
   <!-- endinject -->
   <!-- Plugin js for this page -->
   <script src="../../Template/skydash/vendors/chart.js/Chart.min.js"></script>
-  <script src="../../Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
+  <script src="../..Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
   <script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
   <script src="../../Template/skydash/js/dataTables.select.min.js"></script>
 
@@ -423,9 +394,8 @@
   <!-- endinject -->
   <!-- Custom js for this page-->
   <script src="../../Template/skydash/js/dashboard.js"></script>
-  <script src="../../Template/skydash/js/Chart.roundedBarCharts.js"></script>
+  <script src="../../Template/skydash/s/Chart.roundedBarCharts.js"></script>
   <!-- End custom js for this page-->
 </body>
 
 </html>
-
