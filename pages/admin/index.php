@@ -296,19 +296,19 @@
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="index.php">
               <i class="icon-grid menu-icon"></i>
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="daftarDosen.php">
               <i class="icon-head menu-icon"></i>
               <span class="menu-title">Daftar Dosen</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="daftarMahasiswa.php">
               <i class="icon-head menu-icon"></i>
               <span class="menu-title">Daftar Mahasiswa</span>
             </a>
@@ -321,9 +321,9 @@
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Tugas Akhir</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Seminar</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Ujian</a></li>
+                <li class="nav-item"> <a class="nav-link" href="pendaftaranTA.php">Tugas Akhir</a></li>
+                <li class="nav-item"> <a class="nav-link" href="pendaftaranSeminar.php">Seminar</a></li>
+                <li class="nav-item"> <a class="nav-link" href="pendaftaranUjian.php">Ujian</a></li>
               </ul>
             </div>
           </li>
@@ -335,9 +335,9 @@
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Tugas Akhir</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Seminar</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Ujian</a></li>
+                <li class="nav-item"> <a class="nav-link" href="dokumenTA.php">Tugas Akhir</a></li>
+                <li class="nav-item"> <a class="nav-link" href="dokumenSeminar.php">Seminar</a></li>
+                <li class="nav-item"> <a class="nav-link" href="dokumenUjian.php">Ujian</a></li>
               </ul>
             </div>
           </li>
