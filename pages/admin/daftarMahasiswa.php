@@ -26,7 +26,7 @@
 <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Bordered table</h4>
+                  <h4 class="card-title">Daftar Mahasiswa</h4>
                   <p class="card-description">
                     Add class <code>.table-bordered</code>
                   </p>
@@ -35,19 +35,22 @@
                       <thead>
                         <tr>
                           <th>
-                            #
+                            No.
                           </th>
                           <th>
-                            First name
+                            Nama
                           </th>
                           <th>
-                            Progress
+                            NIM
                           </th>
                           <th>
-                            Amount
+                            Program Studi
                           </th>
                           <th>
-                            Deadline
+                            Kelas
+                          </th>
+                          <th>
+                            Nomor Telepon
                           </th>
                         </tr>
                       </thead>
