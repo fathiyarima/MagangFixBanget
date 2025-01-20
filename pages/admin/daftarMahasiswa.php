@@ -352,11 +352,14 @@
       <!-- partial -->
       
           <!--Advanced-->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <!--Advanced-->
           <div class="row">
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <p class="card-title">Daftar Dosen</p>
+                  <p class="card-title">Daftar Mahasiswa</p>
                   <div class="row">
                     <div class="col-12">
                       <div class="table-responsive">

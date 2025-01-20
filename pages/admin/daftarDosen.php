@@ -352,6 +352,9 @@
       <!-- partial -->
       
           <!--Advanced-->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <!--Advanced-->
           <div class="row">
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
@@ -365,9 +368,8 @@
                             <tr>
                               <th>No.</th>
                               <th>Nama</th>
-                              <th>NIM</th>
+                              <th>NIP</th>
                               <th>Program Studi</th>
-                              <th>Kelas</th>
                               <th>Nomor Telepon</th>
                               <th></th>
                             </tr>
