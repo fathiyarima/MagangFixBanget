@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/user.css">
+</head>
+<body>
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-container">
+                <img src="assets/images/logo.png" alt="Logo" class="logo">
+            </div>
+            <nav class="nav-menu">
+                <a href="index.php" class="nav-item">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="panduan.php" class="nav-item">
+                    <i class="fas fa-map"></i> Alur & Panduan
+                </a>
+                <div class="nav-group">
+                    <div class="nav-item">
+                        <i class="fas fa-upload"></i> Upload Dokumen
+                        <i class="fas fa-chevron-down arrow"></i>
+                    </div>
+                    <div class="nav-submenu">
+                        <a href="upload/ta.php">Upload TA</a>
+                        <a href="upload/sempro.php">Upload Sempro</a>
+                        <a href="upload/ujian.php">Upload Ujian</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-item">
+                        <i class="fas fa-paper-plane"></i> Pengajuan
+                        <i class="fas fa-chevron-down arrow"></i>
+                    </div>
+                    <div class="nav-submenu">
+                        <a href="pengajuan/ta.php">Pengajuan TA</a>
+                        <a href="pengajuan/sempro.php">Pengajuan Sempro</a>
+                        <a href="pengajuan/ujian.php">Pengajuan Ujian</a>
+                    </div>
+                </div>
+                <a href="logout.php" class="nav-item logout">
+                    <i class="fas fa-sign-out-alt"></i> Log out
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <header class="top-nav">
+                <div class="header-content">
+                    <div class="welcome">
+                        <h2>Welcome Mahasiswa</h2>
+                    </div>
+                    <div class="user-info">
+                        <span>3 notifications</span>
+                        <img src="assets/images/profile.png" alt="Profile" class="profile-img">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="dashboard-content">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card blue">
+                        <h3>Total Dokumen</h3>
+                        <p class="stat-number">15</p>
+                        <p class="stat-label">Uploaded documents</p>
+                    </div>
+                    <div class="stat-card purple">
+                        <h3>Pengajuan Aktif</h3>
+                        <p class="stat-number">3</p>
+                        <p class="stat-label">Pending submissions</p>
+                    </div>
+                    <div class="stat-card green">
+                        <h3>Disetujui</h3>
+                        <p class="stat-number">12</p>
+                        <p class="stat-label">Approved documents</p>
+                    </div>
+                    <div class="stat-card red">
+                        <h3>Ditolak</h3>
+                        <p class="stat-number">2</p>
+                        <p class="stat-label">Rejected documents</p>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="activities-section">
+                    <h3>Aktivitas Terakhir</h3>
+                    <div class="activities-list">
+                        <div class="activity-item">
+                            <div class="activity-info">
+                                <p class="activity-title">Upload TA Chapter 1</p>
+                                <p class="activity-time">Uploaded 2 hours ago</p>
+                            </div>
+                            <span class="status approved">Approved</span>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-info">
+                                <p class="activity-title">Pengajuan Sempro</p>
+                                <p class="activity-time">Submitted yesterday</p>
+                            </div>
+                            <span class="status pending">Pending</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
