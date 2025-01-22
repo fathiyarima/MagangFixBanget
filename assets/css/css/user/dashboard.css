@@ -1,0 +1,78 @@
+.card-tale {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+
+}
+
+.card-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../../img/alur.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    z-index: 1;
+}
+
+.card-background:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.471); 
+    z-index: 2;
+}
+
+.card-body {
+    position: relative;
+    z-index: 3; 
+    padding: 1.5rem;
+    padding-top: 2rem;
+}
+
+.card-body span {
+    display: block;
+    margin-top: 10px;
+    font-weight: 900;
+}
+
+.card-body h4 {
+    display: block;
+    font-weight: 900;
+}
+
+.card-background1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../../img/file-upload.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: left;
+    z-index: 1;
+}
+
+.card-background1:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(115, 38, 38, 0); /* Warna dark blue dengan opacity */
+    z-index: 2;
+}
+
+.card-dark-blue {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+}

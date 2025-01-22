@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
+  <link rel="stylesheet" type="text/css" href="../../assets/css/css/user/dashboard.css">
 </head>
 </head>
 <body>
@@ -95,7 +96,7 @@
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
           <li class="nav-item">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="dashboard.php">
               <i class="icon-grid menu-icon"></i>
               <span class="menu-title">Dashboard</span>
             </a>
@@ -166,9 +167,12 @@
             <div class="col-md-3 mb-4 grid-margin transparent">
               <div class="stretch-card transparent h-50">
                 <div class="card card-tale" style="height: calc(165% + 1.5rem);">
+                <div class="card-background">
                   <div class="card-body">
+                    <a href="panduan.php"></a>
                     <i class="icon-paper menu-icon"></i>
-                    <span class="mb-4">Alur & Panduan</span>
+                    <h4 class="mb-5">Alur & Panduan<h4/>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -180,9 +184,10 @@
                 <!-- First row -->
                 <div class="col-md-4 mb-4 stretch-card transparent">
                   <div class="card card-dark-blue">
+                  <div class="card-background1"></div>
                     <div class="card-body" style="display: flex;">
                       <i class="icon-layout menu-icon" style="margin-right: 10px;"></i>
-                      <span class="mb-4">Upload Tugas Akhir</span>
+                      <span class="mb-4" style="margin-left:50px; margin-top: 0; ">Upload Tugas Akhir</span>
                     </div>
                   </div>
                 </div>
