@@ -185,6 +185,7 @@
     <script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
     <script src="../../Template/skydash/js/dataTables.select.min.js"></script>
 
+<<<<<<< HEAD
     <!-- End plugin js for this page -->
     <!-- inject:js -->
     <script src="../../Template/skydash/js/off-canvas.js"></script>
@@ -197,6 +198,20 @@
     <script src="../../Template/skydash/js/dashboard.js"></script>
     <script src="../../Template/skydash/js/Chart.roundedBarCharts.js"></script>
     <!-- End custom js for this page-->
+=======
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="../../Template/skydash/js/off-canvas.js"></script>
+  <script src="../../Template/skydash/js/hoverable-collapse.js"></script>
+  <script src="../../Template/skydash/js/../../Template.js"></script>
+  <script src="../../Template/skydash/js/settings.js"></script>
+  <script src="../../Template/skydash/js/todolist.js"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="../../Template/skydash/js/dashboard.js"></script>
+  <script src="../../Template/skydash/js/Chart.roundedBarCharts.js"></script>
+  <!-- End custom js for this page-->
+>>>>>>> 92252735daa2f858beb52e538afcef9ad660a9dc
 </body>
 
 </html>

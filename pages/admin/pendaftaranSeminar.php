@@ -19,6 +19,29 @@
   <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=folder_open" />
+  <style>
+    .popup {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+  }
+  .popup-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  .popup:target {
+    display: flex;
+  }
+
+  
+  </style>
 </head>
 <body>
   <div class="container-scroller">
@@ -416,7 +439,10 @@
                                   echo "<td>";
                                   echo "<button type='submit'>Update Status</button>";
                                   echo "</form>";
-                                  echo "<i class=' mdi mdi-file-document'></i>";
+                                  echo "<td>";
+                                  echo "<a href='#popup'>";
+                                  echo "<<span class='material-symbols-outlined'>folder_open</span>>";
+                                  echo "</a>";
                               }
                               $conn->close()
                                 ?>
@@ -428,8 +454,17 @@
                   </div>
                   </div>
                 </div>
-
-                
+                <div id="popup" class="popup">
+                    <div class="popup-content">
+                        <h2>Dokumen Seminar Proposal</h2>
+                        <p>Formulir Pendaftaran</p>
+                        <p>Lembar Persetujuan</p>
+                        <p>Buku Konsultasi TA</p>
+                        <a href="#" style="display: inline-block; margin-top: 10px; padding:
+                                          5px 10px; background-color: #dc3545; color: #fff; text-decoration:
+                                          none; border-radius: 3px;">Close</a>
+                    </div>
+                </div>
               </div>
             </div>
         </div>
@@ -437,7 +472,7 @@
         <!-- partial:partials/_footer.html -->
         <footer class="footer">
           <div class="d-sm-flex justify-content-center justify-content-sm-between">
-            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2021.  Premium <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap admin template</a> from BootstrapDash. All rights reserved.</span>
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2021.  Premium <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap admin ../../Template</a> from BootstrapDash. All rights reserved.</span>
             <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="ti-heart text-danger ml-1"></i></span>
           </div>
           <div class="d-sm-flex justify-content-center justify-content-sm-between">
@@ -462,7 +497,7 @@
   <!-- inject:js -->
   <script src="../../Template/skydash/js/off-canvas.js"></script>
   <script src="../../Template/skydash/js/hoverable-collapse.js"></script>
-  <script src="../../Template/skydash/js/template.js"></script>
+  <script src="../../Template/skydash/js/../../Template.js"></script>
   <script src="../../Template/skydash/js/settings.js"></script>
   <script src="../../Template/skydash/js/todolist.js"></script>
   <!-- endinject -->
