@@ -332,7 +332,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pages/documentation/documentation.html">
+                        <a class="nav-link" href="../../Template/skydash/pages/samples/login.html">
                             <i class="ti-power-off  menu-icon"></i>
                             <span class="menu-title">Logout</span>
                         </a>
@@ -403,10 +403,10 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    $ 77.99
+                                                    ...
                                                 </td>
                                                 <td>
-                                                    May 15, 2015
+                                                    ...
                                                 </td>
                                                 <td>
                                                     A

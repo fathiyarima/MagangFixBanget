@@ -314,8 +314,8 @@
             </a>
             <div class="collapse" id="error">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="../../Template/skydash/pages/samples/error-404.html"> 404 </a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
+                <li class="nav-item"> <a class="nav-link" href="index.php"> 404 </a></li>
+                <li class="nav-item"> <a class="nav-link" href="index.php"> 500 </a></li>
               </ul>
             </div>
           </li>
@@ -332,7 +332,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="pages/documentation/documentation.html">
+            <a class="nav-link" href="../../Template/skydash/pages/samples/login.html">
               <i class="ti-power-off  menu-icon"></i>
               <span class="menu-title">Logout</span>
             </a>
@@ -380,6 +380,9 @@
                         <th>
                           Status
                         </th>
+                        <th>
+                          Update
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -396,17 +399,47 @@
 
                         </td>
                         <td>
-                          ....
+                          ...
                         </td>
+
                         <td>
-                          <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                          <div class="btn-group">
+                            <button type="button" id="statusButton" class="btn btn-primary">Status Dokumen</button>
+                            <button type="button" id="toggleButton" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                              <a class="dropdown-item" href="#" onclick="changeStatus('Verified', 'btn-success')">Verified</a>
+                              <a class="dropdown-item" href="#" onclick="changeStatus('Revisi', 'btn-danger')">Revisi</a>
+                              <a class="dropdown-item" href="#" onclick="changeStatus('Sedang diproses', 'btn-warning')">Sedang diproses</a>
+                            </div>
                           </div>
                         </td>
+
+                        <script>
+                          function changeStatus(status, colorClass) {
+                            var mainButton = document.getElementById('statusButton');
+                            var toggleButton = document.getElementById('toggleButton');
+
+                            // Hapus semua kelas warna Bootstrap dari kedua tombol
+                            mainButton.classList.remove('btn-primary', 'btn-success', 'btn-danger', 'btn-warning');
+                            toggleButton.classList.remove('btn-primary', 'btn-success', 'btn-danger', 'btn-warning');
+
+                            // Tambahkan teks dan kelas warna baru ke kedua tombol
+                            mainButton.innerText = status;
+                            mainButton.classList.add(colorClass);
+                            toggleButton.classList.add(colorClass);
+                          }
+                        </script>
+
+                        <td>
+
+                          <button type="button" class="btn btn-outline-primary btn-fw">Update</button>
+                        </td>
                       </tr>
-                      
-                      
-                    
+
+
+
                     </tbody>
                   </table>
                 </div>
