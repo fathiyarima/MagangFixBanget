@@ -352,7 +352,7 @@
             </a>
             <div class="collapse" id="error">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="Template/skydash/pages/samples/error-404.html"> 404 </a></li>
+                <li class="nav-item"> <a class="nav-link" href="../../Template/skydash/pages/samples/error-404.html"> 404 </a></li>
                 <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
               </ul>
             </div>
@@ -519,7 +519,7 @@
     <!-- endinject -->
     <!-- Plugin js for this page -->
     <script src="../../Template/skydash/vendors/chart.js/Chart.min.js"></script>
-    <script src="../..Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
+    <script src="../..../../Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
     <script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
     <script src="../../Template/skydash/js/dataTables.select.min.js"></script>
 
@@ -527,7 +527,7 @@
     <!-- inject:js -->
     <script src="../../Template/skydash/js/off-canvas.js"></script>
     <script src="../../Template/skydash/js/hoverable-collapse.js"></script>
-    <script src="../../Template/skydash/js/template.js"></script>
+    <script src="../../Template/skydash/js/../../Template.js"></script>
     <script src="../../Template/skydash/js/settings.js"></script>
     <script src="../../Template/skydash/js/todolist.js"></script>
     <!-- endinject -->

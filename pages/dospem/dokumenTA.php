@@ -314,7 +314,7 @@
             </a>
             <div class="collapse" id="error">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="Template/skydash/pages/samples/error-404.html"> 404 </a></li>
+                <li class="nav-item"> <a class="nav-link" href="../../Template/skydash/pages/samples/error-404.html"> 404 </a></li>
                 <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
               </ul>
             </div>
@@ -332,7 +332,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="pages/documentation/documentation.html">
+            <a class="nav-link" href="../../Template/skydash/pages/samples/login.html">
               <i class="ti-power-off  menu-icon"></i>
               <span class="menu-title">Logout</span>
             </a>
@@ -367,62 +367,46 @@
                     <thead>
                       <tr>
                         <th>
-                          User
+                          ID
                         </th>
                         <th>
-                          First name
+                          Nama
                         </th>
                         <th>
-                          Progress
+                          Nim
                         </th>
                         <th>
-                          Amount
+                          Doc
                         </th>
                         <th>
-                          Deadline
+                          Status
                         </th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td class="py-1">
-                          <img src="../../images/faces/face1.jpg" alt="image" />
+                          1
                         </td>
                         <td>
                           Herman Beck
+                        </td>
+                        <td>
+
+                          354635
+
+                        </td>
+                        <td>
+                          ....
                         </td>
                         <td>
                           <div class="progress">
                             <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                           </div>
                         </td>
-                        <td>
-                          $ 77.99
-                        </td>
-                        <td>
-                          May 15, 2015
-                        </td>
                       </tr>
+
                       
-                      <tr>
-                        <td class="py-1">
-                          <img src="../../images/faces/face6.jpg" alt="image" />
-                        </td>
-                        <td>
-                          John Doe
-                        </td>
-                        <td>
-                          <div class="progress">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </td>
-                        <td>
-                          $ 123.21
-                        </td>
-                        <td>
-                          April 05, 2015
-                        </td>
-                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -465,7 +449,7 @@
     <!-- endinject -->
     <!-- Plugin js for this page -->
     <script src="../../Template/skydash/vendors/chart.js/Chart.min.js"></script>
-    <script src="../..Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
+    <script src="../..../../Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
     <script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
     <script src="../../Template/skydash/js/dataTables.select.min.js"></script>
 
@@ -473,7 +457,7 @@
     <!-- inject:js -->
     <script src="../../Template/skydash/js/off-canvas.js"></script>
     <script src="../../Template/skydash/js/hoverable-collapse.js"></script>
-    <script src="../../Template/skydash/js/template.js"></script>
+    <script src="../../Template/skydash/js/../../Template.js"></script>
     <script src="../../Template/skydash/js/settings.js"></script>
     <script src="../../Template/skydash/js/todolist.js"></script>
     <!-- endinject -->
