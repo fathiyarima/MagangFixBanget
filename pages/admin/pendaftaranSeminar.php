@@ -456,8 +456,10 @@
                 </div>
                 <div id="popup" class="popup">
                     <div class="popup-content">
-                        <h2>Popup Title</h2>
-                        <p>This is a simple popup box.</p>
+                        <h2>Dokumen Seminar Proposal</h2>
+                        <p>Formulir Pendaftaran</p>
+                        <p>Lembar Persetujuan</p>
+                        <p>Buku Konsultasi TA</p>
                         <a href="#" style="display: inline-block; margin-top: 10px; padding:
                                           5px 10px; background-color: #dc3545; color: #fff; text-decoration:
                                           none; border-radius: 3px;">Close</a>
