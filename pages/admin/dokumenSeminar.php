@@ -13,9 +13,7 @@
   <link rel="stylesheet" href="../../Template/skydash/vendors/css/vendor.bundle.base.css">
   <!-- endinject -->
   <!-- Plugin css for this page -->
-  <link rel="stylesheet" href="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" type="text/css" href="../../Template/skydash/js/select.dataTables.min.css">
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
@@ -357,7 +355,7 @@
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <p class="card-title">Daftar Dokumen TA</p>
+                  <p class="card-title">Daftar Dokumen Seminar</p>
                   <div class="row">
                     <div class="col-12">
                       <div class="table-responsive">
@@ -376,7 +374,7 @@
                           <tbody>
                                 <?php
                                 $conn = new mysqli('127.0.0.1', 'root', '', 'sistem_ta');
-                                $sql1 = "SELECT id_mahasiswa, nama_mahasiswa, form_pendaftaran, form_persetujuan FROM mahasiswa WHERE 1";
+                                $sql1 = "SELECT id_mahasiswa, nama_mahasiswa, nim, prodi, form_pendaftaran, form_persetujuan FROM mahasiswa WHERE 1";
                                 $result = $conn->query($sql1);
 
                                 while ($row = mysqli_fetch_array($result)) {
@@ -385,8 +383,8 @@
                                   echo "<td>" . $row['nama_mahasiswa'] . "</td>";
                                   echo "<td>" . $row['nim'] . "</td>";
                                   echo "<td>" . $row['prodi'] . "</td>";
-                                  echo "<td>" . $row['kelas'] . "</td>";
-                                  echo "<td>" . $row['nomor_telepon'] . "</td>";
+                                  echo "<td>" . $row['form_pendaftaran'] . "</td>";
+                                  echo "<td>" . $row['form_persetujuan'] . "</td>";
                               }
                               $conn->close();
                                 ?>
@@ -426,9 +424,6 @@
   <!-- endinject -->
   <!-- Plugin js for this page -->
   <script src="../../Template/skydash/vendors/chart.js/Chart.min.js"></script>
-  <script src="../../Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
-  <script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-  <script src="../../Template/skydash/js/dataTables.select.min.js"></script>
 
   <!-- End plugin js for this page -->
   <!-- inject:js -->
