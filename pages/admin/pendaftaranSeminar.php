@@ -13,15 +13,21 @@
   <link rel="stylesheet" href="../../Template/skydash/vendors/css/vendor.bundle.base.css">
   <!-- endinject -->
   <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" type="text/css" href="../../Template/skydash/js/select.dataTables.min.css">
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
+  <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/mahasiswa.css">
+  <link rel="stylesheet" href="../../assets/css/css/admin/mahasiswa.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=folder_open" />
+  
   <style>
+    
     .popup {
     display: none;
     position: fixed;
@@ -325,15 +331,15 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="daftarMahasiswa.php">
-              <i class="icon-grid menu-icon"></i>
-              <span class="menu-title">Daftar Mahasiswa</span>
+            <a class="nav-link" href="daftarDosen.php">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Daftar Dosen</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="daftarDosen.php">
-              <i class="icon-grid menu-icon"></i>
-              <span class="menu-title">Daftar Dosen</span>
+            <a class="nav-link" href="daftarMahasiswa.php">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Daftar Mahasiswa</span>
             </a>
           </li>
           <li class="nav-item">
@@ -344,34 +350,29 @@
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pendaftaranta.php">Tugas Akhir</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pendaftaranseminar.php">Seminar</a></li>
+                <li class="nav-item"> <a class="nav-link" href="pendaftaranTA.php">Tugas Akhir</a></li>
+                <li class="nav-item"> <a class="nav-link" href="pendaftaranSeminar.php">Seminar</a></li>
                 <li class="nav-item"> <a class="nav-link" href="pendaftaranUjian.php">Ujian</a></li>
               </ul>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
-              <i class="icon-columns menu-icon"></i>
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+              <i class="icon-paper menu-icon"></i>
               <span class="menu-title">Dokumen</span>
               <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="form-elements">
+            <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-              <li class="nav-item"> <a class="nav-link" href="dokumenTA.php">Tugas Akhir</a></li>
+                <li class="nav-item"> <a class="nav-link" href="dokumenTA.php">Tugas Akhir</a></li>
                 <li class="nav-item"> <a class="nav-link" href="dokumenSeminar.php">Seminar</a></li>
                 <li class="nav-item"> <a class="nav-link" href="dokumenUjian.php">Ujian</a></li>
               </ul>
             </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="pages/documentation/documentation.html">
-              <i class="icon-paper menu-icon"></i>
-              <span class="menu-title">Logout</span>
-            </a>
-          </li>
         </ul>
       </nav>
+
       <!-- partial -->
       <div class="main-panel">
         <div class="content-wrapper">
