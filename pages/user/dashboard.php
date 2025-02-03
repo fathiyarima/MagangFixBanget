@@ -5,8 +5,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Panduan</title>
+  <title>Skydash Admin</title>
   <!-- plugins:css -->
+  <link rel="stylesheet" href="../../Template/skydash/vendors/feather/feather.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/css/vendor.bundle.base.css">
   <!-- endinject -->
@@ -17,292 +18,26 @@
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
+  <link rel="stylesheet" href="../../assets/css/css/pengajuan.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
-  <link rel="stylesheet" type="text/css" href="../../assets/css/css/user/dashboarda.css">
-  <style>
-    /* Base card styles */
-    .card {
-      position: relative;
-      border-radius: 15px;
-      overflow: hidden;
-      transition: transform 0.2s;
-      min-height: 110px;
-      margin-bottom: 1rem;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    /* Card variants with their specific background colors */
-    .card-tale {
-      background: #4747A1;
-    }
-
-    .card-dark-blue {
-      background: #2196F3;
-    }
-
-    .card-light-blue {
-      background: #4B49AC;
-    }
-
-    .card-light-danger {
-      background: #F3797E;
-    }
-
-    /* Card body */
-    .card-body {
-      position: relative;
-      z-index: 3;
-      padding: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .card-body span {
-      font-weight: 500;
-      color: #fff;
-    }
-
-    .card-body i {
-      color: #fff;
-    }
-
-    /* Background image styles - Revised */
-    .card-background,
-    .card-background1,
-    .card-background2 {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-repeat: no-repeat;
-      background-position: right;
-      opacity: 0.15;
-      z-index: 1;
-    }
-
-    /* Specific background images for different cards */
-    .card-tale .card-background {
-      background-image: url('../../img/alur.png');
-      background-size: 60% auto;
-      background-position: right center;
-    }
-
-    .card-dark-blue .card-background1,
-    .card-light-blue .card-background1 {
-      background-image: url('../../img/student.png');
-      background-size: 40% auto;
-      background-position: right center;
-    }
-
-    .card-light-danger .card-background2 {
-      background-image: url('../../img/graduate.png');
-      background-size: 40% auto;
-      background-position: right center;
-    }
-
-    /* Overlay effects */
-    .card-background::after,
-    .card-background1::after,
-    .card-background2::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.1);
-      z-index: 2;
-    }
-
-    /* Section styles */
-    .section-title {
-      color: #333;
-      padding-bottom: 0.5rem;
-      margin-bottom: 1rem;
-      border-bottom: 1px solid #eee;
-    }
-
-    /* Link styles */
-    .link {
-      text-decoration: none;
-      color: inherit;
-      display: block;
-      height: 100%;
-    }
-
-    .link:hover,
-    .link:focus,
-    .link:active {
-      text-decoration: none;
-      color: aquamarine;
-    }
-
-    .card-dark-blue {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card-background1 {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 50, 0.5);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 1;
-    }
-
-    .card-dark-blue:hover .card-background1 {
-      opacity: 1;
-    }
-
-    .card-body {
-      position: relative;
-      justify-content: space-evenly;
-      padding: 0%;
-    }
-
-    .upload-icon {
-      width: 100px;
-      height: auto;
-      padding: 0;
-      z-index: 2;
-      /* memastikan ikon di atas overlay */
-    }
-
-    .upload-text {
-      font-size: 16px;
-      color: white;
-      /* memastikan teks tetap terlihat di atas background gelap */
-      transition: color 0.3s ease;
-      margin-left: 0;
-      margin-right: 180px;
-      z-index: 2;
-      /* memastikan teks di atas overlay */
-    }
-
-    .card-dark-blue:hover .upload-text {
-      color: #aaa;
-    }
-
-    .submission-link {
-      text-decoration: none;
-      display: block;
-      height: 100%;
-    }
-
-    .submission-link:hover,
-    .submission-link:focus,
-    .submission-link:active {
-      text-decoration: none;
-    }
-
-    .submission-card {
-      background: #F3797E;
-      border-radius: 15px;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.3s ease;
-      min-height: 110px;
-    }
-
-    .submission-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .submission-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: url('../../img/graduate.png');
-      background-size: 40% auto;
-      background-position: right center;
-      background-repeat: no-repeat;
-      opacity: 0.15;
-      z-index: 1;
-    }
-
-    .submission-content {
-      position: relative;
-      z-index: 2;
-      padding: 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .submission-icon {
-      width: 60px;
-      height: 60px;
-      object-fit: contain;
-    }
-
-    .submission-text {
-      color: white;
-      font-weight: 500;
-      font-size: 1rem;
-      text-align: left;
-      flex: 1;
-
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .submission-card {
-        min-height: 100px;
-      }
-
-      .submission-icon {
-        width: 50px;
-        height: 50px;
-      }
-
-      .submission-text {
-        font-size: 0.9rem;
-      }
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .card {
-        min-height: 100px;
-      }
-
-      .card-background,
-      .card-background1,
-      .card-background2 {
-        background-size: 30% auto;
-      }
-
-      .upload-section .col-md-3,
-      .submission-section .col-md-3 {
-        width: 100%;
-        padding: 0 1rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="../../assets/css/user/dashboards.css" />
 </head>
 
 <body>
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
     <!--NAVBAR KIRI-->
+
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
         <a class="navbar-brand brand-logo mr-5" href="dashboard.php"><img src="../../assets/img/logo2.png" class="mr-2" alt="logo" /></a>
+        <a class="navbar-brand brand-logo-mini" href="dashboard.php"><img src="../../assets/img/Logo.webp" alt="logo" /></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="icon-menu"></span>
+        </button>
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
           <span class="icon-menu"></span>
         </button>
@@ -471,7 +206,6 @@
                       <div class="card-background1"></div>
                       <div class="card-body d-flex align-items-center">
                         <img src="../../assets/img/score.png" alt="Student" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity: 1; width: 90px; height: 90px;">
-                        <i class="icon-layout menu-icon me-3"></i>
                         <span class="text-white">Hasil Nilai</span>
                       </div>
                     </div>
@@ -484,7 +218,6 @@
                       <div class="card-background1"></div>
                       <div class="card-body d-flex align-items-center">
                         <img src="../../assets/img/book.png" alt="Student" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity: 1; width: 90px; height: 80px;">
-                        <i class="icon-layout menu-icon me-3"></i>
                         <span class="text-white">Lampiran</span>
                       </div>
                     </div>

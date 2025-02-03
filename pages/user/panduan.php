@@ -5,8 +5,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Panduan</title>
+  <title>Skydash Admin</title>
   <!-- plugins:css -->
+  <link rel="stylesheet" href="../../Template/skydash/vendors/feather/feather.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/css/vendor.bundle.base.css">
   <!-- endinject -->
@@ -17,8 +18,45 @@
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
+  <link rel="stylesheet" href="../../assets/css/css/pengajuan.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
+  <style>
+    .zoomable {
+      cursor: pointer;
+      border-radius: 20px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      max-width: 80%;
+      max-height: 80%;
+      border-radius: 15px;
+      border-top-right-radius: 25px;
+    }
+
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
 </head>
 </head>
 
@@ -28,9 +66,13 @@
     <!--NAVBAR KIRI-->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-      <a class="navbar-brand brand-logo mr-5" href="dashboard.php"><img src="../../assets/img/logo2.png" class="mr-2" alt="logo" /></a>
+        <a class="navbar-brand brand-logo mr-5" href="dashboard.php"><img src="../../assets/img/logo2.png" class="mr-2" alt="logo" /></a>
+        <a class="navbar-brand brand-logo-mini" href="dashboard.php"><img src="../../assets/img/Logo.webp" alt="logo" /></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+      <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="icon-menu"></span>
+        </button>
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
           <span class="icon-menu"></span>
         </button>
@@ -179,21 +221,10 @@
                   <div class="card">
                     <div class="card-body">
                       <h4 class="card-title mb-4">Diagram Alur Pengajuan</h4>
-
-                      <!-- Combined Flow Images -->
                       <div class="flow-container">
-                        <div class="image-wrapper">
-                          <!-- First Flow Image -->
-                          <div class="image-section">
-                            <img src="../../assets/img/alur1.png" class="img-fluid" alt="Alur 1">
-                          </div>
-                          <!-- Second Flow Image -->
-                          <div class="image-section">
-                            <img src="../../assets/img/alur2.png" class="img-fluid" alt="Alur 2">
-                          </div>
+                        <div class="image-section" onclick="openModal()">
+                          <img src="../../assets/img/alur4.png" class="img-fluid zoomable" alt="Alur 1">
                         </div>
-
-                        <!-- Zoom Instructions -->
                         <div class="text-center text-muted mt-3">
                           <small><i class="fa fa-search-plus"></i> Klik gambar untuk memperbesar</small>
                         </div>
@@ -218,6 +249,11 @@
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <div id="imageModal" class="modal" onclick="closeModal()">
+                <span class="close">&times;</span>
+                <img class="modal-content" id="modalImg">
               </div>
 
               <!-- Additional Information -->
@@ -263,6 +299,8 @@
             </div>
           </div>
 
+
+
           <!-- content-wrapper ends -->
           <!-- partial:partials/_footer.html -->
           <footer class="footer" style="display: flex;">
@@ -276,7 +314,20 @@
       </div>
       <!-- page-body-wrapper ends -->
     </div>
-    <!-- container-scroller -->
+    <script>
+      function openModal() {
+        let modal = document.getElementById("imageModal");
+        let modalImg = document.getElementById("modalImg");
+        let img = document.querySelector(".zoomable");
+        modal.style.display = "flex";
+        modalImg.src = img.src;
+      }
+
+      function closeModal() {
+        document.getElementById("imageModal").style.display = "none";
+      }
+    </script>
+
 
     <!-- plugins:js -->
     <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
