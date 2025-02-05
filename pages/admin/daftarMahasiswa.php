@@ -13,9 +13,7 @@
   <link rel="stylesheet" href="../../Template/skydash/vendors/css/vendor.bundle.base.css">
   <!-- endinject -->
   <!-- Plugin css for this page -->
-  <link rel="stylesheet" href="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" type="text/css" href="../../Template/skydash/js/select.dataTables.min.css">
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
@@ -377,13 +375,14 @@
                               <th>Program Studi</th>
                               <th>Kelas</th>
                               <th>Nomor Telepon</th>
-                              <th></th>
+                              <th>Username</th>
+                              <th>Password</th>
                             </tr>
                           </thead>
                           <tbody>
                                 <?php
                                 $conn = new mysqli('127.0.0.1', 'root', '', 'sistem_ta');
-                                $sql1 = "SELECT id_mahasiswa, nama_mahasiswa, nim, prodi, kelas, nomor_telepon FROM mahasiswa WHERE 1";
+                                $sql1 = "SELECT id_mahasiswa, nama_mahasiswa, nim, prodi, kelas, nomor_telepon, username, pass FROM mahasiswa WHERE 1";
                                 $result = $conn->query($sql1);
 
                                 while ($row = mysqli_fetch_array($result)) {
@@ -394,6 +393,8 @@
                                   echo "<td>" . $row['prodi'] . "</td>";
                                   echo "<td>" . $row['kelas'] . "</td>";
                                   echo "<td>" . $row['nomor_telepon'] . "</td>";
+                                  echo "<td>" . $row['username'] . "</td>";
+                                  echo "<td>" . $row['pass'] . "</td>";
                                   echo "</tr>";
                               }
                               $conn->close();
@@ -427,6 +428,9 @@
                     
                     <label for="phone">Phone Number:</label>
                     <input type="text" id="phone" name="nomor_telepon" required><br><br>
+                    
+                    <label for="username">Username:</label>
+                    <input type="username" id="username" name="username" required><br><br>
 
                     <label for="pass">Password:</label>
                     <input type="password" id="pass" name="pass" required><br><br>
@@ -553,9 +557,6 @@
   <!-- endinject -->
   <!-- Plugin js for this page -->
   <script src="../../Template/skydash/vendors/chart.js/Chart.min.js"></script>
-  <script src="../../Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
-  <script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-  <script src="../../Template/skydash/js/dataTables.select.min.js"></script>
 
   <!-- End plugin js for this page -->
   <!-- inject:js -->
