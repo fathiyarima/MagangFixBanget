@@ -4,97 +4,41 @@ session_start();
 $nama_mahasiswa = $_SESSION['nama'] ?? 'Mahasiswa'; // Default jika tidak ada session
 $nim = $_SESSION['nim'] ?? '12345678';
 
+// Fungsi untuk mendapatkan status file dari database
+function getFileStatus($nim, $tipe_file)
+{
+    // Ini contoh, sesuaikan dengan database Anda
+    return "Revisi"; // atau "Lulus" atau "Tolak"
+}
+
 // Proses upload file jika ada
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
+    $uploadDir = 'uploads/';  // Buat folder 'uploads' di direktori yang sama
+
+    // Pastikan direktori upload ada
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
     $file = $_FILES['file_upload'];
     $fileType = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     $fileCategory = $_POST['file_type'] ?? '';
-    
+
     // Format nama file
     $newFileName = $nim . '_' . str_replace(' ', '_', $fileCategory) . '_' . $nama_mahasiswa . '.' . $fileType;
-    
+    $uploadPath = $uploadDir . $newFileName;
+
     // Validasi file
     if ($fileType != "pdf") {
         echo "<script>alert('Maaf, hanya file PDF yang diperbolehkan.');</script>";
     } elseif ($file['size'] > 2000000) { // 2MB
         echo "<script>alert('Maaf, ukuran file terlalu besar (max 2MB).');</script>";
     } else {
-        try {
-            // Koneksi ke database
-            $conn = new PDO("mysql:host=localhost;dbname=sistemta", "root", "");
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
-            // Baca file sebagai binary
-            $fileContent = file_get_contents($file['tmp_name']);
-            
-            // Tentukan nama tabel berdasarkan tipe file
-            $tableName = '';
-            switch($fileCategory) {
-                case 'Form Pendaftaran dan Persetujuan Tema':
-                    $tableName = 'form_pendaftaran';
-                    break;
-                case 'Bukti Pembayaran':
-                    $tableName = 'bukti_pembayaran';
-                    break;
-                case 'Bukti Transkrip Nilai':
-                    $tableName = 'transkrip_nilai';
-                    break;
-                case 'Bukti Kelulusan Mata kuliah Magang / PI':
-                    $tableName = 'bukti_kelulusan_magang';
-                    break;
-            }
-            
-            // Query untuk menyimpan file ke database
-            $sql = "INSERT INTO $tableName (nim, nama_file, file_content, tanggal_upload, status) 
-                    VALUES (:nim, :nama_file, :file_content, NOW(), 'Pending')";
-            
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([
-                ':nim' => $nim,
-                ':nama_file' => $newFileName,
-                ':file_content' => $fileContent
-            ]);
-            
+        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
             echo "<script>alert('File berhasil diupload.');</script>";
-            
-        } catch(PDOException $e) {
-            echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
+        } else {
+            echo "<script>alert('Maaf, terjadi error saat upload file.');</script>";
         }
-    }
-}
-
-// Fungsi untuk mendapatkan status file dari database
-function getFileStatus($nim, $tipe_file) {
-    try {
-        $conn = new PDO("mysql:host=localhost;dbname=sistemta", "root", "");
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
-        // Tentukan nama tabel
-        $tableName = '';
-        switch($tipe_file) {
-            case 'Form Pendaftaran dan Persetujuan Tema':
-                $tableName = 'form_pendaftaran';
-                break;
-            case 'Bukti Pembayaran':
-                $tableName = 'bukti_pembayaran';
-                break;
-            case 'Bukti Transkrip Nilai':
-                $tableName = 'transkrip_nilai';
-                break;
-            case 'Bukti Kelulusan Mata kuliah Magang / PI':
-                $tableName = 'bukti_kelulusan_magang';
-                break;
-        }
-        
-        $sql = "SELECT status FROM $tableName WHERE nim = :nim ORDER BY tanggal_upload DESC LIMIT 1";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':nim' => $nim]);
-        
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ? $result['status'] : 'Belum Upload';
-        
-    } catch(PDOException $e) {
-        return 'Error';
     }
 }
 
