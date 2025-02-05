@@ -1,3 +1,7 @@
+<?php
+include '../../config/connection.php'; // Sesuaikan path dengan lokasi file koneksi
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -347,70 +351,63 @@
                         <th>Nama</th>
                         <th>Nim</th>
                         <th>Doc</th>
-                        <th> Status</th>
-                        <th>Updated </th>
                         <th>File</th>
+                        <th>Updated </th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td class="py-1">1</td>
-                        <td>Herman Beck</td>
-                        <td>354635</td>
-                        <td>
-                          <a class="nav-link" href="">
-                            <i class="icon-paper menu-icon"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <div class="btn-group">
-                            <button type="button" id="statusButton" class="btn btn-primary">Status Dokumen</button>
-                            <button type="button" id="toggleButton" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu">
-                              <a class="dropdown-item" href="#" onclick="changeStatus('Verified', 'btn-success')">Verified</a>
-                              <a class="dropdown-item" href="#" onclick="changeStatus('Revisi', 'btn-danger')">Revisi</a>
-                              <a class="dropdown-item" href="#" onclick="changeStatus('Sedang diproses', 'btn-warning')">Sedang diproses</a>
-                            </div>
-                          </div>
-                        </td>
-                        <script>
-                          function changeStatus(status, colorClass) {
-                            var mainButton = document.getElementById('statusButton');
-                            var toggleButton = document.getElementById('toggleButton');
-                            mainButton.classList.remove('btn-primary', 'btn-success', 'btn-danger', 'btn-warning');
-                            toggleButton.classList.remove('btn-primary', 'btn-success', 'btn-danger', 'btn-warning');
-                            mainButton.innerText = status;
-                            mainButton.classList.add(colorClass);
-                            toggleButton.classList.add(colorClass);
-                          }
-                        </script>
-                        <td>
-                          <button type="button" class="btn btn-outline-primary btn-fw">Update</button>
-                        </td>
-                        <td>
-                          <form id="uploadForm" method="POST" enctype="multipart/form-data">
-                            <input type="file" name="jurnal" id="jurnal" accept=".pdf" style="display: none;">
-                            <button type="button" id="uploadButton" class="btn btn-outline-primary btn-fw">Upload</button>
-                            <button type="submit" id="submitButton" class="btn btn-outline-success btn-fw" style="display: none;">Submit</button>
-                          </form>
-                        </td>
-                        <script>
-                          document.getElementById('uploadButton').addEventListener('click', function() {
-                            // Klik otomatis pada input file
-                            document.getElementById('jurnal').click();
-                          });
+                        <?php
+                        $conn->connect("127.0.0.1", "root", "", "sistem_ta");
+                        $sql1 = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, seminar_proposal.tanggal_seminar, seminar_proposal.status_seminar
+                                FROM mahasiswa 
+                                LEFT JOIN seminar_proposal ON mahasiswa.id_mahasiswa = seminar_proposal.id_mahasiswa 
+                                WHERE 1";
+                        $result = $conn->query($sql1);
 
-                          document.getElementById('jurnal').addEventListener('change', function() {
-                            // Periksa apakah file dipilih
-                            if (this.files.length > 0) {
-                              // Perlihatkan tombol submit jika file ada
-                              document.getElementById('submitButton').style.display = 'inline-block';
-                              alert('File terpilih: ' + this.files[0].name);
-                            }
-                          });
-                        </script>
+                        while ($row = mysqli_fetch_array($result)) {
+                          echo "<tr>";
+                          echo "<td>" . $row['id_mahasiswa'] . "</td>";
+                          echo "<td>" . $row['nama_mahasiswa'] . "</td>";
+                          echo "<td>" . $row['nim'] . "</td>";
+                          echo "<td>";
+
+                          echo "<a href='#popup' class='nav-link'>";
+                          echo "<i class='icon-paper menu-icon'></i>";
+                          echo "</a>";
+                          
+                          echo '<td>
+                                <form id="uploadForm" method="POST" enctype="multipart/form-data">
+                                  <input type="file" name="jurnal" id="jurnal" accept=".pdf" style="display: none;">
+                                  <button type="button" id="uploadButton" class="btn btn-outline-primary btn-fw">Upload</button>
+                                  <button type="submit" id="submitButton" class="btn btn-outline-success btn-fw" style="display: none;">Submit</button>
+                                </form>
+                              </td>';
+                          echo '<script>
+                                document.getElementById("uploadButton").addEventListener("click", function() {
+                                  // Klik otomatis pada input file
+                                  document.getElementById("jurnal").click();
+                                });
+
+                                document.getElementById("jurnal").addEventListener("change", function() {
+                                  // Periksa apakah file dipilih
+                                  if (this.files.length > 0) {
+                                    // Perlihatkan tombol submit jika file ada
+                                    document.getElementById("submitButton").style.display = "inline-block";
+                                    alert("File terpilih: " + this.files[0].name);
+                                  }
+                                });
+                              </script>';
+
+                          echo "<input type='hidden' name='id_mahasiswa' value='" . $row['id_mahasiswa'] . "'>";
+                          echo "<td>";
+                          echo "<button type='submit'>Update Status</button>";
+                          echo "</form>";
+                          
+                        }
+                        $conn->close()
+                        ?>
+
                       </tr>
                     </tbody>
                   </table>
