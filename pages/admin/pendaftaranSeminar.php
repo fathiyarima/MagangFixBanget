@@ -50,25 +50,22 @@
   
   </style>
   <script>
-  // Function to change the background color of the <select> element
   function changeSelectColor(selectElement) {
     var selectedValue = selectElement.value;
 
-    // Set the background color of the <select> based on the selected value
     if (selectedValue == 'dijadwalkan') {
-      selectElement.style.backgroundColor = 'rgb(255, 251, 0)'; // Yellow
+      selectElement.style.backgroundColor = 'rgb(255, 251, 0)'; 
     } else if (selectedValue == 'ditunda') {
-      selectElement.style.backgroundColor = 'rgb(255, 99, 71)'; // Red
+      selectElement.style.backgroundColor = 'rgb(255, 99, 71)'; 
     } else if (selectedValue == 'selesai') {
-      selectElement.style.backgroundColor = 'rgb(34, 139, 34)'; // Green
+      selectElement.style.backgroundColor = 'rgb(34, 139, 34)'; 
     }
   }
 
-  // Initialize the background color when the page loads (in case there's a pre-selected value)
   window.onload = function() {
     var selects = document.querySelectorAll('select');
     selects.forEach(function(select) {
-      changeSelectColor(select); // Apply color based on the selected option
+      changeSelectColor(select); 
     });
   }
 </script>
