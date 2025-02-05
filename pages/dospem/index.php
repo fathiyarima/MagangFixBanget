@@ -1,10 +1,3 @@
-<?php
-session_start();
-if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
-    exit();
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -149,7 +142,7 @@ if (!isset($_SESSION['username'])) {
               <img alt="" />
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-              <a class="dropdown-item">
+              <a class="dropdown-item" href="../../index.php">
                 <i class="ti-power-off text-primary"></i>
                 Logout
               </a>
@@ -353,7 +346,7 @@ if (!isset($_SESSION['username'])) {
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="../../Template/skydash/pages/samples/login.html">
+            <a class="nav-link" href="../../index.php">
               <i class="ti-power-off menu-icon"></i>
               <span class="menu-title">Logout</span>
             </a>
@@ -428,7 +421,7 @@ if (!isset($_SESSION['username'])) {
 
               <div class="col-md-4 mb-4 stretch-card transparent">
                 <div class="card card-light-danger">
-                  <a href="../../Template/skydash/pages/samples/login.html" class="link">
+                  <a href="../../index.php" class="link">
                     <div class="card-background3"></div>
                     <div class="card-body" style="display: flex;">
                       <i class=" menu-icon" style="margin-right: 10px;"></i>
