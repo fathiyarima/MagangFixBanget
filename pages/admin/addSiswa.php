@@ -10,6 +10,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['nama_mahasiswa'], $_POST['nim'], $_POST['prodi'], $_POST['kelas'], $_POST['nomor_telepon'], $_POST['username'], $_POST['pass'])) {
         $nama = $_POST['nama_mahasiswa'];
@@ -27,9 +29,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $hashed_pass = password_hash($pass, PASSWORD_DEFAULT);
 
-        $stmt = $conn->prepare("INSERT INTO `mahasiswa`(`nama_mahasiswa`, `username`, `pass`, `nim`, `prodi`, `kelas`, `nomor_telepon`) VALUES (?, ?, ?, ?, ?, ?)");
-
-        $stmt->bind_param("ssssss", $nama, $username, $hashed_pass, $nim, $prodi, $kelas, $nomor_telepon);
+        $stmt = $conn->prepare("INSERT INTO `mahasiswa`(`nama_mahasiswa`, `username`, `pass`, `nim`, `prodi`, `kelas`, `nomor_telepon`) VALUES (?, ?, ?, ?, ?, ?, ?)");
+ 
+        $stmt->bind_param("sssssss", $nama, $username, $hashed_pass, $nim, $prodi, $kelas, $nomor_telepon);
 
         if ($stmt->execute()) {
             echo "New record created successfully!";
