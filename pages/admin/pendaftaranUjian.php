@@ -435,44 +435,73 @@
                             </tr>
                           </thead>
                           <tbody>
-                                <?php
-                                $conn->connect("127.0.0.1", "root", "", "sistem_ta");
-                                $sql1 = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, ujian.status_ujian
-                                FROM mahasiswa 
-                                LEFT JOIN ujian ON mahasiswa.id_mahasiswa = ujian.id_mahasiswa 
-                                WHERE 1";
-                                $result = $conn->query($sql1);
+                            <?php
+                            
+                            $conn->connect("127.0.0.1", "root", "", "sistem_ta");
+                            $sql1 = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, ujian.status_ujian, ujian.nilai
+                            FROM mahasiswa 
+                            LEFT JOIN ujian ON mahasiswa.id_mahasiswa = ujian.id_mahasiswa";
+                            $result = $conn->query($sql1);
 
-                                while ($row = mysqli_fetch_array($result)) {
-                                  echo "<tr>";
-                                  echo "<td>" . $row['id_mahasiswa'] . "</td>";
-                                  echo "<td>" . $row['nama_mahasiswa'] . "</td>";
-                                  echo "<td>" . $row['nim'] . "</td>";
-                                  echo "<td>";
-                                  echo "<a href='#popup'>";
-                                  echo "<<span class='material-symbols-outlined'>folder_open</span>>";
-                                  echo "</a>";
-                                  echo "<td>";
-                                  echo "<form action='update_ujian.php' method='POST'>";
-                                  echo '<div class="dropdown">';
-                                  echo '    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton7" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">';
-                                  echo $row['status_ujian'];
-                                  echo '    </button>';
-                                  echo '    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">';
-                                  echo "        <button class='dropdown-item' type='submit' name='status_ujian' value='dijadwalkan'>Dijadwalkan</button>";
-                                  echo "        <button class='dropdown-item' type='submit' name='status_ujian' value='selesai'>Selesai</button>";
-                                  echo '    </div>';
-                                  echo "</div>";
-                                  echo "<input type='hidden' name='id_mahasiswa' value='" . $row['id_mahasiswa'] . "'>";
-                                  echo "<td>";
-                                  echo "<input type='text' id='nilai' name='nilai' required>";
-                                  echo "</form>";
-                                  echo "<td>";
-                                  echo "<button class='btn btn-inverse-success btn-fw'>Verifikasi</button>";
-                              }
-                              $conn->close()
-                                ?>
+                            while ($row = mysqli_fetch_array($result)) {
+                            
+                              echo "<tr>";
+                              echo "<td>" . $row['id_mahasiswa'] . "</td>";
+                              echo "<td>" . $row['nama_mahasiswa'] . "</td>";
+                              echo "<td>" . $row['nim'] . "</td>";
+                              echo "<td>";
+                              echo "<a href='#popup'>";
+                              echo "<span class='material-symbols-outlined'>folder_open</span>";
+                              echo "</a>";
+                              echo "</td>";
+                            
+                              echo "<form action='update_ujian.php' method='POST'>";
+                              echo "<td>";
+                              echo "<select class='js-example-basic-single w-30' name='status_ujian' onchange='changeColor(this)' required>";
+                              echo "<option value='dijadwalkan'" . ($row['status_ujian'] == 'dijadwalkan' ? ' selected' : '') . ">Dijadwalkan</option>";
+                              echo "<option value='selesai'" . ($row['status_ujian'] == 'selesai' ? ' selected' : '') . ">Selesai</option>";
+                              echo "</select>";
+                              echo "</td>";
+                              
+                              echo "<input type='hidden' name='id_mahasiswa' value='" . $row['id_mahasiswa'] . "'>";
+                          
+                              echo "<td>";
+                              $nilai = isset($row['nilai']) ? $row['nilai'] : '0';
+                              echo "<input type='text' id='nilai' name='nilai' value='" . $nilai . "' >";
+                              echo "</td>";
+                            
+                              echo "<td>";
+                              echo "<button class='btn btn-inverse-success btn-fw' type='submit'>Verifikasi</button>";
+                              echo "</td>";
+                          
+                              echo "</form>";
+                              echo "</tr>";
+                          }
+                            
+                             $conn->close()
+                              ?>
                             </tbody>
+                            <script>
+                              function changeSelectColor(selectElement) {
+                                var selectedValue = selectElement.value;
+
+                                
+                                if (selectedValue == 'dijadwalkan') {
+                                  selectElement.style.backgroundColor = 'rgb(255, 251, 0)';
+                                } else if (selectedValue == 'ditunda') {
+                                  selectElement.style.backgroundColor = 'rgb(255, 99, 71)';
+                                } else if (selectedValue == 'selesai') {
+                                  selectElement.style.backgroundColor = 'rgb(34, 139, 34)';
+                                }
+                              }
+
+                              window.onload = function() {
+                                var selects = document.querySelectorAll('select');
+                                selects.forEach(function(select) {
+                                  changeSelectColor(select);
+                                });
+                              }
+                            </script>
                       </table>
                       </div>
                     </div>

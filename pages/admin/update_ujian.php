@@ -1,12 +1,19 @@
 <?php
 include '../../config/connection.php';
-
 $conn->connect("127.0.0.1", "root", "", "sistem_ta");
 
-if (isset($_POST['id_mahasiswa']) && isset($_POST['status_ujian'])) {
+if (!empty($_POST)) {
+    echo "<script>";
+    echo "console.log(" . json_encode($_POST) . ");"; // Send $_POST to the console
+    echo "</script>";
+}
+
+if (isset($_POST['id_mahasiswa']) && isset($_POST['status_ujian']) && isset($_POST['nilai'])) {
     $id_mahasiswa = $_POST['id_mahasiswa'];
     $status_ujian = $_POST['status_ujian'];
+    $nilai = $_POST['nilai'];
 
+    // Debugging the data being posted
     var_dump($_POST);
 
     $valid_statuses = ['dijadwalkan', 'selesai'];
@@ -20,9 +27,15 @@ if (isset($_POST['id_mahasiswa']) && isset($_POST['status_ujian'])) {
         exit;
     }
 
+    // Ensure nilai is numeric
+    if (!is_numeric($nilai)) {
+        echo "Invalid nilai. It should be a number.";
+        exit;
+    }
+
+    // Validate if id_mahasiswa exists in the mahasiswa table
     $check_mahasiswa_sql = "SELECT id_mahasiswa FROM mahasiswa WHERE id_mahasiswa = ?";
     $check_mahasiswa_stmt = $conn->prepare($check_mahasiswa_sql);
-
     if ($check_mahasiswa_stmt === false) {
         die("Error preparing check statement: " . $conn->error);
     }
@@ -36,9 +49,9 @@ if (isset($_POST['id_mahasiswa']) && isset($_POST['status_ujian'])) {
         exit;
     }
 
+    // Check if the record for id_mahasiswa exists in the ujian table
     $check_sql = "SELECT id_mahasiswa FROM ujian WHERE id_mahasiswa = ?";
     $check_stmt = $conn->prepare($check_sql);
-
     if ($check_stmt === false) {
         die("Error preparing check statement: " . $conn->error);
     }
@@ -48,14 +61,14 @@ if (isset($_POST['id_mahasiswa']) && isset($_POST['status_ujian'])) {
     $check_stmt->store_result();
 
     if ($check_stmt->num_rows > 0) {
-        $sql = "UPDATE ujian SET status_ujian = ? WHERE id_mahasiswa = ?";
+        // If record exists, update
+        $sql = "UPDATE ujian SET status_ujian = ?, nilai = ? WHERE id_mahasiswa = ?";
         $stmt = $conn->prepare($sql);
-
         if ($stmt === false) {
-            die("Error preparing statement: " . $conn->error);
+            die("Error preparing update statement: " . $conn->error);
         }
 
-        $stmt->bind_param("si", $status_ujian, $id_mahasiswa);
+        $stmt->bind_param("sii", $status_ujian, $nilai, $id_mahasiswa);
 
         if ($stmt->execute()) {
             echo "Status updated successfully.";
@@ -65,14 +78,14 @@ if (isset($_POST['id_mahasiswa']) && isset($_POST['status_ujian'])) {
 
         $stmt->close();
     } else {
-        $sql = "INSERT INTO ujian (status_ujian) VALUES (?)";
+        // If record does not exist, insert
+        $sql = "INSERT INTO ujian (id_mahasiswa, status_ujian, nilai) VALUES (?, ?, ?)";
         $stmt = $conn->prepare($sql);
-
         if ($stmt === false) {
-            die("Error preparing statement: " . $conn->error);
+            die("Error preparing insert statement: " . $conn->error);
         }
 
-        $stmt->bind_param("s", $status_ujian);
+        $stmt->bind_param("isi", $id_mahasiswa, $status_ujian, $nilai);
 
         if ($stmt->execute()) {
             echo "Status added successfully.";
@@ -91,6 +104,7 @@ if (isset($_POST['id_mahasiswa']) && isset($_POST['status_ujian'])) {
 
 $conn->close();
 
+// Redirect after processing
 header("Location: pendaftaranujian.php");
 exit();
 ?>
