@@ -372,7 +372,7 @@ include '../../config/connection.php'; // Sesuaikan path dengan lokasi file kone
                           echo "<td>" . $row['nim'] . "</td>";
 
                           if (strlen($row['sppsp']) > 0) {
-                            echo "<td><a href='download.php?id=" . $row['sppsp'] . "' target='_blank'>download</a></td>";
+                            echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "' target='_blank'>download</a></td>";
                         } else {
                             echo "<td>No file</td>";
                         }

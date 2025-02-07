@@ -26,13 +26,10 @@ if (isset($_GET['id'])) {
     $stmt->execute();
     $stmt->bind_result($sppsp, $lbta);
 
-    // Debugging output to check if data is being fetched
     if ($stmt->fetch()) {
         echo "Data fetched successfully.<br>";
-
-        // Show the lengths of the BLOBs (Binary Data)
-        echo "Form Pendaftaran (length): " . (empty($sppsp) ? "No file" : strlen($form_pendaftaran)) . " bytes<br>";
-        echo "Bukti Transkip (length): " . (empty($lbta) ? "No file" : strlen($bukti_transkip)) . " bytes<br>";
+        echo "Form Pendaftaran (length): " . (empty($sppsp) ? "No file" : strlen($sppsp)) . " bytes<br>";
+        echo "Bukti Transkip (length): " . (empty($lbta) ? "No file" : strlen($lbta)) . " bytes<br>";
     } else {
         echo "No data found for the provided ID.<br>";
     }
@@ -41,11 +38,11 @@ if (isset($_GET['id'])) {
     $file = null;
     $file_name = '';
 
-    if (!empty($sppspn)) {
-        $file = $form_pendaftaran;
+    if (!empty($sppsp)) {
+        $file = $sppsp;
         $file_name = 'Form_Pendaftaran.pdf';
     } elseif (!empty($lbta)) {
-        $file = $bukti_transkip;
+        $file = $lbta;
         $file_name = 'Bukti_Transkip.pdf';
     } 
 

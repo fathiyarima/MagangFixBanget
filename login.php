@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($username === $admin_username && $password === $admin_password) {
         $_SESSION['username'] = $username;
         
-        header("Location: ../../pages/admin/index.php");
+        header("Location: pages/admin/index.php");
         exit();
     } else {
         $query = "SELECT 'dosen_pembimbing' AS source_table, id_dosen, username, pass FROM dosen_pembimbing WHERE username = '$username' AND pass = '$password'
