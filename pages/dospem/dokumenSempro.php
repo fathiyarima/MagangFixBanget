@@ -359,7 +359,7 @@ include '../../config/connection.php'; // Sesuaikan path dengan lokasi file kone
                       <tr>
                         <?php
                         $conn->connect("127.0.0.1", "root", "", "sistem_ta");
-                        $sql1 = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, seminar_proposal.tanggal_seminar, seminar_proposal.status_seminar
+                        $sql1 = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, seminar_proposal.tanggal_seminar, seminar_proposal.status_seminar, seminar_proposal.sppsp
                                 FROM mahasiswa 
                                 LEFT JOIN seminar_proposal ON mahasiswa.id_mahasiswa = seminar_proposal.id_mahasiswa 
                                 WHERE 1";
@@ -370,11 +370,12 @@ include '../../config/connection.php'; // Sesuaikan path dengan lokasi file kone
                           echo "<td>" . $row['id_mahasiswa'] . "</td>";
                           echo "<td>" . $row['nama_mahasiswa'] . "</td>";
                           echo "<td>" . $row['nim'] . "</td>";
-                          echo "<td>";
 
-                          echo "<a href='#popup' class='nav-link'>";
-                          echo "<i class='icon-paper menu-icon'></i>";
-                          echo "</a>";
+                          if (strlen($row['sppsp']) > 0) {
+                            echo "<td><a href='download.php?id=" . $row['sppsp'] . "' target='_blank'>download</a></td>";
+                        } else {
+                            echo "<td>No file</td>";
+                        }
                           
                           echo '<td>
                                 <form id="uploadForm" method="POST" enctype="multipart/form-data">
