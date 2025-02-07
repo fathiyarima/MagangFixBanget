@@ -1,3 +1,4 @@
+<!-- UploadTA -->
 <?php
 // Ambil data mahasiswa dari session (sesuaikan dengan sistem login Anda)
 session_start();
@@ -31,16 +32,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
             $tableName = '';
             switch($fileCategory) {
                 case 'Form Pendaftaran dan Persetujuan Tema':
-                    $tableName = 'form_pendaftaran';
+                    $tableName = 'form_pendaftaran_persetujuan_tema(TA)';
                     break;
                 case 'Bukti Pembayaran':
-                    $tableName = 'bukti_pembayaran';
+                    $tableName = 'bukti_pembayaran(TA)';
                     break;
                 case 'Bukti Transkrip Nilai':
-                    $tableName = 'transkrip_nilai';
+                    $tableName = 'bukti_transkip_nilai(TA)';
                     break;
                 case 'Bukti Kelulusan Mata kuliah Magang / PI':
-                    $tableName = 'bukti_kelulusan_magang';
+                    $tableName = 'bukti_kelulusan_magang(TA)';
                     break;
             }
             
@@ -73,16 +74,16 @@ function getFileStatus($nim, $tipe_file) {
         $tableName = '';
         switch($tipe_file) {
             case 'Form Pendaftaran dan Persetujuan Tema':
-                $tableName = 'form_pendaftaran';
+                $tableName = 'form_pendaftaran_persetujuan_tema(TA)';
                 break;
             case 'Bukti Pembayaran':
-                $tableName = 'bukti_pembayaran';
+                $tableName = 'bukti_pembayaran(TA)';
                 break;
             case 'Bukti Transkrip Nilai':
-                $tableName = 'transkrip_nilai';
+                $tableName = 'bukti_transkip_nilai(TA)';
                 break;
             case 'Bukti Kelulusan Mata kuliah Magang / PI':
-                $tableName = 'bukti_kelulusan_magang';
+                $tableName = 'bukti_kelulusan_magang(TA)';
                 break;
         }
         
@@ -129,62 +130,7 @@ $driveLinks = [
     <link rel="stylesheet" href="../../assets/css/css/user.css">
     <!-- endinject -->
     <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
-    <link rel="stylesheet" type="text/css" href="../../assets/css/user/tugasAkhirUpload.css" />
-
-    <style>
-        /* Add these styles to your CSS file */
-        .file-upload-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .file-upload-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .select-file-btn {
-            background-color: #4B49AC;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .select-file-btn:hover {
-            background-color: #3f3e91;
-        }
-
-        .selected-file-name {
-            font-size: 14px;
-            color: #6c757d;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .upload-submit-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .upload-submit-btn:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="../../assets/css/user/uploadTugasAkhir.css" />
 
 </head>
 

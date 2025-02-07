@@ -1,32 +1,18 @@
+<!-- UploadUjian -->
 <?php
 // Ambil data mahasiswa dari session (sesuaikan dengan sistem login Anda)
 session_start();
 $nama_mahasiswa = $_SESSION['nama'] ?? 'Mahasiswa'; // Default jika tidak ada session
 $nim = $_SESSION['nim'] ?? '12345678';
 
-// Fungsi untuk mendapatkan status file dari database
-function getFileStatus($nim, $tipe_file)
-{
-    // Ini contoh, sesuaikan dengan database Anda
-    return "Revisi"; // atau "Lulus" atau "Tolak"
-}
-
 // Proses upload file jika ada
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
-    $uploadDir = 'uploads/';  // Buat folder 'uploads' di direktori yang sama
-
-    // Pastikan direktori upload ada
-    if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-
     $file = $_FILES['file_upload'];
     $fileType = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     $fileCategory = $_POST['file_type'] ?? '';
 
     // Format nama file
     $newFileName = $nim . '_' . str_replace(' ', '_', $fileCategory) . '_' . $nama_mahasiswa . '.' . $fileType;
-    $uploadPath = $uploadDir . $newFileName;
 
     // Validasi file
     if ($fileType != "pdf") {
@@ -34,11 +20,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
     } elseif ($file['size'] > 2000000) { // 2MB
         echo "<script>alert('Maaf, ukuran file terlalu besar (max 2MB).');</script>";
     } else {
-        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+        try {
+            // Koneksi ke database
+            $conn = new PDO("mysql:host=localhost;dbname=sistemta", "root", "");
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Baca file sebagai binary
+            $fileContent = file_get_contents($file['tmp_name']);
+
+            // Tentukan nama tabel berdasarkan tipe file
+            $tableName = '';
+            switch ($fileCategory) {
+                case 'Lembar Persetujuan Laporan Tugas Akhir':
+                    $tableName = 'lembar_persetujuan_laporan_ta(ujian)';
+                    break;
+                case 'Form Pendaftaran Ujian Tugas Akhir':
+                    $tableName = 'form_pendaftaran_ujian_ta(ujian)';
+                    break;
+                case 'Lembar Kehadiran Seminar Proposal	':
+                    $tableName = 'lembar_kehadiran_sempro(ujian)';
+                    break;
+                case 'Buku Konsultasi Tugas Akhir':
+                    $tableName = 'buku_konsultasi_ta(ujian)	';
+                    break;
+            }
+
+            // Query untuk menyimpan file ke database
+            $sql = "INSERT INTO $tableName (nim, nama_file, file_content, tanggal_upload, status) 
+                    VALUES (:nim, :nama_file, :file_content, NOW(), 'Pending')";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':nim' => $nim,
+                ':nama_file' => $newFileName,
+                ':file_content' => $fileContent
+            ]);
+
             echo "<script>alert('File berhasil diupload.');</script>";
-        } else {
-            echo "<script>alert('Maaf, terjadi error saat upload file.');</script>";
+        } catch (PDOException $e) {
+            echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
         }
+    }
+}
+
+// Fungsi untuk mendapatkan status file dari database
+function getFileStatus($nim, $tipe_file)
+{
+    try {
+        $conn = new PDO("mysql:host=localhost;dbname=sistemta", "root", "");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Tentukan nama tabel
+        $tableName = '';
+        switch ($tipe_file) {
+            case 'Lembar Persetujuan Laporan Tugas Akhir':
+                $tableName = 'lembar_persetujuan_laporan_ta(ujian)';
+                break;
+            case 'Form Pendaftaran Ujian Tugas Akhir':
+                $tableName = 'form_pendaftaran_ujian_ta(ujian)';
+                break;
+            case 'Lembar Kehadiran Seminar Proposal	':
+                $tableName = 'lembar_kehadiran_sempro(ujian)';
+                break;
+            case 'Buku Konsultasi Tugas Akhir':
+                $tableName = 'buku_konsultasi_ta(ujian)	';
+                break;
+        }
+
+        $sql = "SELECT status FROM $tableName WHERE nim = :nim ORDER BY tanggal_upload DESC LIMIT 1";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':nim' => $nim]);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['status'] : 'Belum Upload';
+    } catch (PDOException $e) {
+        return 'Error';
     }
 }
 
@@ -73,7 +129,7 @@ $driveLinks = [
     <link rel="stylesheet" href="../../assets/css/css/user.css">
     <!-- endinject -->
     <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
-    <link rel="stylesheet" type="text/css" href="../../assets/css/user/ujianUpload.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/css/user/uploadUjian.css" />
 
 </head>
 
@@ -89,7 +145,7 @@ $driveLinks = [
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
                 <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
                     <span class="icon-menu"></span>
-                </button>   
+                </button>
                 <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
                     <span class="icon-menu"></span>
                 </button>
@@ -255,7 +311,7 @@ $driveLinks = [
                                         'Lembar Persetujuan Laporan Tugas Akhir',
                                         'Form Pendaftaran Ujian Tugas Akhir',
                                         'Lembar Kehadiran Seminar Proposal',
-                                        'Buku Konsultasi Tugas Akhir'
+                                        'Buku Konsultasi Tugas Akhir',
                                     ];
 
                                     foreach ($files as $file) {
@@ -276,10 +332,19 @@ $driveLinks = [
                                         <tr>
                                             <td><?php echo htmlspecialchars($file); ?></td>
                                             <td>
-                                                <form action="" method="post" enctype="multipart/form-data">
-                                                    <input type="file" name="file_upload" accept=".pdf" style="display: none;" id="file_<?php echo md5($file); ?>">
-                                                    <input type="hidden" name="file_type" value="<?php echo htmlspecialchars($file); ?>">
-                                                    <button type="button" class="upload-btn" onclick="document.getElementById('file_<?php echo md5($file); ?>').click()">Upload</button>
+                                                <form action="" method="post" enctype="multipart/form-data" class="upload-form">
+                                                    <div class="file-upload-wrapper">
+                                                        <input type="file" name="file_upload" accept=".pdf"
+                                                            id="file_<?php echo md5($file); ?>"
+                                                            class="file-input"
+                                                            onchange="updateFileName(this)">
+                                                        <input type="hidden" name="file_type" value="<?php echo htmlspecialchars($file); ?>">
+                                                        <div class="file-upload-controls">
+                                                            <label for="file_<?php echo md5($file); ?>" class="select-file-btn">Pilih File</label>
+                                                            <span class="selected-file-name" id="filename_<?php echo md5($file); ?>">Tidak ada file dipilih</span>
+                                                            <button type="submit" class="upload-submit-btn">Upload</button>
+                                                        </div>
+                                                    </div>
                                                 </form>
                                             </td>
                                             <td><span class="status <?php echo $statusClass; ?>"><?php echo $status; ?></span></td>

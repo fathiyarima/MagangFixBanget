@@ -1,3 +1,56 @@
+/* Add these styles to your CSS file */
+.file-upload-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-upload-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.select-file-btn {
+    background-color: #4B49AC;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.select-file-btn:hover {
+    background-color: #3f3e91;
+}
+
+.selected-file-name {
+    font-size: 14px;
+    color: #6c757d;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.upload-submit-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.upload-submit-btn:hover {
+    background-color: #45a049;
+}
+
 .download-btn {
     display: inline-block;
     padding: 8px 16px;
