@@ -1,44 +1,45 @@
+<!-- UploadTA -->
 <?php
 // Ambil data mahasiswa dari session (sesuaikan dengan sistem login Anda)
 session_start();
 $nama_mahasiswa = $_SESSION['nama'] ?? 'Mahasiswa'; // Default jika tidak ada session
 $nim = $_SESSION['nim'] ?? '12345678';
 
-// Fungsi untuk mendapatkan status file dari database
-function getFileStatus($nim, $tipe_file)
-{
-    // Ini contoh, sesuaikan dengan database Anda
-    return "Revisi"; // atau "Lulus" atau "Tolak"
-}
-
 // Proses upload file jika ada
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
-    $uploadDir = 'uploads/';  // Buat folder 'uploads' di direktori yang sama
 
-    // Pastikan direktori upload ada
-    if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
 
-    $file = $_FILES['file_upload'];
-    $fileType = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    $fileCategory = $_POST['file_type'] ?? '';
-
-    // Format nama file
-    $newFileName = $nim . '_' . str_replace(' ', '_', $fileCategory) . '_' . $nama_mahasiswa . '.' . $fileType;
-    $uploadPath = $uploadDir . $newFileName;
-
-    // Validasi file
-    if ($fileType != "pdf") {
-        echo "<script>alert('Maaf, hanya file PDF yang diperbolehkan.');</script>";
-    } elseif ($file['size'] > 2000000) { // 2MB
-        echo "<script>alert('Maaf, ukuran file terlalu besar (max 2MB).');</script>";
-    } else {
-        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-            echo "<script>alert('File berhasil diupload.');</script>";
-        } else {
-            echo "<script>alert('Maaf, terjadi error saat upload file.');</script>";
+// Fungsi untuk mendapatkan status file dari database
+function getFileStatus($nim, $tipe_file) {
+    try {
+        $conn = new PDO("mysql:host=localhost;dbname=sistemta", "root", "");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        // Tentukan nama tabel
+        $tableName = '';
+        switch($tipe_file) {
+            case 'Form Pendaftaran dan Persetujuan Tema':
+                $tableName = 'form_pendaftaran_persetujuan_tema(TA)';
+                break;
+            case 'Bukti Pembayaran':
+                $tableName = 'bukti_pembayaran(TA)';
+                break;
+            case 'Bukti Transkrip Nilai':
+                $tableName = 'bukti_transkip_nilai(TA)';
+                break;
+            case 'Bukti Kelulusan Mata kuliah Magang / PI':
+                $tableName = 'bukti_kelulusan_magang(TA)';
+                break;
         }
+        
+        $sql = "SELECT status FROM mahasiswa WHERE nim = :nim ORDER BY create_at DESC LIMIT 1";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':nim' => $nim]);
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['status'] : 'Belum Upload';
+        
+    } catch(PDOException $e) {
+        return 'Error';
     }
 }
 
@@ -73,62 +74,7 @@ $driveLinks = [
     <link rel="stylesheet" href="../../assets/css/css/user.css">
     <!-- endinject -->
     <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
-    <link rel="stylesheet" type="text/css" href="../../assets/css/user/tugasAkhirUpload.css" />
-
-    <style>
-        /* Add these styles to your CSS file */
-        .file-upload-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .file-upload-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .select-file-btn {
-            background-color: #4B49AC;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .select-file-btn:hover {
-            background-color: #3f3e91;
-        }
-
-        .selected-file-name {
-            font-size: 14px;
-            color: #6c757d;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .upload-submit-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .upload-submit-btn:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="../../assets/css/user/uploadTugasAkhir.css" />
 
 </head>
 
@@ -375,8 +321,68 @@ $driveLinks = [
                             echo "<script>alert('Maaf, ukuran file terlalu besar (max 2MB).');</script>";
                         } else {
                             if (move_uploaded_file($_FILES['jurnal']['tmp_name'], $uploadFile)) {
-                                echo "<script>alert('File berhasil diupload.');</script>";
-                                // Di sini Anda bisa menambahkan kode untuk update database
+                                session_start();
+                                $nama_mahasiswa = $_SESSION['nama'] ?? 'farel'; // Default jika tidak ada session
+                                $nim = $_SESSION['nim'] ?? 'K3533029';
+
+                                // Proses upload file jika ada
+                                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
+                                    $file = $_FILES['file_upload'];
+                                    $fileType = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                                    $fileCategory = $_POST['file_type'] ?? '';
+                                    
+                                    // Format nama file
+                                    $newFileName = $nim . '_' . str_replace(' ', '_', $fileCategory) . '_' . $nama_mahasiswa . '.' . $fileType;
+                                    
+                                    // Validasi file
+                                    if ($fileType != "pdf") {
+                                        echo "<script>alert('Maaf, hanya file PDF yang diperbolehkan.');</script>";
+                                    } elseif ($file['size'] > 2000000) { // 2MB
+                                        echo "<script>alert('Maaf, ukuran file terlalu besar (max 2MB).');</script>";
+                                    } else {
+                                        try {
+                                            // Koneksi ke database
+                                            $conn = new PDO("mysql:host=localhost;dbname=sistemta", "root", "");
+                                            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                                            
+                                            // Baca file sebagai binary
+                                            $fileContent = file_get_contents($file['tmp_name']);
+                                            
+                                            // Tentukan nama tabel berdasarkan tipe file
+                                            $tableName = '';
+                                            switch($fileCategory) {
+                                                case 'Form Pendaftaran dan Persetujuan Tema':
+                                                    $tableName = 'form_pendaftaran_persetujuan_tema(TA)';
+                                                    break;
+                                                case 'Bukti Pembayaran':
+                                                    $tableName = 'bukti_pembayaran(TA)';
+                                                    break;
+                                                case 'Bukti Transkrip Nilai':
+                                                    $tableName = 'bukti_transkip_nilai(TA)';
+                                                    break;
+                                                case 'Bukti Kelulusan Mata kuliah Magang / PI':
+                                                    $tableName = 'bukti_kelulusan_magang(TA)';
+                                                    break;
+                                            }
+                                            
+                                            // Query untuk menyimpan file ke database
+                                            $sql = "INSERT INTO mahasiswa ($tableName, status) 
+                                                    VALUES ($uploadFile, 'Pending')";
+                                            
+                                            $stmt = $conn->prepare($sql);
+                                            $stmt->execute([
+                                                ':nim' => $nim,
+                                                ':nama_file' => $newFileName,
+                                                ':file_content' => $fileContent
+                                            ]);
+                                            
+                                            echo "<script>alert('File berhasil diupload.');</script>";
+                                            
+                                        } catch(PDOException $e) {
+                                            echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
+                                        }
+                                    }
+                                }
                             } else {
                                 echo "<script>alert('Maaf, terjadi error saat upload file.');</script>";
                             }

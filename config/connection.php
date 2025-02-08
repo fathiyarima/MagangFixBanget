@@ -2,7 +2,7 @@
 $host = "127.0.0.1";
 $username = "root";
 $password = "";
-$database = "sistem_ta";
+$database = "sistemta";
 
 $conn = new mysqli($host, $username, $password, $database);
 
