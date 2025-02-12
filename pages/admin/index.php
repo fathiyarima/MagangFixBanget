@@ -471,7 +471,7 @@
                     var xValues = <?php echo json_encode($xValues); ?>; 
                     var yValues = <?php echo json_encode($yValues); ?>;
 
-                    var barColors = ["#00c967", "#FFCE56", "#FF0000",];
+                    var barColors = ["#73ad91", "#ebd382", "#d25d5d",];
 
                     new Chart("myChart2", {
                         type: "doughnut",
@@ -485,7 +485,7 @@
                         options: {
                             title: {
                                 display: true,
-                                text: "Jumlah Pendaftar"
+                                text: "Jumlah Pendaftar Tugas Akhir"
                             }
                         }
                     });
@@ -519,7 +519,7 @@
                     var xValues = <?php echo json_encode($xValues); ?>; 
                     var yValues = <?php echo json_encode($yValues); ?>;
 
-                    var barColors = ["#00c967", "#FFCE56", "#FF0000",];
+                    var barColors = ["#73ad91", "#ebd382", "#d25d5d",];
 
                     new Chart("myChart4", {
                         type: "doughnut",
@@ -533,7 +533,7 @@
                         options: {
                             title: {
                                 display: true,
-                                text: "Jumlah Pendaftar"
+                                text: "Jumlah Pendaftar Ujian"
                             }
                         }
                     });
@@ -567,7 +567,7 @@
                     var xValues = <?php echo json_encode($xValues); ?>; 
                     var yValues = <?php echo json_encode($yValues); ?>;
 
-                    var barColors = ["#00c967", "#FFCE56", "#FF0000",];
+                    var barColors = ["#73ad91", "#ebd382", "#d25d5d",];
 
                     new Chart("myChart3", {
                         type: "doughnut",
@@ -581,7 +581,7 @@
                         options: {
                             title: {
                                 display: true,
-                                text: "Jumlah Pendaftar"
+                                text: "Jumlah Pendaftar Seminar"
                             }
                         }
                     });

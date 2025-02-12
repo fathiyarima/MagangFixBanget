@@ -438,7 +438,7 @@
                     var xValues = <?php echo json_encode($xValues); ?>; 
                     var yValues = <?php echo json_encode($yValues); ?>;
 
-                    var barColors = ["#FF6384", "#36A2EB", "#FFCE56"];
+                    var barColors = ["#ebd382", "#d25d5d", "#73ad91",];
 
                     new Chart("myChart2", {
                         type: "doughnut",
