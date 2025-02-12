@@ -1,3 +1,4 @@
+<?php include '../../config/connection.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,17 +13,22 @@
   <link rel="stylesheet" href="../../Template/skydash/vendors/css/vendor.bundle.base.css">
   <!-- endinject -->
   <!-- Plugin css for this page -->
-  <link rel="stylesheet" href="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" type="text/css" href="../../Template/skydash/js/select.dataTables.min.css">
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
 
-  <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/dosen.css">
-  <link rel="stylesheet" href="../../assets/css/css/admin/dosen.css">
+  <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/mahasiswa.css">
+  <link rel="stylesheet" href="../../assets/css/css/admin/mahasiswa.css">
+  <!-- Add these before closing </body> tag -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
 </head>
 <body>
   <div class="container-scroller">
@@ -33,7 +39,7 @@
         <a class="navbar-brand brand-logo-mini" href="index.php"><img src="../../assets/img/Logo.webp" alt=""/></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="collapse" data-target="#sidebar">
           <span class="icon-menu"></span>
         </button>
         <ul class="navbar-nav mr-lg-2">
@@ -105,6 +111,10 @@
               <a class="dropdown-item">
                 <i class="ti-settings text-primary"></i>
                 Settings
+              </a>
+              <a class="dropdown-item">
+                <i class="ti-power-off text-primary"></i>
+                Logout
               </a>
             </div>
           </li>
@@ -364,13 +374,14 @@
                               <th>NIP</th>
                               <th>Program Studi</th>
                               <th>Nomor Telepon</th>
-                              <th></th>
+                              <th>Username</th>
+                              <th>Password</th>
                             </tr>
                           </thead>
                           <tbody>
                                 <?php
                                 $conn = new mysqli('127.0.0.1', 'root', '', 'sistem_ta');
-                                $sql1 = "SELECT id_dosen, nama_dosen, nip, prodi, nomor_telepon FROM dosen_pembimbing WHERE 1";
+                                $sql1 = "SELECT id_dosen, nama_dosen, nip, prodi, nomor_telepon, username, pass FROM dosen_pembimbing WHERE 1";
                                 $result = $conn->query($sql1);
 
                                 while ($row = mysqli_fetch_array($result)) {
@@ -380,18 +391,20 @@
                                   echo "<td>" . $row['nip'] . "</td>";
                                   echo "<td>" . $row['prodi'] . "</td>";
                                   echo "<td>" . $row['nomor_telepon'] . "</td>";
+                                  echo "<td>" . $row['username'] . "</td>";
+                                  echo "<td>" . $row['pass'] . "</td>";
+                                  echo "</tr>";
                               }
                               $conn->close();
                                 ?>
                             </tbody>
-                      </table>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  </div>
                 </div>
-                
-                </div>
+              </div>
               <button id="openModalBtn" class="btn btn-primary">Add Data</button>
 
               <div id="myModal" class="modal">
@@ -406,14 +419,14 @@
 
                     <div class="form-group">
                       <label for="nim">NIP:</label>
-                      <input type="text" id="nim" name="nip" required>
+                      <input type="text" id="nip" name="nip" required>
                     </div>
 
                     <div class="form-group">
                       <label for="program">Program Studi:</label>
                       <input type="text" id="program" name="prodi" required>
                     </div>
-
+                  
                     <div class="form-group">
                       <label for="phone">Phone Number:</label>
                       <input type="text" id="phone" name="nomor_telepon" required>
@@ -515,6 +528,7 @@
               </style>
 
               <script>
+                // Script untuk membuka dan menutup modal
                 document.getElementById("openModalBtn").onclick = function() {
                   document.getElementById("myModal").style.display = "flex";
                 }
@@ -528,17 +542,65 @@
                     document.getElementById("myModal").style.display = "none";
                   }
                 }
+              </script>
+
+
+              <style>
+                .modal {
+                  display: none;
+                  position: relative;
+                  z-index: 1;
+                  left: 0;
+                  top: 0;
+                  width: 100%;
+                  height: 100%;
+                  overflow: auto;
+                  background-color: rgba(0, 0, 0, 0.4);
+                  padding-top: 60px;
+                }
+
+                .modal-content {
+                  background-color: #fefefe;
+                  margin: 5% auto;
+                  padding: 20px;
+                  border: 1px solid #888;
+                  width: 80%;
+                }
+
+                .close {
+                  color: #aaa;
+                  float: right;
+                  font-size: 28px;
+                  font-weight: bold;
+                }
+
+                .close:hover,
+                .close:focus {
+                  color: black;
+                  text-decoration: none;
+                  cursor: pointer;
+                }
+              </style>
+
+              <script>
+                document.getElementById("openModalBtn").onclick = function() {
+                  document.getElementById("myModal").style.display = "flex";
+                }
+
+                document.getElementsByClassName("close")[0].onclick = function() {
+                  document.getElementById("myModal").style.display = "none";
+                }
 
                 document.getElementById("studentForm").onsubmit = function(event) {
                   event.preventDefault();
 
                   var name = document.getElementById("name").value;
-                  var nim = document.getElementById("nim").value;
+                  var nim = document.getElementById("nip").value;
                   var phone = document.getElementById("phone").value;
 
                   console.log('Form data:', {name, nim, phone});
 
-                  if (name === "" || nim === "" || phone === "") {
+                  if (name === "" || nip === "" || phone === "") {
                     alert("Please fill in all fields.");
                     return;
                   }
@@ -568,15 +630,13 @@
                     alert("An error occurred during the request. Please try again.");
                   };
 
-                  // Send form data to PHP script
                   xhr.send(formData);
                 };
               </script>
 
-                
-              </div>
+
             </div>
-        </div>
+          </div>
         <!-- content-wrapper ends -->
         <!-- partial:partials/_footer.html -->
         <footer class="footer">
@@ -601,9 +661,6 @@
   <!-- endinject -->
   <!-- Plugin js for this page -->
   <script src="../../Template/skydash/vendors/chart.js/Chart.min.js"></script>
-  <script src="../../Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
-  <script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-  <script src="../../Template/skydash/js/dataTables.select.min.js"></script>
 
   <!-- End plugin js for this page -->
   <!-- inject:js -->
