@@ -347,6 +347,55 @@
       </nav>
       <!-- partial -->
       
+      <style>
+            /* Styling Tabel */
+     /* Styling Tabel */
+/* Styling Tabel */
+/* Styling Tabel */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Header tetap berwarna biru */
+        th {
+            background-color: #1b4f72 !important;
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+
+        /* Styling untuk isi tabel */
+        td {
+            background-color: #ffffff;
+            color: black;
+            padding: 12px;
+            text-align: center;
+        }
+
+        /* Menghilangkan garis antar kolom */
+        th, td {
+            border: none !important;
+        }
+
+        /* Menambahkan garis hanya antar baris */
+        tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Menghilangkan garis di baris terakhir agar lebih rapi */
+        tr:last-child {
+            border-bottom: none;
+        }
+
+
+
+       
+          </style>
+          
           <!--Advanced-->
       <div class="main-panel">
         <div class="content-wrapper">
@@ -374,7 +423,7 @@
                           <tbody>
                                 <?php
                                 $conn = new mysqli('127.0.0.1', 'root', '', 'sistem_ta');
-                                $sql1 = "SELECT id_mahasiswa, nama_mahasiswa, nim, prodi, form_pendaftaran, form_persetujuan FROM mahasiswa WHERE 1";
+                                $sql1 = "SELECT id_mahasiswa, nama_mahasiswa, nim, prodi, form_pendaftaran_sempro_seminar, lembar_persetujuan_proposal_ta_seminar FROM mahasiswa WHERE 1";
                                 $result = $conn->query($sql1);
 
                                 while ($row = mysqli_fetch_array($result)) {
@@ -383,13 +432,13 @@
                                   echo "<td>" . $row['nama_mahasiswa'] . "</td>";
                                   echo "<td>" . $row['nim'] . "</td>";
                                   echo "<td>" . $row['prodi'] . "</td>";
-                                  if (strlen($row['form_pendaftaran']) > 0) {
+                                  if (strlen($row['form_pendaftaran_sempro_seminar']) > 0) {
                                     echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "' target='_blank'>Download Form Pendaftaran</a></td>";
                                 } else {
                                     echo "<td>No file</td>";
                                 }
                             
-                                if (strlen($row['form_persetujuan']) > 0) {
+                                if (strlen($row['lembar_persetujuan_proposal_ta_seminar']) > 0) {
                                     echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "' target='_blank'>Download Form Persetujuan</a></td>";
                                 } else {
                                     echo "<td>No file</td>";

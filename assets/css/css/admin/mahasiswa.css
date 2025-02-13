@@ -309,10 +309,7 @@
   
 
   /* Warna latar belakang tabel */
-#example {
-    background-color: #1a3041;
-    color: #fff; /* Teks tetap terlihat */
-}
+
 
 /* Gaya header tabel */
 #example thead th {
