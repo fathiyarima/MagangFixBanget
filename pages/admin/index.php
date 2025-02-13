@@ -29,6 +29,7 @@
 
   <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/css/admin/dashboard.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <div class="container-scroller">
@@ -55,75 +56,117 @@
           </li>
         </ul>
         <ul class="navbar-nav navbar-nav-right">
+          <!-- Notification Dropdown -->
           <li class="nav-item dropdown">
-            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
-              <i class="icon-bell mx-0"></i>
-              <span class="count"></span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-              <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-success">
-                    <i class="ti-info-alt mx-0"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <h6 class="preview-subject font-weight-normal">Application Error</h6>
-                  <p class="font-weight-light small-text mb-0 text-muted">
-                    Just now
-                  </p>
-                </div>
+              <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
+                  <i class="icon-bell mx-0"></i>
+                  <span class="count" id="notificationCount"></span> <!-- Notification count here -->
               </a>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-warning">
-                    <i class="ti-settings mx-0"></i>
+              <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+                  <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
+                  <div id="notifications">
+                    <script>
+                      function fetchNotifications() {
+                          $.ajax({
+                              url: 'fetch_notif.php',
+                              method: 'GET',
+                              success: function(data) {
+                                  const notifications = JSON.parse(data);
+                                  const notificationCount = $('#notificationCount');
+                                  const notificationList = $('#notifications');
+                                  
+                                  notificationCount.text(notifications.length);
+
+                                  notificationList.empty();
+
+                                  if (notifications.length === 0) {
+                                      notificationList.append(`
+                                          <a class="dropdown-item preview-item">
+                                              <div class="preview-item-content">
+                                                  <h6 class="preview-subject font-weight-normal">No new notifications</h6>
+                                              </div>
+                                          </a>
+                                      `);
+                                  } else {
+                                      notifications.forEach(function(notification) {
+                                          const notificationItem = `
+                                              <a class="dropdown-item preview-item">
+                                                  <div class="preview-thumbnail">
+                                                      <div class="preview-icon bg-info">
+                                                          <i class="ti-info-alt mx-0"></i>
+                                                      </div>
+                                                  </div>
+                                                  <div class="preview-item-content">
+                                                      <h6 class="preview-subject font-weight-normal">${notification.message}</h6>
+                                                      <p class="font-weight-light small-text mb-0 text-muted">${timeAgo(notification.created_at)}</p>
+                                                  </div>
+                                              </a>
+                                          `;
+                                          notificationList.append(notificationItem);
+                                      });
+                                  }
+                              },
+                              error: function() {
+                                  console.log("Error fetching notifications.");
+                              }
+                          });
+                      }
+
+                      function timeAgo(time) {
+                          const timeAgo = new Date(time);
+                          const currentTime = new Date();
+                          const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
+
+                          if (diffInSeconds < 60) {
+                              return `${diffInSeconds} seconds ago`;
+                          }
+                          const diffInMinutes = Math.floor(diffInSeconds / 60);
+                          if (diffInMinutes < 60) {
+                              return `${diffInMinutes} minutes ago`;
+                          }
+                          const diffInHours = Math.floor(diffInMinutes / 60);
+                          if (diffInHours < 24) {
+                              return `${diffInHours} hours ago`;
+                          }
+                          const diffInDays = Math.floor(diffInHours / 24);
+                          return `${diffInDays} days ago`;
+                      }
+
+                      $(document).ready(function() {
+                          fetchNotifications();
+                          setInterval(fetchNotifications, 30000);
+                      });
+
+                      </script>
                   </div>
-                </div>
-                <div class="preview-item-content">
-                  <h6 class="preview-subject font-weight-normal">Settings</h6>
-                  <p class="font-weight-light small-text mb-0 text-muted">
-                    Private message
-                  </p>
-                </div>
-              </a>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-info">
-                    <i class="ti-user mx-0"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <h6 class="preview-subject font-weight-normal">New user registration</h6>
-                  <p class="font-weight-light small-text mb-0 text-muted">
-                    2 days ago
-                  </p>
-                </div>
-              </a>
-            </div>
+              </div>
           </li>
+          
+          <!-- Profile Dropdown -->
           <li class="nav-item nav-profile dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-              <img src="../../Template/skydash/images/faces/face28.jpg" alt="profile"/>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-              <a class="dropdown-item">
-                <i class="ti-settings text-primary"></i>
-                Settings
+              <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+                  <img src="../../Template/skydash/images/faces/face28.jpg" alt="profile"/>
               </a>
-              <a class="dropdown-item">
-                <i class="ti-power-off text-primary"></i>
-                Logout
-              </a>
-            </div>
+              <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                  <a class="dropdown-item">
+                      <i class="ti-settings text-primary"></i>
+                      Settings
+                  </a>
+                  <a class="dropdown-item">
+                      <i class="ti-power-off text-primary"></i>
+                      Logout
+                  </a>
+              </div>
           </li>
+
+          <!-- Additional Settings Option (if any) -->
           <li class="nav-item nav-settings d-none d-lg-flex">
-            <a class="nav-link" href="#">
-              <i class="icon-ellipsis"></i>
-            </a>
+              <a class="nav-link" href="#">
+                  <i class="icon-ellipsis"></i>
+              </a>
           </li>
-        </ul>
+      </ul>
+
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
           <span class="icon-menu"></span>
         </button>
