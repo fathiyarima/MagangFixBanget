@@ -430,132 +430,132 @@
             </div>
           </div>
           <?php
-$conn = new mysqli("127.0.0.1", "root", "", "sistem_ta");
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
-}
+          $conn = new mysqli("127.0.0.1", "root", "", "sistem_ta");
+          if ($conn->connect_error) {
+              die("Koneksi gagal: " . $conn->connect_error);
+          }
 
-// Fetch all dosen_pembimbing from the dosen_pembimbing table
-$sql_dosen = "SELECT id_dosen, nama_dosen FROM dosen_pembimbing";
-$result_dosen = $conn->query($sql_dosen);
+          // Fetch all dosen_pembimbing from the dosen_pembimbing table
+          $sql_dosen = "SELECT id_dosen, nama_dosen FROM dosen_pembimbing";
+          $result_dosen = $conn->query($sql_dosen);
 
-// Fetch mahasiswa and their related data from the database
-$sql1 = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, mahasiswa.prodi, 
-                tugas_akhir.tema, tugas_akhir.judul, tugas_akhir.status_pengajuan, tugas_akhir.alasan_revisi, 
-                mahasiswa_dosen.id_dosen
-         FROM mahasiswa 
-         LEFT JOIN tugas_akhir ON mahasiswa.id_mahasiswa = tugas_akhir.id_mahasiswa
-         LEFT JOIN mahasiswa_dosen ON mahasiswa.id_mahasiswa = mahasiswa_dosen.id_mahasiswa";
-$result = $conn->query($sql1);
-?>
+          // Fetch mahasiswa and their related data from the database
+          $sql1 = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, mahasiswa.prodi, 
+                          tugas_akhir.tema, tugas_akhir.judul, tugas_akhir.status_pengajuan, tugas_akhir.alasan_revisi, 
+                          mahasiswa_dosen.id_dosen
+                  FROM mahasiswa 
+                  LEFT JOIN tugas_akhir ON mahasiswa.id_mahasiswa = tugas_akhir.id_mahasiswa
+                  LEFT JOIN mahasiswa_dosen ON mahasiswa.id_mahasiswa = mahasiswa_dosen.id_mahasiswa";
+          $result = $conn->query($sql1);
+          ?>
 
-<style>
-/* Membuat tabel lebih rapi dan responsif */
-.table-responsive {
-    overflow-x: auto;
-    width: 100%;
-}
+          <style>
+          /* Membuat tabel lebih rapi dan responsif */
+          .table-responsive {
+              overflow-x: auto;
+              width: 100%;
+          }
 
-table {
-    border-collapse: collapse;
-    width: 100%;
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-}
+          table {
+              border-collapse: collapse;
+              width: 100%;
+              background: #fff;
+              border-radius: 8px;
+              overflow: hidden;
+          }
 
-th, td {
-    padding: 12px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-}
+          th, td {
+              padding: 12px;
+              text-align: center;
+              border-bottom: 1px solid #ddd;
+          }
 
-th {
-    background-color: #1b4f72;
-    color: white;
-}
+          th {
+              background-color: #1b4f72;
+              color: white;
+          }
 
-/* Input tanggal */
-input[type="date"] {
-    border: 1px solid #ccc;
-    padding: 5px;
-    border-radius: 5px;
-    text-align: center;
-    width: 150px;
-}
+          /* Input tanggal */
+          input[type="date"] {
+              border: 1px solid #ccc;
+              padding: 5px;
+              border-radius: 5px;
+              text-align: center;
+              width: 150px;
+          }
 
-/* Dropdown Status */
-select {
-    padding: 5px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-}
+          /* Dropdown Status */
+          select {
+              padding: 5px;
+              border-radius: 5px;
+              border: none;
+              cursor: pointer;
+              font-weight: bold;
+          }
 
-/* Warna untuk status */
-.select-status {
-    font-weight: bold;
-    color: white;
-}
+          /* Warna untuk status */
+          .select-status {
+              font-weight: bold;
+              color: white;
+          }
 
-.select-status option[value="Ditunda"] {
-    background: red;
-    color: white;
-}
+          .select-status option[value="Ditunda"] {
+              background: red;
+              color: white;
+          }
 
-.select-status option[value="Dijadwalkan"] {
-    background: yellow;
-    color: black;
-}
+          .select-status option[value="Dijadwalkan"] {
+              background: yellow;
+              color: black;
+          }
 
-.select-status option[value="Selesai"] {
-    background: green;
-    color: white;
-}
+          .select-status option[value="Selesai"] {
+              background: green;
+              color: white;
+          }
 
-/* Styling untuk dropdown Dosen Pembimbing */
-select[name="dosen_pembimbing"] {
-    background-color: #007bff !important; /* Biru */
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-}
+          /* Styling untuk dropdown Dosen Pembimbing */
+          select[name="dosen_pembimbing"] {
+              background-color: #007bff !important; /* Biru */
+              color: white;
+              padding: 5px;
+              border-radius: 5px;
+              border: none;
+              font-weight: bold;
+              cursor: pointer;
+          }
 
-/* Saat opsi dalam dropdown dipilih */
-select[name="dosen_pembimbing"] option {
-    background-color:rgb(162, 199, 241); /* Biru */
-    color: white;
-}
+          /* Saat opsi dalam dropdown dipilih */
+          select[name="dosen_pembimbing"] option {
+              background-color:rgb(162, 199, 241); /* Biru */
+              color: white;
+          }
 
 
-/* Tombol Update */
-.btn-update {
-    background-color:rgb(178, 212, 249);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-}
+          /* Tombol Update */
+          .btn-update {
+              background-color:rgb(178, 212, 249);
+              color: white;
+              padding: 5px 10px;
+              border-radius: 5px;
+              border: none;
+              cursor: pointer;
+          }
 
-.btn-update:hover {
-    background-color: #0056b3;
-}
+          .btn-update:hover {
+              background-color: #0056b3;
+          }
 
-/* Ikon dokumen */
-.icon-folder {
-    font-size: 20px;
-    color: #007bff;
-    cursor: pointer;
-    text-decoration: none;
-}
-</style>
+          /* Ikon dokumen */
+          .icon-folder {
+              font-size: 20px;
+              color: #007bff;
+              cursor: pointer;
+              text-decoration: none;
+          }
+          </style>
         
-      <div class="row"> 
+          <div class="row"> 
                     <div class="col-md-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">

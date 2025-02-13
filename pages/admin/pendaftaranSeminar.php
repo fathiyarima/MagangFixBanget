@@ -396,20 +396,34 @@
       </nav>
 
       <!-- partial -->
+      <?php
+          // Koneksi ke database
+          $conn = new mysqli("127.0.0.1", "root", "", "sistem_ta");
+          if ($conn->connect_error) {
+              die("Koneksi gagal: " . $conn->connect_error);
+          }
+
+          // Ambil total pendaftar tugas akhir
+          $sqlSeminar = "SELECT COUNT(*) AS total FROM seminar_proposal";
+          $resultSeminar = $conn->query($sqlSeminar);
+          $totalSeminar = ($resultSeminar->num_rows > 0) ? $resultSeminar->fetch_assoc()['total'] : 0;
+      ?>
+      
       <div class="main-panel">
         <div class="content-wrapper">
-            <div class="col-md-10 grid-margin transparent">
+            <div class="col-md-5 grid-margin transparent">
               <div class="row">
                 <div class="col-md-6 stretch-card transparent">
                   <div class="card card-light-danger">
-                    <div class="card-body">
-                      <p class="mb-4">Number of Clients</p>
-                      <p class="fs-30 mb-2">47033</p>
-                      <p>0.22% (30 days)</p>
+                    <div class="card-body text-center">
+                      <p class="mb-4">Total Pendaftar Seminar</p>
+                      <p class="fs-30 mb-2"><?php echo number_format($totalSeminar); ?></p>
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6 mt-3">
+                <div class="col-md-6 d-flex align-items-center justify-content-center">
+                
+                
                 <?php
                   $conn->connect("127.0.0.1", "root", "", "sistem_ta");
 
