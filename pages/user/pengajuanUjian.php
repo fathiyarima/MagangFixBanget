@@ -32,7 +32,6 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
         $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Map document types to database columns
         $columnMap = [
             'Lembar Persetujuan Laporan Tugas Akhir' => 'lembar_persetujuan_laporan_ta(ujian)',
             'Formulir Pendaftaran Ujian Tugas Akhir' => 'form_pendaftaran_ujian_ta(ujian)',
@@ -43,14 +42,12 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
 
         $column = $columnMap[$document_type];
 
-        // Check if document exists
         $sql = "SELECT `$column` FROM mahasiswa WHERE username = :nama";
         $stmt = $conn->prepare($sql);
         $stmt->execute([':nama' => $nama_mahasiswa]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Return status based on whether file exists
-        return $result && $result[$column] !== null ? 'Uploaded' : 'Belum Upload';
+        return $result && $result[$column] !== null ? 'Menunggu Verifikasi' : 'Belum Upload';
     } catch (PDOException $e) {
         return 'Error';
     }
@@ -80,61 +77,7 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
     <link rel="stylesheet" href="../../assets/css/css/pengajuan.css">
     <!-- endinject -->
     <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
-    <style>
-        .file-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .file-table th,
-        .file-table td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-
-        .file-table th {
-            background-color: #f4f4f4;
-        }
-
-        .status {
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .status-uploaded {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .status-belum {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 20px;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="../../assets/css/user/pengajuan.css" />
 </head>
 
 <body>
@@ -300,50 +243,56 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
                                     <h4 class="card-title">Pengajuan Ujian Tugas Akhir</h4>
                                     <p class="card-description">Status Dokumen Pengajuan</p>
 
-                                    <table class="file-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Nama Dokumen</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $documents = [
-                                                'Lembar Persetujuan Laporan Tugas Akhir',
-                                                'Formulir Pendaftaran Ujian Tugas Akhir',
-                                                'Lembar Kehadiran Seminar Proposal',
-                                                'Buku Konsultasi Tugas Akhir',
-                                                'Berita Acara',
-                                            ];
+                                    <div class="status-grid">
+                                        <?php
+                                        $documents = [
+                                            'Lembar Persetujuan Laporan Tugas Akhir',
+                                            'Formulir Pendaftaran Ujian Tugas Akhir',
+                                            'Lembar Kehadiran Seminar Proposal',
+                                            'Buku Konsultasi Tugas Akhir',
+                                            'Berita Acara'
+                                        ];
 
-                                            foreach ($documents as $doc) {
-                                                $status = getDocumentStatus($nama_mahasiswa, $doc);
-                                                $statusClass = $status === 'Uploaded' ? 'status-uploaded' : 'status-belum';
-                                            ?>
-                                                <tr>
-                                                    <td><?php echo htmlspecialchars($doc); ?></td>
-                                                    <td>
-                                                        <span class="status <?php echo $statusClass; ?>">
-                                                            <?php echo $status; ?>
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                    </table>
+                                        foreach ($documents as $doc) {
+                                            $status = getDocumentStatus($nama_mahasiswa, $doc);
+                                            $statusClass = '';
+
+                                            switch ($status) {
+                                                case 'Terverifikasi':
+                                                    $statusClass = 'status-verified';
+                                                    break;
+                                                case 'Menunggu Verifikasi':
+                                                    $statusClass = 'status-pending';
+                                                    break;
+                                                default:
+                                                    $statusClass = 'status-missing';
+                                            }
+                                        ?>
+                                            <div class="status-box">
+                                                <div class="status-title"><?php echo htmlspecialchars($doc); ?></div>
+                                                <span class="status-badge <?php echo $statusClass; ?>">
+                                                    <?php echo $status; ?>
+                                                </span>
+                                                <div class="status-date">
+                                                    Last updated: <?php echo date('d M Y'); ?>
+                                                </div>
+                                            </div>
+                                        <?php } ?>
+                                    </div>
 
                                     <?php if (isset($_POST['submit_pengajuan'])): ?>
-                                        <div class="alert alert-success mt-3">
+                                        <div class="alert alert-success mt-4">
                                             Pengajuan berhasil dikirim! Menunggu verifikasi admin.
                                         </div>
                                     <?php endif; ?>
 
-                                    <form method="post" class="mt-4">
-                                        <button type="submit" name="submit_pengajuan" class="btn btn-primary">
-                                            Submit Pengajuan
-                                        </button>
-                                    </form>
+                                    <div class="submit-section">
+                                        <form method="post">
+                                            <button type="submit" name="submit_pengajuan" class="btn-submit">
+                                                Submit Pengajuan
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
