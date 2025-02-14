@@ -486,33 +486,23 @@
 
           /* Dropdown Status */
           select {
-              padding: 5px;
-              border-radius: 5px;
-              border: none;
-              cursor: pointer;
-              font-weight: bold;
-          }
-
-          /* Warna untuk status */
-          .select-status {
-              font-weight: bold;
-              color: white;
-          }
-
-          .select-status option[value="Ditunda"] {
-              background: red;
-              color: white;
-          }
-
-          .select-status option[value="Dijadwalkan"] {
-              background: yellow;
-              color: black;
-          }
-
-          .select-status option[value="Selesai"] {
-              background: green;
-              color: white;
-          }
+                padding: 5px;
+                border-radius: 5px;
+                border: none;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            select option[value="Revisi"] {
+                background: yellow;
+            }
+            select option[value="Ditolak"] {
+                background: red;
+                color: white;
+            }
+            select option[value="Disetujui"] {
+                background: green;
+                color: white;
+            }
 
           /* Styling untuk dropdown Dosen Pembimbing */
           select[name="dosen_pembimbing"] {
@@ -612,12 +602,10 @@
                                                 // Status Pengajuan dropdown
                                                 echo "<td>";
                                                 echo "<select name='status_pengajuan' onchange='changeColor(this); toggleRevisiTextbox(this)' required>";
-                                                echo "<option value=''>Select Status</option>";
                                                 echo "<option value='Ditolak'" . ($status_pengajuan == 'Ditolak' ? ' selected' : '') . ">Ditolak</option>";
                                                 echo "<option value='Revisi'" . ($status_pengajuan == 'Revisi' ? ' selected' : '') . ">Revisi</option>";
                                                 echo "<option value='Disetujui'" . ($status_pengajuan == 'Disetujui' ? ' selected' : '') . ">Disetujui</option>";
                                                 echo "</select>";
-                                                echo "</td>";
 
                                                 // Revisi textbox, shown when "Revisi" is selected
                                                 echo "<div id='revisi-textbox' style='display:none;'>";
