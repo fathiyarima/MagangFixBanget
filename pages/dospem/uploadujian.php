@@ -44,6 +44,25 @@ try {
         $stmt = $conn->prepare($sql);
         $stmt->execute([$file_content, $id_mahasiswa]);
 
+        $stmt_dosen = $conn->prepare("SELECT id_dosen FROM mahasiswa_dosen WHERE id_mahasiswa = ?");
+        $stmt_dosen->execute([$id_mahasiswa]);
+        $id_dosen = $stmt_dosen->fetchColumn();
+
+        $stmt_dosen = $conn->prepare("SELECT nama_mahasiswa FROM mahasiswa WHERE id_mahasiswa = ?");
+        $stmt_dosen->execute([$id_mahasiswa]);
+        $nama_mahasiswa = $stmt_dosen->fetchColumn();
+
+        if (!$id_dosen) {
+            echo "<script>alert('Dosen pembimbing tidak ditemukan!'); window.history.back();</script>";
+            exit();
+        }
+
+        $message = "File Laporan TA Ujian telah di upload oleh siswa " . $nama_mahasiswa . ".";
+
+        $notification_sql = "INSERT INTO notif (id_dosen, id_mahasiswa, message, status) VALUES (?, ?, ?, 'unread')";
+        $stmt_notify = $conn->prepare($notification_sql);
+        $stmt_notify->execute([$id_dosen, $id_mahasiswa, $message]);
+
         echo "<script>alert('File berhasil diunggah!'); window.location.href='index.php';</script>";
     } else {
         echo "<script>alert('Terjadi kesalahan, silakan coba lagi!'); window.history.back();</script>";

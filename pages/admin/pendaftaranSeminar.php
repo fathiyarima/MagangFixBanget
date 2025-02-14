@@ -392,6 +392,12 @@
               </ul>
             </div>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../../index.php">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Log Out</span>
+            </a>
+          </li>
         </ul>
       </nav>
 
@@ -555,41 +561,45 @@
                                       </tr>
                                   </thead>
                                   <tbody>
-                                      <?php
-                                      $conn = new mysqli("127.0.0.1", "root", "", "sistem_ta");
-                                      $sql1 = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, seminar_proposal.tanggal_seminar, seminar_proposal.status_seminar
-                                      FROM mahasiswa 
-                                      LEFT JOIN seminar_proposal ON mahasiswa.id_mahasiswa = seminar_proposal.id_mahasiswa";
-                                      $result = $conn->query($sql1);
+                                  <?php
+$conn = new mysqli("127.0.0.1", "root", "", "sistem_ta");
 
-                                      while ($row = mysqli_fetch_array($result)) {
-                                          echo "<tr>";
-                                          echo "<td>" . $row['id_mahasiswa'] . "</td>";
-                                          echo "<td>" . $row['nama_mahasiswa'] . "</td>";
-                                          echo "<td>" . $row['nim'] . "</td>";
-                                          echo "<td>";
-                                          echo "<form action='update_seminar.php' method='POST'>";
-                                          echo "<input type='date' name='tanggal_seminar' value='" . $row["tanggal_seminar"] . "' required>";
-                                          echo "</td>";
-                                          echo "<td>";
-                                          echo "<select name='status_seminar' class='status-select' required>";
-                                          echo "<option value='dijadwalkan'" . ($row['status_seminar'] == 'dijadwalkan' ? ' selected' : '') . ">Dijadwalkan</option>";
-                                          echo "<option value='ditunda'" . ($row['status_seminar'] == 'ditunda' ? ' selected' : '') . ">Ditunda</option>";
-                                          echo "<option value='selesai'" . ($row['status_seminar'] == 'selesai' ? ' selected' : '') . ">Selesai</option>";
-                                          echo "</select>";
-                                          echo "<input type='hidden' name='id_mahasiswa' value='" . $row['id_mahasiswa'] . "'>";
-                                          echo "</td>";
-                                          echo "<td>";
-                                          echo "<button type='submit' class='btn-update'>Update</button>";
-                                          echo "</form>";
-                                          echo "</td>";
-                                          echo "<td>";
-                                          echo "<a href='#popup'>";
-                                          echo "<<span class='material-symbols-outlined'>folder_open</span>>";
-                                          echo "</a>";
-                                      }
-                                      $conn->close();
-                                      ?>
+$sql1 = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, seminar_proposal.tanggal_seminar, seminar_proposal.status_seminar
+         FROM mahasiswa 
+         LEFT JOIN seminar_proposal ON mahasiswa.id_mahasiswa = seminar_proposal.id_mahasiswa";
+$result = $conn->query($sql1);
+
+while ($row = mysqli_fetch_array($result)) {
+    echo "<tr>";
+    echo "<td>" . $row['id_mahasiswa'] . "</td>";
+    echo "<td>" . $row['nama_mahasiswa'] . "</td>";
+    echo "<td>" . $row['nim'] . "</td>";
+    echo "<td>";
+    echo "<form action='update_seminar.php' method='POST'>";
+    echo "<input type='date' name='tanggal_seminar' value='" . $row["tanggal_seminar"] . "' required>";
+    echo "</td>";
+    echo "<td>";
+    echo "<select name='status_seminar' class='status-select' required>";
+    echo "<option value='dijadwalkan'" . ($row['status_seminar'] == 'dijadwalkan' ? ' selected' : '') . ">Dijadwalkan</option>";
+    echo "<option value='ditunda'" . ($row['status_seminar'] == 'ditunda' ? ' selected' : '') . ">Ditunda</option>";
+    echo "<option value='selesai'" . ($row['status_seminar'] == 'selesai' ? ' selected' : '') . ">Selesai</option>";
+    echo "</select>";
+    echo "<input type='hidden' name='id_mahasiswa' value='" . $row['id_mahasiswa'] . "'>";
+    echo "</td>";
+    echo "<td>";
+    echo "<button type='submit' class='btn-update'>Update</button>";
+    echo "</form>";
+    echo "</td>";
+    echo "<td>";
+    echo '<a href="#popup" class="open-popup" data-id="' . $row['id_mahasiswa'] . '" data-name="' . $row['nama_mahasiswa'] . '">';
+    echo "<span class='material-symbols-outlined'>folder_open</span>";
+    echo "</a>";
+    echo "</td>";
+    echo "</tr>";
+}
+
+?>
+
                                   </tbody>
                               </table>
                           </div>
@@ -597,17 +607,184 @@
                   </div>
               </div>
           </div>
-                <div id="popup" class="popup">
-                    <div class="popup-content">
-                        <h2>Dokumen Seminar Proposal</h2>
-                        <p>Formulir Pendaftaran</p>
-                        <p>Lembar Persetujuan</p>
-                        <p>Buku Konsultasi TA</p>
-                        <a href="#" style="display: inline-block; margin-top: 10px; padding:
-                        5px 10px; background-color: #dc3545; color: #fff; text-decoration:
-                        none; border-radius: 3px;">Close</a>
-                    </div>
-                </div>
+                  <!-- Pop-up -->
+                  <?php
+// Fetch student documents only if ID is set
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    $sql2 = "SELECT nama_mahasiswa FROM mahasiswa WHERE id_mahasiswa = $id";
+    $result2 = $conn->query($sql2);
+    
+    if ($result2->num_rows > 0) {
+        $row = $result2->fetch_assoc();
+        ?>
+        
+        <!-- Pop-up -->
+        <div id="popup" class="popup">
+            <div class="popup-content">
+                <h2>Dokumen Seminar Proposal - <?= $row['nama_mahasiswa']; ?></h2>
+                <table>
+                    <tr>
+                        <th>Dokumen</th>
+                        <th>Aksi</th>
+                    </tr>
+                    <tr>
+                        <td>Formulir Pendaftaran</td>
+                        <td>
+                            <a href="downloadsempro.php?id=<?= $id; ?>&type=form_pendaftaran_sempro_seminar" class="btn-download">Download</a>
+                            <button class="btn-verifikasi">Verifikasi</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Lembar Persetujuan</td>
+                        <td>
+                            <a href="downloadsempro.php?id=<?= $id; ?>&type=lembar_persetujuan_proposal_ta_seminar" class="btn-download">Download</a>
+                            <button class="btn-verifikasi">Verifikasi</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Buku Konsultasi TA</td>
+                        <td>
+                            <a href="downloadsempro.php?id=<?= $id; ?>&type=buku_konsultasi_ta_seminar" class="btn-download">Download</a>
+                            <button class="btn-verifikasi">Verifikasi</button>
+                        </td>
+                    </tr>
+                </table>
+                <a href="pendaftaranSeminar.php" class="btn-close">Close</a>
+            </div>
+        </div>
+        <?php
+    } else {
+        echo "Mahasiswa tidak ditemukan!";
+    }
+}
+$conn->close();
+?>
+
+                  <!-- CSS -->
+                    <style>
+                      .popup {
+                      display: none;
+                      position: fixed;
+                      z-index: 1;
+                      left: 0;
+                      top: 0;
+                      width: 100%;
+                      height: 100%;
+                      overflow: auto;
+                      background-color: rgba(0, 0, 0, 0.5);
+                      }
+
+                      .popup-content {
+                          text-align: center;
+                      }
+
+                      .close {
+                      color: #555;
+                      float: right;
+                      font-size: 24px;
+                      font-weight: bold;
+                      cursor: pointer;
+                      }
+
+                      .close:hover {
+                        color: red;
+                      }
+
+                      .form-group {
+                        display: flex;
+                        flex-direction: column;
+                        margin-bottom: 10px;
+                      }
+
+                      label {
+                        font-weight: bold;
+                        margin-bottom: 5px;
+                      }
+
+                      .popup table {
+                          width: 100%;
+                          margin-top: 10px;
+                          border-collapse: collapse;
+                      }
+
+                      .popup table th, .popup table td {
+                          border: 1px solid #ddd;
+                          padding: 8px;
+                          text-align: center;
+                      }
+
+                      .btn-download {
+                          background-color: #007bff;
+                          color: white;
+                          padding: 5px 10px;
+                          border-radius: 5px;
+                          text-decoration: none;
+                          font-size: 14px;
+                      }
+
+                      .btn-verifikasi {
+                          background-color: #28a745;
+                          color: white;
+                          padding: 5px 10px;
+                          border-radius: 5px;
+                          border: none;
+                          cursor: pointer;
+                          font-size: 14px;
+                      }
+
+                      .btn-close {
+                          background-color: #dc3545;
+                          color: white;
+                          padding: 8px 12px;
+                          border-radius: 5px;
+                          border: none;
+                          cursor: pointer;
+                          margin-top: 10px;
+                          font-size: 14px;
+                      }
+
+                      .btn-close:hover, .btn-download:hover, .btn-verifikasi:hover {
+                          opacity: 0.8;
+                      }
+                    </style>
+
+                  <!-- JavaScript -->
+                  <script>
+                      document.addEventListener("DOMContentLoaded", function () {
+    const popup = document.getElementById("popup");
+    const closePopup = document.getElementById("closePopup");
+    const openPopupLinks = document.querySelectorAll(".open-popup");
+
+    openPopupLinks.forEach(link => {
+        link.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            // Get student ID and name from data attributes
+            const studentId = this.getAttribute("data-id");
+            const studentName = this.getAttribute("data-name");
+
+            console.log("Opening popup for ID:", studentId); // Debugging
+
+
+            // Update download links dynamically
+            document.getElementById("download-formulir").href = "downloadsempro.php?id=" + studentId + "&type=form_pendaftaran_sempro_seminar";
+            document.getElementById("download-persetujuan").href = "downloadsempro.php?id=" + studentId + "&type=lembar_persetujuan_proposal_ta_seminar";
+            document.getElementById("download-konsultasi").href = "downloadsempro.php?id=" + studentId + "&type=buku_konsultasi_ta_seminar";
+
+            // Show the pop-up
+            popup.style.display = "block";
+        });
+    });
+
+    // Close the pop-up
+    closePopup.addEventListener("click", function () {
+        popup.style.display = "none";
+    });
+});
+
+                  </script>
+
               
         <!-- content-wrapper ends -->
         <!-- partial:partials/_footer.html -->
