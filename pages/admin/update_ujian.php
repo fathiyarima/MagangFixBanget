@@ -76,6 +76,36 @@ if (isset($_POST['id_mahasiswa'], $_POST['status_ujian'], $_POST['nilai'], $_POS
         exit;
     }
 
+    // Retrieve the dosen_pembimbing id from mahasiswa_dosen table
+    $get_dosen_sql = "SELECT id_dosen FROM mahasiswa_dosen WHERE id_mahasiswa = ?";
+    $stmt_get_dosen = $conn->prepare($get_dosen_sql);
+    if ($stmt_get_dosen === false) {
+        die("Error preparing get dosen query: " . $conn->error);
+    }
+
+    $stmt_get_dosen->bind_param("i", $id_mahasiswa);
+    $stmt_get_dosen->execute();
+    $stmt_get_dosen->bind_result($id_dosen);
+    $stmt_get_dosen->fetch();
+    $stmt_get_dosen->close();
+
+    if (!$id_dosen) {
+        echo "Error: Dosen pembimbing not found for the student.";
+        exit;
+    }
+
+    // Validate status_ujian
+    $valid_statuses = ['dijadwalkan', 'selesai'];
+    if (!in_array($status_ujian, $valid_statuses)) {
+        echo "Invalid status value.";
+        exit;
+    }
+
+    if (!is_numeric($nilai)) {
+        echo "Invalid nilai. It should be a number.";
+        exit;
+    }
+
     // Check if the mahasiswa has already an ujian entry
     $check_sql = "SELECT id_mahasiswa FROM ujian WHERE id_mahasiswa = ?";
     $check_stmt = $conn->prepare($check_sql);
@@ -105,7 +135,19 @@ if (isset($_POST['id_mahasiswa'], $_POST['status_ujian'], $_POST['nilai'], $_POS
         // Jika belum ada, lakukan insert
         $sql = "INSERT INTO ujian (id_mahasiswa, status_ujian, nilai, tanggal_ujian) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isss", $id_mahasiswa, $status_ujian, $nilai, $tgl);
+        if ($stmt === false) {
+            die("Error preparing insert statement: " . $conn->error);
+        }
+
+        $stmt->bind_param("isis", $id_mahasiswa, $status_ujian, $nilai, $tgl);
+
+        if ($stmt->execute()) {
+            echo "Status added successfully.";
+        } else {
+            echo "Error adding status: " . $stmt->error;
+        }
+
+        $stmt->close();
     }
 
     $stmt_dosen = $conn->prepare("SELECT nama_mahasiswa FROM mahasiswa WHERE id_mahasiswa = ?");

@@ -112,7 +112,7 @@
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
-              <a class="dropdown-item">
+              <a class="dropdown-item" href="../../index.php">
                 <i class="ti-power-off text-primary"></i>
                 Logout
               </a>
@@ -349,6 +349,12 @@
                 <li class="nav-item"> <a class="nav-link" href="dokumenUjian.php">Ujian</a></li>
               </ul>
             </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../../index.php">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">Log Out</span>
+            </a>
           </li>
         </ul>
       </nav>
