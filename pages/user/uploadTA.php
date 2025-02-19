@@ -43,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
     $fileCategory = $_POST['file_type'] ?? '';
 
     // Format nama file
-
     $newFileName = $nama_mahasiswa . '_' . str_replace(' ', '_', $fileCategory) . '_' . $nama_mahasiswa . '.' . $fileType;
+    
     // Validasi file
     if ($fileType != "pdf") {
         showNotification('error', 'Maaf, hanya file PDF yang diperbolehkan.');

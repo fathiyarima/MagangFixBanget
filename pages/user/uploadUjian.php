@@ -2,6 +2,18 @@
 <?php
 // Ambil data mahasiswa dari session (sesuaikan dengan sistem login Anda)
 session_start();
+function showNotification($type, $message)
+{
+    $_SESSION['notification'] = [
+        'type' => $type,
+        'message' => $message
+    ];
+}
+
+if (!isset($_SESSION['upload_status'])) {
+    $_SESSION['upload_status'] = [];
+}
+
 $nama_mahasiswa = $_SESSION['username'] ?? 'farel';
 $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -41,7 +53,86 @@ if ($row) {
     echo "Prodi: " . $prodi;
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
+    $file = $_FILES['file_upload'];
+    $fileType = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $fileCategory = $_POST['file_type'] ?? '';
 
+    $newFileName = $nama_mahasiswa . '_' . str_replace(' ', '_', $fileCategory) . '_' . $nama_mahasiswa . '.' . $fileType;
+
+    // Validasi file
+    if ($fileType != "pdf") {
+        showNotification('error', 'Maaf, hanya file PDF yang diperbolehkan.');
+    } elseif ($file['size'] > 2000000) { // 2MB
+        showNotification('error', 'Maaf, ukuran file terlalu besar (maksimal 2MB).');
+    }
+
+    try {
+        // Koneksi ke database
+        $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Baca file sebagai binary
+        $fileContent = file_get_contents($file['tmp_name']);
+        if ($fileContent === false) {
+            throw new Exception("Gagal membaca file");
+        }
+
+        // Tentukan nama kolom berdasarkan tipe file
+        $columnName = '';
+        switch ($fileCategory) {
+            case 'Lembar Persetujuan Laporan Tugas Akhir':
+                $columnName = 'lembar_persetujuan_laporan_ta(ujian)';
+                break;
+            case 'Form Pendaftaran Ujian Tugas Akhir':
+                $columnName = 'form_pendaftaran_ujian_ta(ujian)';
+                break;
+            case 'Lembar Kehadiran Seminar Proposal':
+                $columnName = 'lembar_kehadiran_sempro(ujian)';
+                break;
+            case 'Buku Konsultasi Tugas Akhir':
+                $columnName = 'buku_konsultasi_ta(ujian)';
+                break;
+            default:
+                throw new Exception("Kategori file tidak valid");
+        }
+
+        // Cek apakah data mahasiswa sudah ada
+        $checkSql = "SELECT username FROM mahasiswa WHERE username = :nama";
+        $checkStmt = $conn->prepare($checkSql);
+        $checkStmt->execute([':nama' => $nama_mahasiswa]);
+
+        if ($checkStmt->rowCount() > 0) {
+            // Update data yang sudah ada
+            $sql = "UPDATE mahasiswa SET `$columnName` = :file_content WHERE username = :nama";
+        } else {
+            // Insert data baru dengan kolom minimal yang diperlukan
+            $sql = "INSERT INTO mahasiswa (nama_mahasiswa, `$columnName`) 
+           VALUES (:nama, :file_content)";
+        }
+
+        $stmt = $conn->prepare($sql);
+        $params = [
+            ':nama' => $nama_mahasiswa,
+            ':file_content' => $fileContent
+        ];
+
+        // Tambahkan parameter nama jika melakukan INSERT
+        if ($checkStmt->rowCount() == 0) {
+            $params[':nama'] = $nama_mahasiswa;
+        }
+
+        $result = $stmt->execute($params);
+
+        if ($result) {
+            showNotification('success', 'File berhasil diupload! Silakan tunggu verifikasi dari admin.');
+        } else {
+            throw new Exception("Gagal menyimpan ke database");
+        }
+    } catch (Exception $e) {
+        showNotification('error', 'Error: ' . $e->getMessage());
+    }
+}
 
 // Fungsi untuk mendapatkan status file dari database
 function getFileStatus($nama_mahasiswa, $tipe_file)
@@ -381,6 +472,110 @@ $driveLinks = [
                 }
             }
         </script>
+
+        <script>
+            // Function to show notifications
+            function showToast(type, message) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
+                Toast.fire({
+                    icon: type,
+                    title: message
+                });
+            }
+
+            // Function to handle file upload
+            function handleFileUpload(formElement) {
+                const fileInput = formElement.querySelector('input[type="file"]');
+                const file = fileInput.files[0];
+
+                if (!file) {
+                    showToast('error', 'Silakan pilih file terlebih dahulu');
+                    return false;
+                }
+
+                if (file.size > 2000000) {
+                    showToast('error', 'Ukuran file terlalu besar (maksimal 2MB)');
+                    return false;
+                }
+
+                if (!file.type.includes('pdf')) {
+                    showToast('error', 'Hanya file PDF yang diperbolehkan');
+                    return false;
+                }
+
+                // Show loading state
+                Swal.fire({
+                    title: 'Mengupload File...',
+                    html: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                return true;
+            }
+
+            // Add event listeners to all upload forms
+            document.querySelectorAll('.upload-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    if (!handleFileUpload(this)) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Check for PHP notifications on page load
+            <?php if (isset($_SESSION['notification'])): ?>
+                showToast('<?php echo $_SESSION['notification']['type']; ?>',
+                    '<?php echo $_SESSION['notification']['message']; ?>');
+                <?php unset($_SESSION['notification']); ?>
+            <?php endif; ?>
+        </script>
+
+        <style>
+            /* Add these styles to your CSS */
+            .swal2-popup.swal2-toast {
+                padding: 0.75em 1em;
+                background: #fff;
+                box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+            }
+
+            .swal2-popup.swal2-toast .swal2-title {
+                margin: 0.5em;
+                font-size: 1em;
+                color: #333;
+            }
+
+            .swal2-popup.swal2-toast.swal2-icon-success {
+                border-left: 4px solid #28a745;
+            }
+
+            .swal2-popup.swal2-toast.swal2-icon-error {
+                border-left: 4px solid #dc3545;
+            }
+
+            .swal2-popup.swal2-toast.swal2-icon-warning {
+                border-left: 4px solid #ffc107;
+            }
+
+            .swal2-popup.swal2-toast.swal2-icon-info {
+                border-left: 4px solid #17a2b8;
+            }
+        </style>
+
+
         <?php
         if (!checkTAFilesStatus($nama_mahasiswa)) {
         ?>
@@ -438,198 +633,6 @@ $driveLinks = [
         <?php
         }
         ?>
-
-    <!--INI NANTI DIGANTI SEPERTI DI UPLOAD TA-->
-        <?php
-        // Proses upload file jika ada
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
-            $file = $_FILES['file_upload'];
-            $fileType = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            $fileCategory = $_POST['file_type'] ?? '';
-
-            // Validasi file
-            if ($fileType != "pdf") {
-                echo "<script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Maaf, hanya file PDF yang diperbolehkan.',
-                confirmButtonText: 'OK',
-                customClass: {
-                    popup: 'custom-popup-error',
-                    title: 'custom-title-error',
-                    htmlContainer: 'custom-text-error',
-                    confirmButton: 'custom-button-error'
-                }
-            });
-        </script>";
-                return;
-            }
-
-            if ($file['size'] > 2000000) { // 2MB
-                echo "<script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Maaf, ukuran file terlalu besar (max 2MB).',
-                confirmButtonText: 'OK',
-                customClass: {
-                    popup: 'custom-popup-error',
-                    title: 'custom-title-error',
-                    htmlContainer: 'custom-text-error',
-                    confirmButton: 'custom-button-error'
-                }
-            });
-        </script>";
-                return;
-            }
-
-            try {
-                // Koneksi ke database
-                $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
-                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-                // Baca file sebagai binary
-                $fileContent = file_get_contents($file['tmp_name']);
-                if ($fileContent === false) {
-                    throw new Exception("Gagal membaca file");
-                }
-
-                // Tentukan nama kolom berdasarkan tipe file
-                $columnName = '';
-                switch ($fileCategory) {
-                    case 'Lembar Persetujuan Laporan Tugas Akhir':
-                        $columnName = 'lembar_persetujuan_laporan_ta(ujian)';
-                        break;
-                    case 'Form Pendaftaran Ujian Tugas Akhir':
-                        $columnName = 'form_pendaftaran_ujian_ta(ujian)';
-                        break;
-                    case 'Lembar Kehadiran Seminar Proposal':
-                        $columnName = 'lembar_kehadiran_sempro(ujian)';
-                        break;
-                    case 'Buku Konsultasi Tugas Akhir':
-                        $columnName = 'buku_konsultasi_ta(ujian)';
-                        break;
-                    default:
-                        throw new Exception("Kategori file tidak valid");
-                }
-
-                // Cek apakah data mahasiswa sudah ada
-                $checkSql = "SELECT username FROM mahasiswa WHERE username = :nama";
-                $checkStmt = $conn->prepare($checkSql);
-                $checkStmt->execute([':nama' => $nama_mahasiswa]);
-
-                if ($checkStmt->rowCount() > 0) {
-                    // Update data yang sudah ada
-                    $sql = "UPDATE mahasiswa SET `$columnName` = :file_content WHERE username = :nama";
-                } else {
-                    // Insert data baru dengan kolom minimal yang diperlukan
-                    $sql = "INSERT INTO mahasiswa (nama_mahasiswa, `$columnName`) 
-                   VALUES (:nama, :file_content)";
-                }
-
-                $stmt = $conn->prepare($sql);
-                $params = [
-                    ':nama' => $nama_mahasiswa,
-                    ':file_content' => $fileContent
-                ];
-
-                // Tambahkan parameter nama jika melakukan INSERT
-                if ($checkStmt->rowCount() == 0) {
-                    $params[':nama'] = $nama_mahasiswa;
-                }
-
-                $result = $stmt->execute($params);
-
-                if ($result) {
-                    echo "<script>
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: 'File berhasil diupload.',
-                            confirmButtonText: 'OK',
-                            customClass: {
-                                popup: 'custom-popup-success',
-                                title: 'custom-title-success',
-                                htmlContainer: 'custom-text-success',
-                                confirmButton: 'custom-button-success'
-                            },
-                            showClass: {
-                                popup: ''
-                            },
-                            hideClass: {
-                                popup: ''
-                            },
-                            didOpen: () => {
-                                // Menyembunyikan efek animasi saat logo muncul
-                                const popup = Swal.getPopup();
-                                popup.style.animation = 'none';
-                            }
-                        });
-                    </script>";
-                } else {
-                    throw new Exception("Gagal menyimpan ke database");
-                }
-                
-                } catch (Exception $e) {
-                    echo "<script>
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Error: " . $e->getMessage() . "',
-                            confirmButtonText: 'OK',
-                            customClass: {
-                                popup: 'custom-popup-error',
-                                title: 'custom-title-error',
-                                htmlContainer: 'custom-text-error',
-                                confirmButton: 'custom-button-error'
-                            },
-                            showClass: {
-                                popup: ''
-                            },
-                            hideClass: {
-                                popup: ''
-                            },
-                            didOpen: () => {
-                                // Menyembunyikan efek animasi saat logo muncul
-                                const popup = Swal.getPopup();
-                                popup.style.animation = 'none';
-                            }
-                        });
-                    </script>";
-                }
-                
-        }
-        ?>
-        <style>
-    .swal2-popup.custom-popup-success {
-        background-color:rgba(40, 167, 70, 0.57) !important; /* Hijau */
-        color: white !important;
-    }
-
-    .swal2-popup.custom-popup-error {
-        background-color: #dc3545 !important; /* Merah */
-        color: white !important;
-    }
-
-    .swal2-title.custom-title-success, .swal2-title.custom-title-error {
-        color: white !important;
-    }
-
-    .swal2-html-container.custom-text-success, .swal2-html-container.custom-text-error {
-        color: white !important;
-    }
-
-    .swal2-confirm.custom-button-success {
-        background-color:rgba(33, 136, 55, 0.54) !important; /* Hijau lebih gelap */
-        color: white !important;
-    }
-
-    .swal2-confirm.custom-button-error {
-        background-color: #c82333 !important; /* Merah lebih gelap */
-        color: white !important;
-    }
-</style>
         <!-- plugins:js -->
         <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
         <!-- endinject -->
