@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php';
+require '../../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 if (isset($_POST['submit'])) {
@@ -29,8 +29,8 @@ if (isset($_POST['submit'])) {
                 }
 
                 if (count($data) > 0) {
-                    $stmt = $conn->prepare("INSERT INTO mahasiswa (id_mahasiswa, nama_mahasiswa, nim, prodi, kelas, nomor_telepon, username, pass) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                    $stmt->bind_param("isssssss", $data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6], $data[7]);
+                    $stmt = $conn->prepare("INSERT INTO mahasiswa (nama_mahasiswa, nim, prodi, kelas, nomor_telepon, username, pass) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                    $stmt->bind_param("sssssss", $data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6]);
                     $stmt->execute();
                 }
             }
