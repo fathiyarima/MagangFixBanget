@@ -432,6 +432,7 @@
                               <th>Username</th>
                               <th>Password</th>
                               <th>Edit</th>
+                              <th>Hapus</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -450,6 +451,7 @@
                                   echo "<td>" . $row['username'] . "</td>";
                                   echo "<td>" . $row['pass'] . "</td>";
                                   echo "<td><button class='editBtn' data-id='" . $row['id_dosen'] . "'>Edit</button></td>";
+                                  echo "<td><button class='deleteBtn' data-id='" . $row['id_dosen'] . "'>Hapus</button></td>";
                                   echo "</tr>";
                               }
                               $conn->close();
@@ -744,6 +746,21 @@ document.getElementById("editForm").onsubmit = function (event) {
                   text-decoration: none;
                   cursor: pointer;
                 }
+
+                .deleteBtn {
+    background-color: #dc3545; /* Warna merah */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease-in-out;
+}
+
+.deleteBtn:hover {
+    background-color: #c82333; /* Warna merah lebih gelap */
+}
               </style>
 
               <script>
@@ -796,6 +813,25 @@ document.getElementById("editForm").onsubmit = function (event) {
 
                   xhr.send(formData);
                 };
+
+                document.querySelectorAll(".deleteBtn").forEach(button => {
+    button.addEventListener("click", function () {
+        let id = this.getAttribute("data-id");
+
+        if (confirm("Apakah Anda yakin ingin menghapus dosen ini?")) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "deleteDosen.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    alert("Data berhasil dihapus!");
+                    location.reload();
+                }
+            };
+            xhr.send("id_dosen=" + id);
+        }
+    });
+});
               </script>
 
 

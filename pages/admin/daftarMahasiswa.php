@@ -433,6 +433,7 @@
                               <th>Username</th>
                               <th>Password</th>
                               <th>Edit</th>
+                              <th>Hapus</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -452,6 +453,7 @@
                                   echo "<td>" . $row['username'] . "</td>";
                                   echo "<td>" . $row['pass'] . "</td>";
                                   echo "<td><button class='editBtn' data-id='" . $row['id_mahasiswa'] . "' data-nama='" . $row['nama_mahasiswa'] . "' data-nim='" . $row['nim'] . "' data-prodi='" . $row['prodi'] . "' data-kelas='" . $row['kelas'] . "' data-telepon='" . $row['nomor_telepon'] . "' data-username='" . $row['username'] . "'>Edit</button></td>";
+                                  echo "<td><button class='deleteBtn' data-id='" . $row['id_mahasiswa'] . "'>Hapus</button></td>";
                                   echo "</tr>";
                               }
                               $conn->close();
@@ -702,6 +704,22 @@
 .editBtn:hover {
     background-color: #0056b3;  /* Warna biru lebih gelap saat hover */
 }
+
+.deleteBtn {
+    background-color: #dc3545; /* Warna merah */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease-in-out;
+}
+
+.deleteBtn:hover {
+    background-color: #c82333; /* Warna merah lebih gelap */
+}
+
               </style>
 
               <script>
@@ -799,6 +817,26 @@
     };
     xhr.send(formData);
   };
+
+  document.querySelectorAll(".deleteBtn").forEach(button => {
+    button.addEventListener("click", function () {
+        let id = this.getAttribute("data-id");
+
+        if (confirm("Apakah Anda yakin ingin menghapus mahasiswa ini?")) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "deleteSiswa.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    alert("Data berhasil dihapus!");
+                    location.reload();
+                }
+            };
+            xhr.send("id_mahasiswa=" + id);
+        }
+    });
+});
+
 </script>
 
 
