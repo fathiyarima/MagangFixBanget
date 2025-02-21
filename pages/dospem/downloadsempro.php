@@ -8,17 +8,21 @@ if (isset($_GET['id'])) {
         $conn = new PDO("mysql:host=127.0.0.1;dbname=sistem_ta", "root", "");
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Ambil file dari database
-        $stmt = $conn->prepare("SELECT lembar_persetujuan_proposal_ta_seminar FROM mahasiswa WHERE id_mahasiswa = ?");
+        // Ambil nama mahasiswa dan file dari database
+        $stmt = $conn->prepare("SELECT nama_mahasiswa, lembar_persetujuan_proposal_ta_seminar FROM mahasiswa WHERE id_mahasiswa = ?");
         $stmt->execute([$id_mahasiswa]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row && !empty($row['lembar_persetujuan_proposal_ta_seminar'])) {
+            $nama_mahasiswa = $row['nama_mahasiswa'];
             $file_content = $row['lembar_persetujuan_proposal_ta_seminar']; // Ambil file BLOB
+
+            // Jika diperlukan, bersihkan atau format nama_mahasiswa agar sesuai sebagai nama file
+            $nama_mahasiswa_clean = preg_replace('/[^A-Za-z0-9_\-]/', '_', $nama_mahasiswa);
 
             // Set header untuk mengunduh file
             header("Content-Type: application/pdf");
-            header("Content-Disposition: attachment; filename=\"file_mahasiswa_$id_mahasiswa.pdf\"");
+            header("Content-Disposition: attachment; filename=\"Lembar_Persetujuan_{$nama_mahasiswa_clean}_{$id_mahasiswa}.pdf\"");
             header("Content-Length: " . strlen($file_content));
 
             // Outputkan file
