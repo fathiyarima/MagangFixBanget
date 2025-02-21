@@ -7,7 +7,7 @@ if ($conn->connect_error) {
 
 if (isset($_GET['id']) && isset($_GET['type'])) {
     $id = intval($_GET['id']);
-    $type = $_GET['type']; // Example: "formulir", "persetujuan", "konsultasi"
+    $type = $_GET['type'];
 
     $query = "SELECT $type FROM mahasiswa WHERE id_mahasiswa = ?";
     $stmt = $conn->prepare($query);

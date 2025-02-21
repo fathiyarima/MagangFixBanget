@@ -22,6 +22,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
   <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/mahasiswa.css">
   <link rel="stylesheet" href="../../assets/css/css/admin/mahasiswa.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=folder_open" />
   <style>
     #nonclick{
@@ -564,13 +565,16 @@
                                 <th>Dosen Pembimbing</th>
                                 <th>Status</th>
                                 <th>Updated</th>
+                                <th>Dokumen</th>
                             </tr>
                         </thead>
                         <tbody>
                         <?php
+                        $event = "tugas_akhir";
                             while ($row = $result->fetch_assoc()) {
                                 $status_pengajuan = isset($row['status_pengajuan']) ? $row['status_pengajuan'] : '';
                                 $selected_dosen = isset($row['id_dosen']) ? $row['id_dosen'] : '';
+                                $has_dosen = !empty($selected_dosen) ? 'yes' : 'no';
 
                                 echo "<tr>";
                                 echo "<td>" . $row['id_mahasiswa'] . "</td>";
@@ -581,13 +585,12 @@
                                 echo "<td>" . $row['judul'] . "</td>";
                                 echo "<td>";
 
-                                // Start form for updating
                                 echo "<form action='update_pengajuan.php' method='POST'>";
 
                                 echo "<select name='dosen_pembimbing' class='js-example-basic-single w-30' required>";
                                 echo "<option value=''>Select Dosen Pembimbing</option>";
 
-                                $result_dosen->data_seek(0); // Reset result_dosen pointer
+                                $result_dosen->data_seek(0);
 
                                 while ($dosen_row = $result_dosen->fetch_assoc()) {
                                     echo "<option value='" . $dosen_row['id_dosen'] . "' " . ($dosen_row['id_dosen'] == $selected_dosen ? 'selected' : '') . ">" . $dosen_row['nama_dosen'] . "</option>";
@@ -609,21 +612,18 @@
                               }
                               
 
-                                // Revisi Text (Displayed after update)
                                 echo "<p class='small-text' id='revisi-text-" . $row['id_mahasiswa'] . "' style='display:none;'>" . $row['alasan_revisi'] . "</p>";
 
                                 echo "</td>";
 
 
-                                // Hidden field for mahasiswa ID
                                 echo "<input type='hidden' name='id_mahasiswa' value='" . $row['id_mahasiswa'] . "'>";
-
-                                // Submit button
+                                echo "<input type='hidden' name='has_dosen' value='" . $has_dosen . "'>";
                                 echo "<td>";
                                 echo "<button class='btn btn-inverse-success btn-fw' type='submit'>Update</button>";
                                 echo "</td>";
-
                                 echo "</form>";
+                                echo "<td><button class='folder-btn' data-event='" . $event . "' data-userid='" . $row['id_mahasiswa'] . "'><span class='material-symbols-outlined'>folder_open</span></button></td>";
                                 echo "</tr>";
                             }
                             $result_dosen->close();
@@ -636,9 +636,57 @@
         </div>
     </div>
 </div>
+<div id="popup" class="popup">
+          <div class="popup-content">
+              <span class="close-btn">&times;</span>
+              <h2>Documents</h2>
+              <div id="popup-content">
+              </div>
+          </div>
+      </div>
 
-<script>
-function changeColor(selectElement) {
+        <script>
+          $(document).on("click", ".folder-btn", function () {
+          let event = $(this).data("event");
+          let userId = $(this).data("userid");
+
+          console.log("Clicked button for event:", event, "User ID:", userId);
+
+          $.ajax({
+              url: "fetch_pdfs.php",
+              type: "POST",
+              data: { event: event, userId: userId },
+              success: function (response) {
+                  $("#popup-content").html(response);
+                  $("#popup").show();
+              },
+              error: function (xhr, status, error) {
+                  console.error("AJAX Error:", error);
+              }
+          });
+      });
+
+      $(document).on("click", ".close-btn", function () {
+          $("#popup").hide();
+      });
+          
+
+            $(document).on("click", ".verify-btn", function () {
+                let userId = $(this).data("userid");
+                let event = $(this).data("event");
+                let column = $(this).data("column");
+
+                $.ajax({
+                    url: "verify.php",
+                    type: "POST",
+                    data: { userId: userId, event: event, column: column },
+                    success: function () {
+                        $(".folder-btn[data-event='" + event + "']").click();
+                    }
+                });
+            });
+            
+            function changeColor(selectElement) {
     var selectedValue = selectElement.value;
 
     if (selectedValue === 'Revisi') {
@@ -688,6 +736,32 @@ window.onload = function () {
 
 
 <style>
+  .popup {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+            }
+
+            .popup-content {
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                width: 50%;
+                margin: 10% auto;
+                position: relative;
+            }
+
+            .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 20px;
+                cursor: pointer;
+            }
   .small-text {
               font-size: 12px;
               color: #666;

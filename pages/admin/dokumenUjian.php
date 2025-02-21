@@ -441,25 +441,27 @@
                               echo "<td>" . $row['nama_mahasiswa'] . "</td>";
                               echo "<td>" . $row['nim'] . "</td>";
                               echo "<td>" . $row['prodi'] . "</td>";
-                              if (strlen($row['lembar_persetujuan_laporan_ta_ujian']) > 0) {
-                                echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "' target='_blank'>Download Form Pendaftaran</a></td>";
+                          
+                              if (!empty($row['lembar_persetujuan_laporan_ta_ujian'])) {
+                                  echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "&column=lembar_persetujuan_laporan_ta_ujian' target='_blank'>Download Form Pendaftaran</a></td>";
                               } else {
-                                echo "<td>No file</td>";
+                                  echo "<td>No file</td>";
                               }
-
-                              if (strlen($row['form_pendaftaran_ujian_ta_ujian']) > 0) {
-                                echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "' target='_blank'>Download Form Persetujuan</a></td>";
+                          
+                              if (!empty($row['form_pendaftaran_ujian_ta_ujian'])) {
+                                  echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "&column=form_pendaftaran_ujian_ta_ujian' target='_blank'>Download Form Persetujuan</a></td>";
                               } else {
-                                echo "<td>No file</td>";
+                                  echo "<td>No file</td>";
                               }
-
-                              if (strlen($row['lembar_kehadiran_sempro_ujian']) > 0) {
-                                echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "' target='_blank'>Download Form Persetujuan</a></td>";
+                          
+                              if (!empty($row['lembar_kehadiran_sempro_ujian'])) {
+                                  echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "&column=lembar_kehadiran_sempro_ujian' target='_blank'>Download Form Persetujuan</a></td>";
                               } else {
-                                echo "<td>No file</td>";
+                                  echo "<td>No file</td>";
                               }
-                            }
-                            $conn->close();
+                          }
+                          $conn->close();
+                          
                             ?>
                           </tbody>
                         </table>

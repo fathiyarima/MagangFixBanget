@@ -1,4 +1,20 @@
 <?php include '../../config/connection.php'; ?>
+
+<?php
+$currentPage = basename($_SERVER['PHP_SELF']);
+
+if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
+  $category = 'tugas_akhir';
+} elseif (strpos($currentPage, 'pendaftaranSeminar.php') !== false) {
+    $category = 'seminar'; // This is for the seminar page
+} elseif (strpos($currentPage, 'pendaftaranUjian.php') !== false) {
+    $category = 'ujian'; // This is for the ujian page
+} else {
+    $category = 'unknown'; // Default or unknown category, in case none match
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,6 +39,8 @@
   <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/dosen.css">
   <link rel="stylesheet" href="../../assets/css/css/admin/dosen.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=folder_open" />
+  <!-- Add jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <div class="container-scroller">
@@ -497,6 +515,33 @@
             .btn-update:hover {
                 background-color: #0056b3;
             }
+
+            .popup {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+            }
+
+            .popup-content {
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                width: 50%;
+                margin: 10% auto;
+                position: relative;
+            }
+
+            .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 20px;
+                cursor: pointer;
+            }
         </style>
 
         <div class="row">
@@ -513,9 +558,9 @@
                                         <th>NIM</th>
                                         <th>Status</th>
                                         <th>Nilai</th>
-                                        <th>Doc</th>
                                         <th>Jadwal</th>
                                         <th>Verifikasi</th>
+                                        <th>Doc</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -524,6 +569,8 @@
                                     if ($conn->connect_error) {
                                         die("Koneksi gagal: " . $conn->connect_error);
                                     }
+
+                                    $event = "ujian";
 
                                     $sql = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, ujian.status_ujian, ujian.nilai, ujian.tanggal_ujian 
                                             FROM mahasiswa 
@@ -535,24 +582,20 @@
                                         echo "<td>{$row['id_mahasiswa']}</td>";
                                         echo "<td>{$row['nama_mahasiswa']}</td>";
                                         echo "<td>{$row['nim']}</td>";
-
-                                        // Dropdown Status
                                         echo "<td>";
+                                        echo "<form action='update_ujian.php' method='POST'>";
                                         echo "<select onchange='changeSelectColor(this)'>";
                                         echo "<option value='dijadwalkan' " . ($row['status_ujian'] == 'dijadwalkan' ? 'selected' : '') . ">Dijadwalkan</option>";
                                         echo "<option value='ditunda' " . ($row['status_ujian'] == 'ditunda' ? 'selected' : '') . ">Ditunda</option>";
                                         echo "<option value='selesai' " . ($row['status_ujian'] == 'selesai' ? 'selected' : '') . ">Selesai</option>";
                                         echo "</select>";
                                         echo "</td>";
-
                                         $nilai = isset($row['nilai']) ? $row['nilai'] : '0';
                                         echo "<td><input type='text' value='$nilai'></td>";
-
-                                        echo "<td><button id='open' class='material-symbols-outlined'><span>folder_open</span></button></td>";
-
                                         echo "<td><input type='date' value='{$row['tanggal_ujian']}'></td>";
-
-                                        echo "<td><button class='btn-update'>Verifikasi</button></td>";
+                                        echo "<td><button class='btn-update' type='submit'>Verifikasi</button></td>";
+                                        echo "</form>";
+                                        echo "<td><button class='folder-btn' data-event='" . $event . "' data-userid='" . $row['id_mahasiswa'] . "'><span class='material-symbols-outlined'>folder_open</span></button></td>";
 
                                         echo "</tr>";
                                     }
@@ -567,14 +610,57 @@
             </div>
         </div>
 
-        <script>
-          document.getElementById("open").onclick = function() {
-                  document.getElementById("myModal").style.display = "flex";
-                }
 
-          document.querySelector(".close").onclick = function() {
-            document.getElementById("myModal").style.display = "none";
-          }
+        <div id="popup" class="popup">
+          <div class="popup-content">
+              <span class="close-btn">&times;</span>
+              <h2>Documents</h2>
+              <div id="popup-content">
+              </div>
+          </div>
+      </div>
+
+        <script>
+          $(document).on("click", ".folder-btn", function () {
+          let event = $(this).data("event");
+          let userId = $(this).data("userid");
+
+          console.log("Clicked button for event:", event, "User ID:", userId); // Debugging
+
+          $.ajax({
+              url: "fetch_pdfs.php",
+              type: "POST",
+              data: { event: event, userId: userId },
+              success: function (response) {
+                  $("#popup-content").html(response);
+                  $("#popup").show();
+              },
+              error: function (xhr, status, error) {
+                  console.error("AJAX Error:", error);
+              }
+          });
+      });
+
+      $(document).on("click", ".close-btn", function () {
+          $("#popup").hide();
+      });
+          
+
+            $(document).on("click", ".verify-btn", function () {
+                let userId = $(this).data("userid");
+                let event = $(this).data("event");
+                let column = $(this).data("column");
+
+                $.ajax({
+                    url: "verify.php",
+                    type: "POST",
+                    data: { userId: userId, event: event, column: column },
+                    success: function () {
+                        $(".folder-btn[data-event='" + event + "']").click();
+                    }
+                });
+            });
+
             function changeSelectColor(selectElement) {
                 var selectedValue = selectElement.value;
 

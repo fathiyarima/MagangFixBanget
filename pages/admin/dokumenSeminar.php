@@ -438,14 +438,14 @@
                                   echo "<td>" . $row['nama_mahasiswa'] . "</td>";
                                   echo "<td>" . $row['nim'] . "</td>";
                                   echo "<td>" . $row['prodi'] . "</td>";
-                                  if (strlen($row['form_pendaftaran_sempro_seminar']) > 0) {
-                                    echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "' target='_blank'>Download Form Pendaftaran</a></td>";
+                                  if (!empty($row['form_pendaftaran_sempro_seminar'])) {
+                                    echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "&column=form_pendaftaran_sempro_seminar' target='_blank'>Download Form Pendaftaran</a></td>";
                                 } else {
                                     echo "<td>No file</td>";
                                 }
-                            
-                                if (strlen($row['lembar_persetujuan_proposal_ta_seminar']) > 0) {
-                                    echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "' target='_blank'>Download Form Persetujuan</a></td>";
+                                
+                                if (!empty($row['lembar_persetujuan_proposal_ta_seminar'])) {
+                                    echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "&column=lembar_persetujuan_proposal_ta_seminar' target='_blank'>Download Form Persetujuan</a></td>";
                                 } else {
                                     echo "<td>No file</td>";
                                 }

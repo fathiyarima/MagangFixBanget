@@ -439,26 +439,25 @@
                                   echo "<td>" . $row['nama_mahasiswa'] . "</td>";
                                   echo "<td>" . $row['nim'] . "</td>";
                                   echo "<td>" . $row['prodi'] . "</td>";
-                                  if (strlen($row['form_pendaftaran_TA']) > 0) {
-                                    echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "' target='_blank'>Download Form Pendaftaran</a></td>";
+                                  if (!empty($row['form_pendaftaran_TA'])) {
+                                    echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "&column=form_pendaftaran_TA' target='_blank'>Download Form Pendaftaran</a></td>";
                                 } else {
                                     echo "<td>No file</td>";
                                 }
                             
-                                if (strlen($row['bukti_transkip_nilai_TA']) > 0) {
-                                    echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "' target='_blank'>Download Bukti Transkip</a></td>";
+                                if (!empty($row['bukti_transkip_nilai_TA'])) {
+                                    echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "&column=bukti_transkip_nilai_TA' target='_blank'>Download Bukti Transkip</a></td>";
                                 } else {
                                     echo "<td>No file</td>";
                                 }
                             
-                                if (strlen($row['bukti_kelulusan_magang_TA']) > 0) {
-                                    echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "' target='_blank'>Download Sistem Magang</a></td>";
+                                if (!empty($row['bukti_kelulusan_magang_TA'])) {
+                                    echo "<td><a href='download.php?id=" . $row['id_mahasiswa'] . "&column=bukti_kelulusan_magang_TA' target='_blank'>Download Sistem Magang</a></td>";
                                 } else {
                                     echo "<td>No file</td>";
                                 }
                             
                                 echo "</tr>";
-                            
                               }
                               $conn->close();
                                 ?>
