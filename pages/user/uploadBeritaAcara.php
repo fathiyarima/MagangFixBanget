@@ -2,6 +2,19 @@
 <?php
 // Ambil data mahasiswa dari session (sesuaikan dengan sistem login Anda)
 session_start();
+function showNotification($type, $message)
+{
+    $_SESSION['notification'] = [
+        'type' => $type,
+        'message' => $message
+    ];
+}
+
+if (!isset($_SESSION['upload_status'])) {
+    $_SESSION['upload_status'] = [];
+}
+
+
 $nama_mahasiswa = $_SESSION['username'] ?? 'farel';
 $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -53,13 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
 
     // Validasi file
     if ($fileType != "pdf") {
-        echo "<script>alert('Maaf, hanya file PDF yang diperbolehkan.');</script>";
-        return;
-    }
-
-    if ($file['size'] > 2000000) { // 2MB
-        echo "<script>alert('Maaf, ukuran file terlalu besar (max 2MB).');</script>";
-        return;
+        showNotification('error', 'Maaf, hanya file PDF yang diperbolehkan.');
+    } elseif ($file['size'] > 2000000) { // 2MB
+        showNotification('error', 'Maaf, ukuran file terlalu besar (maksimal 2MB).');
     }
 
     try {
@@ -111,12 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
         $result = $stmt->execute($params);
 
         if ($result) {
-            echo "<script>alert('File berhasil diupload.');</script>";
+            showNotification('success', 'File berhasil diupload! Silakan tunggu verifikasi dari admin.');
         } else {
             throw new Exception("Gagal menyimpan ke database");
         }
     } catch (Exception $e) {
-        echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
+        showNotification('error', 'Error: ' . $e->getMessage());
     }
 }
 
@@ -383,12 +392,16 @@ $driveLinks = [
                                     foreach ($files as $file) {
                                         $status = getFileStatus($nama_mahasiswa, $file);
                                         $statusClass = '';
+                                        $statusText = $status;
                                         switch ($status) {
+                                            case 'Uploaded':
+                                                $statusClass = 'status-uploaded';
+                                                break;
+                                            case 'Belum Upload':
+                                                $statusClass = 'status-pending';
+                                                break;
                                             case 'Revisi':
                                                 $statusClass = 'status-revisi';
-                                                break;
-                                            case 'Lulus':
-                                                $statusClass = 'status-lulus';
                                                 break;
                                             case 'Tolak':
                                                 $statusClass = 'status-tolak';
@@ -473,6 +486,140 @@ $driveLinks = [
                 }
             }
         </script>
+        <script>
+            // Function to show notifications
+            function showToast(type, message) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
+                Toast.fire({
+                    icon: type,
+                    title: message
+                });
+            }
+
+            // Function to handle file upload
+            function handleFileUpload(formElement) {
+                const fileInput = formElement.querySelector('input[type="file"]');
+                const file = fileInput.files[0];
+
+                if (!file) {
+                    showToast('error', 'Silakan pilih file terlebih dahulu');
+                    return false;
+                }
+
+                if (file.size > 2000000) {
+                    showToast('error', 'Ukuran file terlalu besar (maksimal 2MB)');
+                    return false;
+                }
+
+                if (!file.type.includes('pdf')) {
+                    showToast('error', 'Hanya file PDF yang diperbolehkan');
+                    return false;
+                }
+
+                // Show loading state
+                Swal.fire({
+                    title: 'Mengupload File...',
+                    html: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                return true;
+            }
+
+            // Add event listeners to all upload forms
+            document.querySelectorAll('.upload-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    if (!handleFileUpload(this)) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Check for PHP notifications on page load
+            <?php if (isset($_SESSION['notification'])): ?>
+                showToast('<?php echo $_SESSION['notification']['type']; ?>',
+                    '<?php echo $_SESSION['notification']['message']; ?>');
+                <?php unset($_SESSION['notification']); ?>
+            <?php endif; ?>
+        </script>
+
+        <style>
+            /* Add these styles to your CSS */
+            .swal2-popup.swal2-toast {
+                padding: 0.75em 1em;
+                background: #fff;
+                box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+            }
+
+            .swal2-popup.swal2-toast .swal2-title {
+                margin: 0.5em;
+                font-size: 1em;
+                color: #333;
+            }
+
+            .swal2-popup.swal2-toast.swal2-icon-success {
+                border-left: 4px solid #28a745;
+            }
+
+            .swal2-popup.swal2-toast.swal2-icon-error {
+                border-left: 4px solid #dc3545;
+            }
+
+            .swal2-popup.swal2-toast.swal2-icon-warning {
+                border-left: 4px solid #ffc107;
+            }
+
+            .swal2-popup.swal2-toast.swal2-icon-info {
+                border-left: 4px solid #17a2b8;
+            }
+
+            .status {
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-weight: 500;
+                font-size: 14px;
+                display: inline-block;
+            }
+
+            .status-uploaded {
+                background-color: #e8f5e9;
+                color: #2e7d32;
+                border: 1px solid #a5d6a7;
+            }
+
+            .status-pending {
+                background-color: #fff3e0;
+                color: #ef6c00;
+                border: 1px solid #ffcc80;
+            }
+
+            .status-revisi {
+                background-color: #e3f2fd;
+                color: #1565c0;
+                border: 1px solid #90caf9;
+            }
+
+            .status-tolak {
+                background-color: #ffebee;
+                color: #c62828;
+                border: 1px solid #ef9a9a;
+            }
+        </style>
+
         <?php
         if (!checkTAFilesStatus($nama_mahasiswa)) {
         ?>
