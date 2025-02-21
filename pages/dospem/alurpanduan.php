@@ -363,7 +363,7 @@ if ($row) {
                                             </div>
                                         </div>
                                         <div class="col-12 text-center mt-4">
-                                            <a href="https://drive.google.com/uc?export=download&id=your-file-id" class="btn btn-outline-primary btn-fw">
+                                            <a href="https://drive.google.com/file/d/1YsnxFdWSpHMwoD6rBde10dKkX-AZjdn8/view?usp=sharing" class="btn btn-outline-primary btn-fw" target="_blank">
                                                 <i type="button" class="fa fa-download"></i> Download Panduan Penggunaan Sistem
                                             </a>
                                         </div>
