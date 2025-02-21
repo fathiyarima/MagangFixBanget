@@ -11,16 +11,16 @@ $checkNip->execute([':nama' => $nama_dosen]);
 $row = $checkNip->fetch(PDO::FETCH_ASSOC);
 
 if ($row) {
-  $nip = $row['nip'];
-  $nama_dosen = $row['nama_dosen'];
-  $prodi = $row['prodi'];
+    $nip = $row['nip'];
+    $nama_dosen = $row['nama_dosen'];
+    $prodi = $row['prodi'];
 } else {
-  $nip = '2676478762574';
-  $nama_dosen = 'Nama Default';
-  $prodi = 'PRODI';
+    $nip = '2676478762574';
+    $nama_dosen = 'Nama Default';
+    $prodi = 'PRODI';
 }
 
-?> 
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -55,6 +55,9 @@ if ($row) {
                 <a class="navbar-brand brand-logo-mini" href="https://nestpoliteknik.com/ "><img src="../../assets/img/Logo.webp" alt="logo" /></a>
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                    <span class="icon-menu"></span>
+                </button>
                 <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
                     <span class="icon-menu"></span>
                 </button>

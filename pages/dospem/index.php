@@ -98,6 +98,9 @@ if ($row) {
         <a class="navbar-brand brand-logo-mini" href="https://nestpoliteknik.com/ "><img src="../../assets/img/Logo.webp" alt="logo" /></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="icon-menu"></span>
+        </button>
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
           <span class="icon-menu"></span>
         </button>
@@ -120,31 +123,31 @@ if ($row) {
               <span class="count"></span>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-            <div id="notifications">
-            <script>
-              function fetchNotifications() {
-                $.ajax({
-                  url: '../../fetch_notif.php',
-                  method: 'GET',
-                  success: function(data) {
-                    const notifications = JSON.parse(data);
-                    const notificationCount = $('#notificationCount');
-                    const notificationList = $('#notifications');
-                          
-                    notificationCount.text(notifications.length);
-                    notificationList.empty();
+              <div id="notifications">
+                <script>
+                  function fetchNotifications() {
+                    $.ajax({
+                      url: '../../fetch_notif.php',
+                      method: 'GET',
+                      success: function(data) {
+                        const notifications = JSON.parse(data);
+                        const notificationCount = $('#notificationCount');
+                        const notificationList = $('#notifications');
 
-                    if (notifications.length === 0 || notifications.message === 'No unread notifications') {
-                      notificationList.append(`
+                        notificationCount.text(notifications.length);
+                        notificationList.empty();
+
+                        if (notifications.length === 0 || notifications.message === 'No unread notifications') {
+                          notificationList.append(`
                         <a class="dropdown-item preview-item">
                           <div class="preview-item-content">
                             <h6 class="preview-subject font-weight-normal"></h6>
                           </div>
                         </a>
                       `);
-                    } else {
-                      notifications.forEach(function(notification) {
-                      const notificationItem = `
+                        } else {
+                          notifications.forEach(function(notification) {
+                            const notificationItem = `
                         <a class="dropdown-item preview-item" data-notification-id="${notification.id}">
                           <div class="preview-thumbnail">
                             <div class="preview-icon bg-info">
@@ -157,61 +160,63 @@ if ($row) {
                           </div>
                         </a>
                         `;
-                        notificationList.append(notificationItem);
-                      });
+                            notificationList.append(notificationItem);
+                          });
+                        }
+                      },
+                      error: function() {
+                        console.log("Error fetching notifications.");
+                      }
+                    });
+                  }
+
+                  function timeAgo(time) {
+                    const timeAgo = new Date(time);
+                    const currentTime = new Date();
+                    const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
+
+                    if (diffInSeconds < 60) {
+                      return `${diffInSeconds} seconds ago`;
                     }
-                  },
-                error: function() {
-                  console.log("Error fetching notifications.");
-                }
-              });
-            }
+                    const diffInMinutes = Math.floor(diffInSeconds / 60);
+                    if (diffInMinutes < 60) {
+                      return `${diffInMinutes} minutes ago`;
+                    }
+                    const diffInHours = Math.floor(diffInMinutes / 60);
+                    if (diffInHours < 24) {
+                      return `${diffInHours} hours ago`;
+                    }
+                    const diffInDays = Math.floor(diffInHours / 24);
+                    return `${diffInDays} days ago`;
+                  }
 
-              function timeAgo(time) {
-                const timeAgo = new Date(time);
-                const currentTime = new Date();
-                const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
+                  $(document).on('click', '.dropdown-item', function() {
+                    const notificationId = $(this).data('notification-id');
+                    markNotificationAsRead(notificationId);
+                  });
 
-                if (diffInSeconds < 60) {
-                  return `${diffInSeconds} seconds ago`;
-                }
-                const diffInMinutes = Math.floor(diffInSeconds / 60);
-                if (diffInMinutes < 60) {
-                  return `${diffInMinutes} minutes ago`;
-                }
-                const diffInHours = Math.floor(diffInMinutes / 60);
-                if (diffInHours < 24) {
-                  return `${diffInHours} hours ago`;
-                }
-                const diffInDays = Math.floor(diffInHours / 24);
-                return `${diffInDays} days ago`;
-            }
+                  function markNotificationAsRead(notificationId) {
+                    $.ajax({
+                      url: '../../mark_read.php',
+                      method: 'POST',
+                      data: {
+                        id: notificationId
+                      },
+                      success: function(response) {
+                        console.log(response);
+                        fetchNotifications();
+                      },
+                      error: function() {
+                        console.log("Error marking notification as read.");
+                      }
+                    });
+                  }
 
-              $(document).on('click', '.dropdown-item', function() {
-                const notificationId = $(this).data('notification-id');
-                markNotificationAsRead(notificationId);
-              });
-
-              function markNotificationAsRead(notificationId) {
-                $.ajax({
-                  url: '../../mark_read.php',
-                  method: 'POST',
-                  data: { id: notificationId },
-                  success: function(response) {
-                  console.log(response);
-                  fetchNotifications();
-                },
-                error: function() {
-                  console.log("Error marking notification as read.");
-                }
-              });
-            }
-
-            $(document).ready(function() {
-              fetchNotifications();
-              setInterval(fetchNotifications, 30000);
-            });
-          </script>
+                  $(document).ready(function() {
+                    fetchNotifications();
+                    setInterval(fetchNotifications, 30000);
+                  });
+                </script>
               </div>
             </div>
           </li>
@@ -390,7 +395,7 @@ if ($row) {
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
                   <h3 class="font-weight-bold">Welcome <span class="text-primary"><?php echo htmlspecialchars($nama_dosen); ?></span> </h3>
                   <h6>NIP : <span class="text-primary"><?php echo htmlspecialchars($nip); ?></span> </h6><br>
-                  <h4 class="font-weight-normal mb-0">Website Sistem Informasi  <span class="text-primary">Politeknik Nest Sukoharjo</span></h4>
+                  <h4 class="font-weight-normal mb-0">Website Sistem Informasi <span class="text-primary">Politeknik Nest Sukoharjo</span></h4>
                 </div>
               </div>
             </div>
