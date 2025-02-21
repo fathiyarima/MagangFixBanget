@@ -659,7 +659,7 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
                                   $sql = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, 
                                           ujian.status_ujian, ujian.nilai, ujian.tanggal_ujian
                                           FROM mahasiswa
-                                          LEFT JOIN ujian ON mahasiswa.id_mahasiswa = ujian.id_mahasiswa";
+                                          INNER JOIN ujian ON mahasiswa.id_mahasiswa = ujian.id_mahasiswa";
                                   $result = $conn->query($sql);
 
                                   while ($row = $result->fetch_assoc()) {
@@ -724,31 +724,29 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
           document.querySelector(".close").onclick = function() {
             document.getElementById("myModal").style.display = "none";
           }
-            function changeSelectColor(selectElement) {
-                var selectedValue = selectElement.value;
+          function changeSelectColor(selectElement) {
+              var selectedValue = selectElement.value;
 
-            if (selectedValue === 'dijadwalkan') {
-                selectElement.style.backgroundColor = 'rgb(255, 251, 0)'; // Kuning
-            } else if (selectedValue === 'ditunda') {
-                selectElement.style.backgroundColor = 'rgb(255, 99, 71)'; // Merah
-            } else if (selectedValue === 'selesai') {
-                selectElement.style.backgroundColor = 'rgb(34, 139, 34)'; // Hijau
-            }
-        }
+              if (selectedValue === 'dijadwalkan') {
+                  selectElement.style.backgroundColor = 'rgb(255, 251, 0)';
+              } else if (selectedValue === 'ditunda') {
+                  SselectElement.style.backgroundColor = 'rgb(255, 99, 71)';
+              } else if (selectedValue === 'selesai') {
+                  selectElement.style.backgroundColor = 'rgb(34, 139, 34)';
+              }
+          }
 
-        // 🔹 Saat halaman dimuat, atur warna semua dropdown status
+
         document.querySelectorAll("select[name='status_ujian']").forEach(function (select) {
             changeSelectColor(select);
         });
 
-        // 🔹 Saat dropdown berubah, ubah warna secara langsung
         document.addEventListener("change", function (event) {
             if (event.target.matches("select[name='status_ujian']")) {
                 changeSelectColor(event.target);
             }
         });
 
-        // 🔹 Event untuk menampilkan pop-up dokumen saat tombol folder diklik
         document.addEventListener("click", function (event) {
             if (event.target.closest(".folder-btn")) {
                 let button = event.target.closest(".folder-btn");

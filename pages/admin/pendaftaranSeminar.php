@@ -578,7 +578,7 @@
 
                                     $sql1 = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, seminar_proposal.tanggal_seminar, seminar_proposal.status_seminar
                                             FROM mahasiswa 
-                                            LEFT JOIN seminar_proposal ON mahasiswa.id_mahasiswa = seminar_proposal.id_mahasiswa";
+                                            INNER JOIN seminar_proposal ON mahasiswa.id_mahasiswa = seminar_proposal.id_mahasiswa";
                                     $result = $conn->query($sql1);
 
                                     $event = "seminar_proposal";
@@ -603,8 +603,6 @@
                                         echo "<td>";
                                         echo "<button type='submit' class='btn-update'>Update</button>";
                                         echo "</form>";
-                                        echo "</td>";
-                                        echo "<td>";
                                         echo "<td><button class='folder-btn' data-event='" . $event . "' data-userid='" . $row['id_mahasiswa'] . "'><span class='material-symbols-outlined'>folder_open</span></button></td>";
                                         echo "</td>";
                                         echo "</tr>";
