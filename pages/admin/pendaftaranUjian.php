@@ -516,6 +516,7 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
                 background-color: #0056b3;
             }
 
+            /* Overlay Pop-up */
             .popup {
                 display: none;
                 position: fixed;
@@ -524,15 +525,89 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
                 width: 100%;
                 height: 100%;
                 background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(5px);
+                z-index: 1000;
             }
 
+            /* Konten Pop-up */
             .popup-content {
                 background: white;
                 padding: 20px;
                 border-radius: 10px;
                 width: 50%;
-                margin: 10% auto;
-                position: relative;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+                animation: fadeIn 0.3s ease-in-out;
+            }
+
+            /* Animasi Muncul */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, -60%);
+                }
+                to {
+                    opacity: 1;
+                    transform: translate(-50%, -50%);
+                }
+            }
+
+            /* Tombol Close */
+            .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 20px;
+                cursor: pointer;
+                color: #555;
+                transition: color 0.2s;
+            }
+
+            .close-btn:hover {
+                color: red;
+            }
+
+            /* Tabel dalam Pop-up */
+            .popup-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+
+            .popup-table th, .popup-table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+            }
+
+            .popup-table th {
+                background-color: #1b4f72;
+                color: white;
+            }
+
+            /* Tombol Verifikasi */
+            .verify-btn {
+                padding: 5px 10px;
+                border: none;
+                border-radius: 5px;
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background 0.2s ease-in-out;
+            }
+
+            .verify-btn:hover {
+                background-color: #0056b3;
+            }
+
+            /* Teks "No File" */
+            .no-file {
+                color: red;
+                font-weight: bold;
             }
 
             .close-btn {
@@ -612,12 +687,24 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
 
 
         <div id="popup" class="popup">
-          <div class="popup-content">
-              <span class="close-btn">&times;</span>
-              <h2>Documents</h2>
-              <div id="popup-content">
-              </div>
-          </div>
+            <div class="popup-content">
+                <span class="close-btn">&times;</span>
+                <h2>Dokumen</h2>
+                <table class="popup-table">
+                    <thead>
+                        <tr>
+                            <th>Keterangan</th>
+                            <th>Dokumen</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="popup-content-table">
+                        <!-- Data akan diisi dengan AJAX -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
       </div>
 
         <script>
