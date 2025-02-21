@@ -643,14 +643,13 @@
           <div class="popup-content">
               <span class="close-btn">&times;</span>
               <h2>Documents</h2>
-              <div id="popup-content-table">
+              <div id="popup-content">
               </div>
           </div>
       </div>
 
         <script>
-          document.addEventListener("DOMContentLoaded", function () {
-    // Open Modal
+
     let openBtn = document.getElementById("open");
     if (openBtn) {
         openBtn.onclick = function () {
@@ -689,53 +688,46 @@
         }
     });
 
-    document.addEventListener("click", function (event) {
-        let button = event.target.closest(".folder-btn");
+    $(document).on("click", ".folder-btn", function () {
+          let event = $(this).data("event");
+          let userId = $(this).data("userid");
 
-        if (button) {
-            let eventParam = button.getAttribute("data-event");
-            let userId = button.getAttribute("data-userid");
+          console.log("Clicked button for event:", event, "User ID:", userId);
 
-            console.log("Clicked button for event:", eventParam, "User ID:", userId);
+          $.ajax({
+              url: "fetch_pdfs.php",
+              type: "POST",
+              data: { event: event, userId: userId },
+              success: function (response) {
+                  $("#popup-content").html(response);
+                  $("#popup").show();
+              },
+              error: function (xhr, status, error) {
+                  console.error("AJAX Error:", error);
+              }
+          });
+      });
 
-            fetch("fetch_pdfs.php", {
-              method: "POST",
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
-              body: new URLSearchParams({ event: eventParam, userId: userId }),
-          })
-          .then(response => response.text())
-          .then(data => {
-              console.log("Response from fetch_pdfs.php:", data); // Debugging
-              document.getElementById("popup-content-table").innerHTML = data;
-              document.getElementById("popup").style.display = "block";
-          })
-          .catch(error => console.error("AJAX Error:", error));
+      $(document).on("click", ".close-btn", function () {
+          $("#popup").hide();
+      });
+          
 
-        }
-    });
+      $(document).off("click", ".verify-btn").on("click", ".verify-btn", function (e) {
+    e.preventDefault(); 
 
-    let closePopupBtn = document.querySelector(".close-btn");
-    if (closePopupBtn) {
-        closePopupBtn.addEventListener("click", function () {
-            document.getElementById("popup").style.display = "none";
-        });
-    }
+    let userId = $(this).data("userid");
+    let event = $(this).data("event");
+    let column = $(this).data("column");
 
-    document.addEventListener("click", function (event) {
-        if (event.target.matches(".verify-btn")) {
-            let button = event.target;
-            let userId = button.getAttribute("data-userid");
-            let eventParam = button.getAttribute("data-event");
-            let column = button.getAttribute("data-column");
+    $(this).prop("disabled", true).text("Verifying...");
 
-            fetch("verify.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams({ userId: userId, event: eventParam, column: column }),
-            }).then(() => {
-                document.querySelector(".folder-btn[data-event='" + eventParam + "']").click();
-            });
-        }
+    $.post("verify.php", { userId: userId, event: event, column: column }, function (response) {
+        console.log(response);
+        alert("Verification successful!");
+        location.reload();
+    }).fail(function (xhr) {
+        console.error("Error:", xhr.responseText);
     });
 });
 

@@ -708,7 +708,7 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
                               <th>Aksi</th>
                           </tr>
                       </thead>
-                      <tbody id="popup-content-table">
+                      <tbody id="popup-content">
 
                       </tbody>
                   </table>
@@ -717,7 +717,6 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
       </div>
 
         <script>
-          document.addEventListener("DOMContentLoaded", function () {
     // Open Modal
     let openBtn = document.getElementById("open");
     if (openBtn) {
@@ -751,62 +750,46 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
         changeSelectColor(select);
     });
 
-    document.addEventListener("change", function (event) {
-        if (event.target.matches("select[name='status_ujian']")) {
-            changeSelectColor(event.target);
-        }
-    });
+    $(document).on("click", ".folder-btn", function () {
+          let event = $(this).data("event");
+          let userId = $(this).data("userid");
 
-    // 🔹 Click Event for Folder Button
-    document.addEventListener("click", function (event) {
-        let button = event.target.closest(".folder-btn");
+          console.log("Clicked button for event:", event, "User ID:", userId);
 
-        if (button) {
-            let eventParam = button.getAttribute("data-event");
-            let userId = button.getAttribute("data-userid");
+          $.ajax({
+              url: "fetch_pdfs.php",
+              type: "POST",
+              data: { event: event, userId: userId },
+              success: function (response) {
+                  $("#popup-content").html(response);
+                  $("#popup").show();
+              },
+              error: function (xhr, status, error) {
+                  console.error("AJAX Error:", error);
+              }
+          });
+      });
 
-            console.log("Clicked button for event:", eventParam, "User ID:", userId);
+      $(document).on("click", ".close-btn", function () {
+          $("#popup").hide();
+      });
+          
 
-            fetch("fetch_pdfs.php", {
-              method: "POST",
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
-              body: new URLSearchParams({ event: eventParam, userId: userId }),
-          })
-          .then(response => response.text())
-          .then(data => {
-              console.log("Response from fetch_pdfs.php:", data); // Debugging
-              document.getElementById("popup-content-table").innerHTML = data;
-              document.getElementById("popup").style.display = "block";
-          })
-          .catch(error => console.error("AJAX Error:", error));
+      $(document).off("click", ".verify-btn").on("click", ".verify-btn", function (e) {
+    e.preventDefault(); 
 
-        }
-    });
+    let userId = $(this).data("userid");
+    let event = $(this).data("event");
+    let column = $(this).data("column");
 
-    // 🔹 Close Button for Popup
-    let closePopupBtn = document.querySelector(".close-btn");
-    if (closePopupBtn) {
-        closePopupBtn.addEventListener("click", function () {
-            document.getElementById("popup").style.display = "none";
-        });
-    }
+    $(this).prop("disabled", true).text("Verifying...");
 
-    // 🔹 Event to Verify Data
-    document.addEventListener("click", function (event) {
-        if (event.target.matches(".verify-btn")) {
-            let button = event.target;
-            let userId = button.getAttribute("data-userid");
-            let eventParam = button.getAttribute("data-event");
-            let column = button.getAttribute("data-column");
-
-            fetch("verify.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams({ userId: userId, event: eventParam, column: column }),
-            }).then(() => {
-                document.querySelector(".folder-btn[data-event='" + eventParam + "']").click();
-            });
-        }
+    $.post("verify.php", { userId: userId, event: event, column: column }, function (response) {
+        console.log(response);
+        alert("Verification successful!");
+        location.reload();
+    }).fail(function (xhr) {
+        console.error("Error:", xhr.responseText);
     });
 });
 
