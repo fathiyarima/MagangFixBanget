@@ -279,7 +279,7 @@ if ($row) {
                     <div class="card-body">
                       <div class="text-center">
                         <h5 class="mb-4">Dokumen Panduan Lengkap</h5>
-                        <a href="https://drive.google.com/your-drive-link-here" class="btn btn-primary btn-lg" target="_blank">
+                        <a href="https://drive.google.com/file/d/1YsnxFdWSpHMwoD6rBde10dKkX-AZjdn8/view?usp=sharing" class="btn btn-primary btn-lg" target="_blank">
                           <i class="fa fa-download me-2"></i> Download Panduan Penggunaan Sistem
                         </a>
                         <p class="text-muted mt-3">Format PDF - Klik untuk mengunduh panduan lengkap</p>
