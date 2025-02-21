@@ -516,107 +516,98 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
                 background-color: #0056b3;
             }
 
-            /* Overlay Pop-up */
-            .popup {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                backdrop-filter: blur(5px);
-                z-index: 1000;
-            }
+           /* Style untuk pop-up */
+           .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+          }
 
-            /* Konten Pop-up */
-            .popup-content {
-                background: white;
-                padding: 20px;
-                border-radius: 10px;
-                width: 50%;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-                animation: fadeIn 0.3s ease-in-out;
-            }
+          .popup-content {
+              background: white;
+              padding: 20px;
+              border-radius: 10px;
+              width: 50%;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+              animation: fadeIn 0.3s ease-in-out;
+          }
 
-            /* Animasi Muncul */
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translate(-50%, -60%);
-                }
-                to {
-                    opacity: 1;
-                    transform: translate(-50%, -50%);
-                }
-            }
+          /* Animasi */
+          @keyframes fadeIn {
+              from {
+                  opacity: 0;
+                  transform: translate(-50%, -60%);
+              }
+              to {
+                  opacity: 1;
+                  transform: translate(-50%, -50%);
+              }
+          }
 
-            /* Tombol Close */
-            .close-btn {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                font-size: 20px;
-                cursor: pointer;
-                color: #555;
-                transition: color 0.2s;
-            }
+          .close-btn {
+              position: absolute;
+              top: 10px;
+              right: 15px;
+              font-size: 20px;
+              cursor: pointer;
+              color: #555;
+              transition: color 0.2s;
+          }
 
-            .close-btn:hover {
-                color: red;
-            }
+          .close-btn:hover {
+              color: red;
+          }
 
-            /* Tabel dalam Pop-up */
-            .popup-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 10px;
-            }
+          /* Style untuk tabel */
+          .popup-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 10px;
+          }
 
-            .popup-table th, .popup-table td {
-                border: 1px solid #ddd;
-                padding: 10px;
-                text-align: center;
-            }
+          .popup-table th, .popup-table td {
+              padding: 10px;
+              text-align: center;
+              border-bottom: 1px solid #ddd;
+          }
 
-            .popup-table th {
-                background-color: #1b4f72;
-                color: white;
-            }
+          .popup-table th {
+              background-color: #1b4f72;
+              color: white;
+              font-weight: bold;
+          }
 
-            /* Tombol Verifikasi */
-            .verify-btn {
-                padding: 5px 10px;
-                border: none;
-                border-radius: 5px;
-                background-color: #007bff;
-                color: white;
-                cursor: pointer;
-                font-size: 14px;
-                transition: background 0.2s ease-in-out;
-            }
+          /* Style untuk tombol Verify */
+          .verify-btn {
+              padding: 6px 12px;
+              border: none;
+              border-radius: 5px;
+              background-color: #007bff;
+              color: white;
+              cursor: pointer;
+              font-size: 14px;
+              transition: background 0.2s ease-in-out;
+          }
 
-            .verify-btn:hover {
-                background-color: #0056b3;
-            }
+          .verify-btn:hover {
+              background-color: #0056b3;
+          }
 
-            /* Teks "No File" */
-            .no-file {
-                color: red;
-                font-weight: bold;
-            }
-
-            .close-btn {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                font-size: 20px;
-                cursor: pointer;
-            }
+          /* Style untuk teks "No File" */
+          .no-file {
+              color: red;
+              font-weight: bold;
+          }
         </style>
 
         <div class="row">
@@ -685,88 +676,103 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
             </div>
         </div>
 
-
         <div id="popup" class="popup">
-            <div class="popup-content">
-                <span class="close-btn">&times;</span>
-                <h2>Dokumen</h2>
-                <table class="popup-table">
-                    <thead>
-                        <tr>
-                            <th>Keterangan</th>
-                            <th>Dokumen</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="popup-content-table">
-                        <!-- Data akan diisi dengan AJAX -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
+          <div class="popup-content">
+              <span class="close-btn">&times;</span>
+              <h2>Dokumen</h2>
+              <div class="table-responsive">
+                  <table class="popup-table">
+                      <thead>
+                          <tr>
+                              <th>Keterangan</th>
+                              <th>Dokumen</th>
+                              <th>Aksi</th>
+                          </tr>
+                      </thead>
+                      <tbody id="popup-content-table">
+                        
+                      </tbody>
+                  </table>
+              </div>
+          </div>
       </div>
 
-        <script>
-          $(document).on("click", ".folder-btn", function () {
-          let event = $(this).data("event");
-          let userId = $(this).data("userid");
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 🔹 Fungsi untuk mengubah warna dropdown berdasarkan nilai yang dipilih
+        function changeSelectColor(selectElement) {
+            var selectedValue = selectElement.value;
 
-          console.log("Clicked button for event:", event, "User ID:", userId); // Debugging
-
-          $.ajax({
-              url: "fetch_pdfs.php",
-              type: "POST",
-              data: { event: event, userId: userId },
-              success: function (response) {
-                  $("#popup-content").html(response);
-                  $("#popup").show();
-              },
-              error: function (xhr, status, error) {
-                  console.error("AJAX Error:", error);
-              }
-          });
-      });
-
-      $(document).on("click", ".close-btn", function () {
-          $("#popup").hide();
-      });
-          
-
-            $(document).on("click", ".verify-btn", function () {
-                let userId = $(this).data("userid");
-                let event = $(this).data("event");
-                let column = $(this).data("column");
-
-                $.ajax({
-                    url: "verify.php",
-                    type: "POST",
-                    data: { userId: userId, event: event, column: column },
-                    success: function () {
-                        $(".folder-btn[data-event='" + event + "']").click();
-                    }
-                });
-            });
-
-            function changeSelectColor(selectElement) {
-                var selectedValue = selectElement.value;
-
-                if (selectedValue == 'dijadwalkan') {
-                    selectElement.style.backgroundColor = 'rgb(255, 251, 0)';
-                } else if (selectedValue == 'ditunda') {
-                    selectElement.style.backgroundColor = 'rgb(255, 99, 71)';
-                } else if (selectedValue == 'selesai') {
-                    selectElement.style.backgroundColor = 'rgb(34, 139, 34)';
-                }
+            if (selectedValue === 'dijadwalkan') {
+                selectElement.style.backgroundColor = 'rgb(255, 251, 0)'; // Kuning
+            } else if (selectedValue === 'ditunda') {
+                selectElement.style.backgroundColor = 'rgb(255, 99, 71)'; // Merah
+            } else if (selectedValue === 'selesai') {
+                selectElement.style.backgroundColor = 'rgb(34, 139, 34)'; // Hijau
             }
+        }
 
-            window.onload = function() {
-                var selects = document.querySelectorAll('select');
-                selects.forEach(function(select) {
-                    changeSelectColor(select);
+        // 🔹 Saat halaman dimuat, atur warna semua dropdown status
+        document.querySelectorAll("select[name='status_ujian']").forEach(function (select) {
+            changeSelectColor(select);
+        });
+
+        // 🔹 Saat dropdown berubah, ubah warna secara langsung
+        document.addEventListener("change", function (event) {
+            if (event.target.matches("select[name='status_ujian']")) {
+                changeSelectColor(event.target);
+            }
+        });
+
+        // 🔹 Event untuk menampilkan pop-up dokumen saat tombol folder diklik
+        document.addEventListener("click", function (event) {
+            if (event.target.closest(".folder-btn")) {
+                let button = event.target.closest(".folder-btn");
+                let eventParam = button.getAttribute("data-event");
+                let userId = button.getAttribute("data-userid");
+
+                console.log("Clicked button for event:", eventParam, "User ID:", userId);
+
+                fetch("fetch_pdfs.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({ event: eventParam, userId: userId })
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("popup-content-table").innerHTML = data;
+                    document.getElementById("popup").style.display = "block";
+                })
+                .catch(error => console.error("AJAX Error:", error));
+            }
+        });
+
+        // 🔹 Event untuk menutup pop-up saat tombol close diklik
+        document.querySelector(".close-btn").addEventListener("click", function () {
+            document.getElementById("popup").style.display = "none";
+        });
+
+        // 🔹 Event untuk verifikasi data
+        document.addEventListener("click", function (event) {
+            if (event.target.matches(".verify-btn")) {
+                let button = event.target;
+                let userId = button.getAttribute("data-userid");
+                let eventParam = button.getAttribute("data-event");
+                let column = button.getAttribute("data-column");
+
+                fetch("verify.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({ userId: userId, event: eventParam, column: column })
+                })
+                .then(() => {
+                    document.querySelector(".folder-btn[data-event='" + eventParam + "']").click();
                 });
             }
-        </script>
+        });
+    });
+</script>
+
 
         <!-- content-wrapper ends -->
         <!-- partial:partials/_footer.html -->

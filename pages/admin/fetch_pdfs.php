@@ -59,7 +59,7 @@ foreach ($documents as $columnName) {
         "✔ Verified" : 
         "<button class='verify-btn' data-userid='$userId' data-event='$event' data-column='$columnName'>Verify</button>";
 
-    $output .= "<li>$columnName $verified $downloadButton</li>";
+    $output .= "<tr><td>$columnName</td> <td>$verified</td> <td>$downloadButton</td></tr></li>";
 }
 $output .= "</ul>";
 
