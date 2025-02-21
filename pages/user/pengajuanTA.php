@@ -1,13 +1,14 @@
 <?php
 session_start();
 $nama_mahasiswa = $_SESSION['username'] ?? 'farel';
+$event = 'tugas_akhir';
 
 try {
   $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
   $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
   // Get student info
-  $check = "SELECT nim, nama_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
+  $check = "SELECT id_mahasiswa, nim, nama_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
   $checkNim = $conn->prepare($check);
   $checkNim->execute([':nama' => $nama_mahasiswa]);
   $row = $checkNim->fetch(PDO::FETCH_ASSOC);
@@ -16,6 +17,7 @@ try {
     $nim = $row['nim'];
     $nama = $row['nama_mahasiswa'];
     $prodi = $row['prodi'];
+    $id = $row['id_mahasiswa'];
   } else {
     $nim = 'K3522068';
     $nama = 'Nama Default';
@@ -26,31 +28,77 @@ try {
 }
 
 // Function to get document status
-function getDocumentStatus($nama_mahasiswa, $document_type)
+function getDocumentStatus($nama_mahasiswa, $id, $document_type)
 {
   try {
     $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Mapping document name to column
     $columnMap = [
-      'Form Pendaftaran dan Persetujuan Tema' => 'form_pendaftaran_persetujuan_tema(TA)',
-      'Bukti Pembayaran' => 'bukti_pembayaran(TA)',
-      'Bukti Transkrip Nilai' => 'bukti_transkip_nilai(TA)',
-      'Bukti Lulus Mata kuliah Magang / PI' => 'bukti_kelulusan_magang(TA)',
+      'Form Pendaftaran dan Persetujuan Tema' => 'form_pendaftaran_persetujuan_tema(ta)',
+      'Bukti Pembayaran' => 'bukti_pembayaran(ta)',
+      'Bukti Transkrip Nilai' => 'bukti_transkip_nilai(ta)',
+      'Bukti Lulus Mata kuliah Magang / PI' => 'bukti_kelulusan_magang(ta)',
     ];
+
+    if (!isset($columnMap[$document_type])) {
+      return 'Dokumen tidak valid';
+    }
 
     $column = $columnMap[$document_type];
 
+    // Step 1: Check verification status in tugas_akhir
+    $sql2 = "SELECT `$column` FROM tugas_akhir WHERE id_mahasiswa = :id";
+    $stmt2 = $conn->prepare($sql2);
+    $stmt2->execute([':id' => $id]);
+    $verify = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+    if ($verify && $verify[$column] == 1) {
+      return 'Terverifikasi'; // If verification status is 1
+    }
+
+    // Step 2: Check if the file exists in mahasiswa
     $sql = "SELECT `$column` FROM mahasiswa WHERE username = :nama";
     $stmt = $conn->prepare($sql);
     $stmt->execute([':nama' => $nama_mahasiswa]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    return $result && $result[$column] !== null ? 'Menunggu Verifikasi' : 'Belum Upload';
+    if ($result && !empty($result[$column])) {
+      return 'Menunggu Verifikasi'; // File exists & verification is 0
+    }
+
+    return 'Belum Upload'; // No file & verification = 0
   } catch (PDOException $e) {
-    return 'Error';
+    return 'Error: ' . $e->getMessage();
   }
 }
+
+function areAllDocumentsVerified($nama_mahasiswa, $id)
+{
+  $documents = [
+    'Form Pendaftaran dan Persetujuan Tema',
+    'Bukti Pembayaran',
+    'Bukti Transkrip Nilai',
+    'Bukti Lulus Mata kuliah Magang / PI'
+  ];
+
+  foreach ($documents as $doc) {
+    $status = getDocumentStatus($nama_mahasiswa, $id, $doc);
+    if ($status !== 'Terverifikasi') {
+      return false;
+    }
+  }
+  return true;
+}
+
+
+// Contoh penggunaan fungsi
+$document_type = 'Bukti Pembayaran'; // Ubah sesuai dokumen yang ingin dicek
+$status = getDocumentStatus($nama_mahasiswa, $id, $document_type);
+echo "Status dokumen: " . $status;
+
+
 ?>
 
 <!DOCTYPE html>
@@ -250,7 +298,7 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
                     ];
 
                     foreach ($documents as $doc) {
-                      $status = getDocumentStatus($nama_mahasiswa, $doc);
+                      $status = getDocumentStatus($nama_mahasiswa, $id, $doc);
                       $statusClass = '';
 
                       switch ($status) {
@@ -283,11 +331,20 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
                   <?php endif; ?>
 
                   <div class="submit-section">
-                    <form method="post">
-                      <button type="submit" name="submit_pengajuan" class="btn-submit">
+                    <?php
+                    $allVerified = areAllDocumentsVerified($nama_mahasiswa, $id);
+                    ?>
+                    <form action="addSiswa.php" method="post" id="pengajuanForm">
+                      <input type="hidden" name="id" value="<?php echo $id; ?>">
+                      <input type="hidden" name="event" value="<?php echo $event; ?>">
+                      <button type="submit" name="submit_pengajuan" class="btn-submit" id="submitBtn"
+                        <?php echo !$allVerified ? 'disabled' : ''; ?>>
                         Submit Pengajuan
                       </button>
                     </form>
+                    <div id="verificationAlert" class="alert alert-warning mt-3" style="display: none;">
+                      Mohon maaf, semua dokumen harus terverifikasi sebelum dapat melakukan pengajuan.
+                    </div>
                   </div>
                 </div>
               </div>
@@ -310,6 +367,46 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
           showNotification();
         <?php endif; ?>
       </script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const form = document.getElementById('pengajuanForm');
+          const submitBtn = document.getElementById('submitBtn');
+          const verificationAlert = document.getElementById('verificationAlert');
+          const isAllVerified = <?php echo $allVerified ? 'true' : 'false' ?>;
+
+          form.addEventListener('submit', function(e) {
+            if (!isAllVerified) {
+              e.preventDefault();
+              verificationAlert.style.display = 'block';
+              setTimeout(() => {
+                verificationAlert.style.display = 'none';
+              }, 3000);
+            }
+          });
+
+          // Add visual feedback for disabled button
+          if (!isAllVerified) {
+            submitBtn.style.opacity = '0.6';
+            submitBtn.style.cursor = 'not-allowed';
+          }
+        });
+      </script>
+
+      <style>
+        .alert-warning {
+          color: #856404;
+          background-color: #fff3cd;
+          border-color: #ffeeba;
+          padding: .75rem 1.25rem;
+          margin-bottom: 1rem;
+          border: 1px solid transparent;
+          border-radius: .25rem;
+        }
+
+        .btn-submit:disabled {
+          background-color: #cccccc;
+        }
+      </style>
       <!-- plugins:js -->
       <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
       <!-- endinject -->

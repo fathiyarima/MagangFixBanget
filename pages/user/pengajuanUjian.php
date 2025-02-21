@@ -1,13 +1,14 @@
 <?php
 session_start();
 $nama_mahasiswa = $_SESSION['username'] ?? 'farel';
+$event = 'ujian';
 
 try {
     $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Get student info
-    $check = "SELECT nim, nama_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
+    $check = "SELECT id_mahasiswa, nim, nama_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
     $checkNim = $conn->prepare($check);
     $checkNim->execute([':nama' => $nama_mahasiswa]);
     $row = $checkNim->fetch(PDO::FETCH_ASSOC);
@@ -16,6 +17,7 @@ try {
         $nim = $row['nim'];
         $nama = $row['nama_mahasiswa'];
         $prodi = $row['prodi'];
+        $id = $row['id_mahasiswa'];
     } else {
         $nim = 'K3522068';
         $nama = 'Nama Default';
@@ -287,7 +289,9 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
                                     <?php endif; ?>
 
                                     <div class="submit-section">
-                                        <form method="post">
+                                    <form action="addSiswa.php" method="post" id="pengajuanForm">
+                                        <input type="hidden" name="id" value="<?php echo $id; ?>">
+                                        <input type="hidden" name="event" value="<?php echo $event; ?>">
                                             <button type="submit" name="submit_pengajuan" class="btn-submit">
                                                 Submit Pengajuan
                                             </button>
