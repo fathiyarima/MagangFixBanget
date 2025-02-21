@@ -600,16 +600,19 @@
                                 echo "</td>";
 
                                 echo "<td>";
-                                echo "<select name='status_pengajuan' onchange='toggleRevisiTextbox(this)' required>";
-                                echo "<option value='Ditolak'" . ($status_pengajuan == 'Ditolak' ? ' selected' : '') . ">Ditolak</option>";
-                                echo "<option value='Revisi'" . ($status_pengajuan == 'Revisi' ? ' selected' : '') . ">Revisi</option>";
-                                echo "<option value='Disetujui'" . ($status_pengajuan == 'Disetujui' ? ' selected' : '') . ">Disetujui</option>";
-                                echo "</select>";
-                                if ($status_pengajuan == 'Revisi') {
-                                  echo "<div class='revisi-textbox' id='revisi-textbox-" . $row['id_mahasiswa'] . "' data-id='" . $row['id_mahasiswa'] . "' style='display:none;'>";
-                                echo "<textarea name='alasan_revisi' rows='3'>" . $row['alasan_revisi'] . "</textarea>";
-                                echo "</div>";
-                              }
+                                echo "<select name='status_pengajuan' onchange='toggleRevisiTextbox(this)' required>
+                                        <option value='Ditolak' " . ($status_pengajuan == 'Ditolak' ? 'selected' : '') . ">Ditolak</option>
+                                        <option value='Revisi' " . ($status_pengajuan == 'Revisi' ? 'selected' : '') . ">Revisi</option>
+                                        <option value='Disetujui' " . ($status_pengajuan == 'Disetujui' ? 'selected' : '') . ">Disetujui</option>
+                                      </select>
+
+                                      <div class='revisi-textbox' id='revisi-textbox-" . $row['id_mahasiswa'] . "' data-id='" . $row['id_mahasiswa'] . "' style='display: none;'>
+                                        <textarea name='alasan_revisi' rows='3' disabled data-was-revisi='" . ($status_pengajuan == 'Revisi' ? 'true' : 'false') . "'>" . 
+                                          (isset($row['alasan_revisi']) ? htmlspecialchars($row['alasan_revisi']) : '') . 
+                                        "</textarea>
+                                      </div>";
+
+
                               
 
                                 echo "<p class='small-text' id='revisi-text-" . $row['id_mahasiswa'] . "' style='display:none;'>" . $row['alasan_revisi'] . "</p>";
@@ -690,40 +693,40 @@
 });
 
             
-            function changeColor(selectElement) {
+    function changeColor(selectElement) {
     var selectedValue = selectElement.value;
 
     if (selectedValue === 'Revisi') {
-        selectElement.style.backgroundColor = 'rgb(255, 251, 0)'; // Yellow
+        selectElement.style.backgroundColor = 'rgb(255, 251, 0)';
     } else if (selectedValue === 'Ditolak') {
-        selectElement.style.backgroundColor = 'rgb(255, 99, 71)'; // Red
+        selectElement.style.backgroundColor = 'rgb(255, 99, 71)';
     } else if (selectedValue === 'Disetujui') {
-        selectElement.style.backgroundColor = 'rgb(34, 139, 34)'; // Green
+        selectElement.style.backgroundColor = 'rgb(34, 139, 34)';
     } else {
-        selectElement.style.backgroundColor = 'rgb(174, 215, 242)'; // Gray
+        selectElement.style.backgroundColor = 'rgb(174, 215, 242)';
     }
 }
 
 function toggleRevisiTextbox(selectElement) {
     var mahasiswaId = selectElement.closest('tr').querySelector('input[name="id_mahasiswa"]').value;
     var revisiTextbox = document.getElementById('revisi-textbox-' + mahasiswaId);
-    var revisiText = document.getElementById('revisi-text-' + mahasiswaId);
+    var textarea = revisiTextbox ? revisiTextbox.querySelector('textarea') : null;
 
-    if (!revisiTextbox || !revisiText) return; // Prevent errors if elements are missing
+    if (!revisiTextbox || !textarea) return;
 
     if (selectElement.value === 'Revisi') {
-        revisiTextbox.style.display = 'block';  // Show textarea
-        revisiText.style.display = 'none';      // Hide small text
+        revisiTextbox.style.display = 'block';
+        textarea.disabled = false;
     } else {
-        revisiTextbox.style.display = 'none';   // Hide textarea
-        revisiText.style.display = 'none';      // Hide small text
+        revisiTextbox.style.display = 'none'; 
+        textarea.disabled = true; 
     }
 }
 
 window.onload = function () {
     document.querySelectorAll('select[name="status_pengajuan"]').forEach(function (select) {
-        changeColor(select);  // Apply color on page load
-        toggleRevisiTextbox(select);  // Ensure correct visibility
+        changeColor(select);
+        toggleRevisiTextbox(select);
     });
 
     document.querySelectorAll('.revisi-textbox').forEach(function (box) {
@@ -731,8 +734,8 @@ window.onload = function () {
         var revisiText = document.getElementById('revisi-text-' + mahasiswaId);
 
         if (revisiText && revisiText.innerText.trim() !== '') {
-            revisiText.style.display = 'block';  // Show small text
-            box.style.display = 'none';          // Hide textarea
+            revisiText.style.display = 'block';
+            box.style.display = 'none';  
         }
     });
 };

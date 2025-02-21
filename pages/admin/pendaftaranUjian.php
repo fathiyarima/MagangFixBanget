@@ -716,11 +716,16 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
           </div>
       </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // 🔹 Fungsi untuk mengubah warna dropdown berdasarkan nilai yang dipilih
-        function changeSelectColor(selectElement) {
-            var selectedValue = selectElement.value;
+        <script>
+          document.getElementById("open").onclick = function() {
+                  document.getElementById("myModal").style.display = "flex";
+                }
+
+          document.querySelector(".close").onclick = function() {
+            document.getElementById("myModal").style.display = "none";
+          }
+            function changeSelectColor(selectElement) {
+                var selectedValue = selectElement.value;
 
             if (selectedValue === 'dijadwalkan') {
                 selectElement.style.backgroundColor = 'rgb(255, 251, 0)'; // Kuning
@@ -789,7 +794,6 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
                 });
             }
         });
-    });
 </script>
 
 

@@ -707,6 +707,14 @@
               </style>
 
               <script>
+                document.getElementById("openModal").onclick = function() {
+                  document.getElementById("ModalBatch").style.display = "flex";
+                }
+
+                document.querySelector(".close").onclick = function() {
+                  document.getElementById("ModalBatch").style.display = "none";
+                }
+                
                 
                 document.getElementById("openModalBtn").onclick = function() {
                   document.getElementById("myModal").style.display = "flex";
@@ -716,6 +724,58 @@
                   document.getElementById("myModal").style.display = "none";
                 }
 
+                window.onclick = function(event) {
+                  if (event.target == document.getElementById("myModal")) {
+                    document.getElementById("myModal").style.display = "none";
+                  }
+                }
+
+document.querySelectorAll(".editBtn").forEach(button => {
+    button.addEventListener("click", function () {
+        var id = this.getAttribute("data-id");
+
+        fetch(`getDosen.php?id=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("edit_id").value = data.id_dosen;
+            document.getElementById("edit_name").value = data.nama_dosen;
+            document.getElementById("edit_nip").value = data.nip;
+            document.getElementById("edit_prodi").value = data.prodi;
+            document.getElementById("edit_phone").value = data.nomor_telepon;
+            document.getElementById("edit_username").value = data.username;
+            document.getElementById("edit_pass").value = data.pass;
+
+            document.getElementById("editModal").style.display = "flex";
+        })
+        .catch(error => console.error("Error fetching data:", error));
+    });
+});
+
+document.querySelector("#editModal .close").onclick = function () {
+    document.getElementById("editModal").style.display = "none";
+};
+
+document.getElementById("editForm").onsubmit = function (event) {
+    event.preventDefault();
+    var formData = new FormData(document.getElementById("editForm"));
+
+    fetch("editDosen.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.text())
+    .then(response => {
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil!",
+            text: "Data berhasil diperbarui!",
+        }).then(() => {
+            document.getElementById("editModal").style.display = "none";
+            location.reload();
+        });
+    })
+    .catch(error => console.error("Error:", error));
+};
                 document.getElementById("openModal").onclick = function() {
                   document.getElementById("ModalBatch").style.display = "flex";
                 }
