@@ -40,6 +40,10 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
             'Buku Konsultasi Tugas Akhir' => 'buku_konsultasi_ta(seminar)',
         ];
 
+        if (!isset($columnMap[$document_type])) {
+            return 'Dokumen tidak valid';
+          } 
+
         $column = $columnMap[$document_type];
 
         $sql = "SELECT `$column` FROM mahasiswa WHERE username = :nama";
@@ -51,6 +55,23 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
     } catch (PDOException $e) {
         return 'Error';
     }
+}
+
+function areAllDocumentsVerified($nama_mahasiswa, $id)
+{
+    $documents = [
+        'Form Pendaftaran Seminar Proposal',
+        'Lembar Persetujuan Proposal Tugas Akhir',
+        'Buku Konsultasi Tugas Akhir'
+    ];
+
+    foreach ($documents as $doc) {
+        $status = getDocumentStatus($nama_mahasiswa, $id, $doc);
+        if ($status !== 'Terverifikasi') {
+            return false;
+        }
+    }
+    return true;
 }
 ?>
 
@@ -284,14 +305,22 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
                                     <?php endif; ?>
 
                                     <div class="submit-section">
-                                    <form action="addSiswa.php" method="post" id="pengajuanForm">
-                                        <input type="hidden" name="id" value="<?php echo $id; ?>">
-                                        <input type="hidden" name="event" value="<?php echo $event; ?>">
-                                            <button type="submit" name="submit_pengajuan" class="btn-submit">
+                                        <?php
+                                        $allVerified = areAllDocumentsVerified($nama_mahasiswa, $id);
+                                        ?>
+                                        <form action="addSiswa.php" method="post" id="pengajuanForm">
+                                            <input type="hidden" name="id" value="<?php echo $id; ?>">
+                                            <input type="hidden" name="event" value="<?php echo $event; ?>">
+                                            <button type="submit" name="submit_pengajuan" class="btn-submit" id="submitBtn"
+                                                <?php echo !$allVerified ? 'disabled' : ''; ?>>
                                                 Submit Pengajuan
                                             </button>
                                         </form>
+                                        <div id="verificationAlert" class="alert alert-warning mt-3" style="display: none;">
+                                            Mohon maaf, semua dokumen harus terverifikasi sebelum dapat melakukan pengajuan.
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -313,6 +342,46 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
                     showNotification();
                 <?php endif; ?>
             </script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const form = document.getElementById('pengajuanForm');
+                    const submitBtn = document.getElementById('submitBtn');
+                    const verificationAlert = document.getElementById('verificationAlert');
+                    const isAllVerified = <?php echo $allVerified ? 'true' : 'false' ?>;
+
+                    form.addEventListener('submit', function(e) {
+                        if (!isAllVerified) {
+                            e.preventDefault();
+                            verificationAlert.style.display = 'block';
+                            setTimeout(() => {
+                                verificationAlert.style.display = 'none';
+                            }, 3000);
+                        }
+                    });
+
+                    // Add visual feedback for disabled button
+                    if (!isAllVerified) {
+                        submitBtn.style.opacity = '0.6';
+                        submitBtn.style.cursor = 'not-allowed';
+                    }
+                });
+            </script>
+
+            <style>
+                .alert-warning {
+                    color: #856404;
+                    background-color: #fff3cd;
+                    border-color: #ffeeba;
+                    padding: .75rem 1.25rem;
+                    margin-bottom: 1rem;
+                    border: 1px solid transparent;
+                    border-radius: .25rem;
+                }
+
+                .btn-submit:disabled {
+                    background-color: #cccccc;
+                }
+            </style>
             <!-- plugins:js -->
             <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
             <!-- endinject -->
