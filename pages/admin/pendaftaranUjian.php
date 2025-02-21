@@ -421,7 +421,7 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
                     var xValues = <?php echo json_encode($xValues); ?>; 
                     var yValues = <?php echo json_encode($yValues); ?>;
 
-                    var barColors = ["#FF6384", "#36A2EB"]
+                    var barColors = ["#73ad91", "#ebd382", "#d25d5d",];
 
                     new Chart("myChart2", {
                         type: "doughnut",
@@ -468,6 +468,25 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
             th {
                 background-color: #1b4f72;
                 color: white;
+            }
+            h4 {
+              text-align: center;
+            }
+
+            /* Memastikan input tetap memiliki border */
+            input[type="text"] {
+                border: 1px solid #ccc; /* Border default */
+                padding: 5px;
+                border-radius: 5px;
+                text-align: center;
+                width: 60px; /* Sesuaikan lebar */
+            }
+
+            /* Saat input diklik (focus), border tetap terlihat */
+            input[type="text"]:focus {
+                border: 1px solid #007bff; /* Warna biru saat diklik */
+                outline: none; /* Hilangkan outline bawaan browser */
+                box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5); /* Efek glow saat aktif */
             }
 
             /* Input tanggal */
@@ -614,7 +633,7 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        <h4>Daftar Ujian</h4>
+                        <h4>Pendaftar Ujian Politeknik Nest Sukoharjo</h4>
                         <div class="table-responsive">
                             <table>
                                 <thead>
@@ -679,7 +698,7 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
         <div id="popup" class="popup">
           <div class="popup-content">
               <span class="close-btn">&times;</span>
-              <h2>Dokumen</h2>
+              <h3>Dokumen</h3>
               <div class="table-responsive">
                   <table class="popup-table">
                       <thead>
@@ -690,7 +709,7 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
                           </tr>
                       </thead>
                       <tbody id="popup-content-table">
-                        
+
                       </tbody>
                   </table>
               </div>
