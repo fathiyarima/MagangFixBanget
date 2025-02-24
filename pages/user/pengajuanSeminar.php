@@ -95,7 +95,7 @@ function checkSeminarDocsVerification($nama_mahasiswa)
         $stmt = $conn->prepare($sql);
         $stmt->execute([':id' => $id]);
         $verificationStatus = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         if ($verificationStatus) {
             return array_sum($verificationStatus) === count($verificationStatus);
         }
@@ -119,11 +119,11 @@ if ($currentPage === 'pengajuanSeminar.php') {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Perhatian!',
-                    text: 'Silakan lengkapi semua file pada Upload Seminar dan Upload Berita Acara terlebih dahulu.',
+                    text: 'Pastikan Semua dokumen pada page pengajuan Tugas Akhir terverifikasi, lalu submit pengajuan terlebih dahulu.',
                     confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = 'uploadSeminar.php';
+                        window.location.href = 'pengajuanTA.php';
                     }
                 });
             });
@@ -144,7 +144,7 @@ if ($currentPage === 'pengajuanSeminar.php') {
                     confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = 'uploadTA.php';
+                        window.location.href = 'pengajuanSeminar.php';
                     }
                 });
             });
@@ -505,8 +505,8 @@ function areAllDocumentsVerified($nama_mahasiswa, $id)
                         <div class="col-md-12 grid-margin">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">Pengajuan Ujian Tugas Akhir</h4>
-                                    <p class="card-description">Status Dokumen Pengajuan</p>
+                                    <h4 class="card-title">Pengajuan Seminar</h4>
+                                    <p class="card-description">Status Dokumen Pengajuan Seminar</p>
 
                                     <div class="status-grid">
                                         <?php

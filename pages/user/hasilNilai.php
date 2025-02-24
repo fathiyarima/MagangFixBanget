@@ -244,7 +244,7 @@ try {
             </div>
 
             <div class="result-box">
-              <h2>Hasil Ujian Online Anda</h2>
+              <h2>Hasil Ujian Anda</h2>
               <div class="score">
                 <?php
                 if ($nilai !== 'Belum ada nilai') {

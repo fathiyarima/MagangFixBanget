@@ -285,8 +285,8 @@ echo "Status dokumen: " . $status;
             <div class="col-md-12 grid-margin">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Pengajuan Ujian Tugas Akhir</h4>
-                  <p class="card-description">Status Dokumen Pengajuan</p>
+                  <h4 class="card-title">Pengajuan Tugas Akhir</h4>
+                  <p class="card-description">Status Dokumen Pengajuan Tugas Akhir</p>
 
                   <div class="status-grid">
                     <?php

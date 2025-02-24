@@ -121,11 +121,11 @@ if ($currentPage === 'pengajuanSeminar.php') {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Perhatian!',
-                    text: 'Silakan lengkapi semua file pada Upload Seminar dan Upload Berita Acara terlebih dahulu.',
+                    text: 'Pastikan Semua dokumen pada page pengajuan Tugas Akhir terverifikasi, lalu submit pengajuan terlebih dahulu.',
                     confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = 'uploadSeminar.php';
+                        window.location.href = 'pengajuanTA.php';
                     }
                 });
             });
@@ -142,11 +142,11 @@ if ($currentPage === 'pengajuanSeminar.php') {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Perhatian!',
-                    text: 'Anda harus menyelesaikan verifikasi dokumen TA dan Seminar terlebih dahulu.',
+                    text: 'Pastikan Semua dokumen pada page pengajuan Seminar terverifikasi, lalu submit pengajuan terlebih dahulu.',
                     confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = 'uploadTA.php';
+                        window.location.href = 'pengajuanSeminar.php';
                     }
                 });
             });
@@ -417,8 +417,8 @@ echo "Status dokumen: " . $status;
                         <div class="col-md-12 grid-margin">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">Pengajuan Ujian Tugas Akhir</h4>
-                                    <p class="card-description">Status Dokumen Pengajuan</p>
+                                    <h4 class="card-title">Pengajuan Ujian</h4>
+                                    <p class="card-description">Status Dokumen Pengajuan Ujian</p>
 
                                     <div class="status-grid">
                                         <?php

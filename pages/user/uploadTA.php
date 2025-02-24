@@ -354,7 +354,7 @@ $driveLinks = [
                         <h3 style="margin-bottom: 15px;">Welcome <span class="text-primary"><?php echo htmlspecialchars($nama); ?></span></h3>
                         <h6>NIM: <?php echo htmlspecialchars($nim); ?></h6>
                         <div class="alert-info">
-                            Disini kamu dapat melakukan upload Dokumen. Setelah mengupload dokumen yang dibutuhkan, pastikan <span class="text-success">refresh page</span> agar status pada dokumen dapat berubah. Setelah Jurnal terupload, tunggu beberapa hari hingga status pada halaman pengejuan berubah menjadi <span class="text-success">Terverifikasi.</span>
+                            Disini kamu dapat melakukan upload Dokumen. Setelah Dokumen terupload, tunggu beberapa waktu hingga status pada halaman pengejuan berubah menjadi <span class="text-success">Terverifikasi.</span>
 
                         </div>
                         <div class="upload-container">

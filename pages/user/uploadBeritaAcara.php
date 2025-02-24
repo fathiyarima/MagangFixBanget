@@ -358,8 +358,7 @@ $driveLinks = [
                         <h6>NIM: <?php echo htmlspecialchars($nim); ?></h6>
 
                         <div class="alert-info">
-                            Disini kamu dapat melakukan upload Jurnal Magang. Setelah Jurnal terupload,
-                            tunggu 1-2 hari kerja sampai notifikasi berubah menjadi terverifikasi
+                        Disini kamu dapat melakukan upload Dokumen. Setelah Dokumen terupload, tunggu beberapa waktu hingga status pada halaman pengejuan berubah menjadi <span class="text-success">Terverifikasi.</span>
                         </div>
                         <div class="upload-container">
 
@@ -628,7 +627,7 @@ $driveLinks = [
                     Swal.fire({
                         icon: 'warning',
                         title: 'Perhatian!',
-                        text: 'Silakan lengkapi semua file pada Upload Tugas Akhir _ta terlebih dahulu.',
+                        text: 'Silakan lengkapi semua dokumen pada Upload Seminar terlebih dahulu.',
                         confirmButtonText: 'OK',
                         customClass: {
                             popup: 'custom-popup', // Class untuk modal
