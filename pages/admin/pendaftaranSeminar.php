@@ -709,69 +709,94 @@
         <div id="popup" class="popup">
           <div class="popup-content">
               <span class="close-btn">&times;</span>
-              <h3>Dokumen</h3>
-              <div class="table-responsive">
-                  <table class="popup-table">
-                      <thead>
-                          <tr>
-                              <th>Keterangan</th>
-                              <th>Aksi</th>
-                              <th>Dokumen</th>
-                          </tr>
-                      </thead>
-                      <tbody id="popup-content-table">
-
-                      </tbody>
-                  </table>
+              <h2>Documents</h2>
+              <div id="popup-content">
               </div>
           </div>
+      </div>
 
         <script>
-          document.addEventListener("click", function (event) {
-            if (event.target.closest(".folder-btn")) {
-                let button = event.target.closest(".folder-btn");
-                let eventParam = button.getAttribute("data-event");
-                let userId = button.getAttribute("data-userid");
 
-                console.log("Clicked button for event:", eventParam, "User ID:", userId);
+    let openBtn = document.getElementById("open");
+    if (openBtn) {
+        openBtn.onclick = function () {
+            document.getElementById("myModal").style.display = "flex";
+        };
+    }
 
-                fetch("fetch_pdfs.php", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams({ event: eventParam, userId: userId })
-                })
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("popup-content-table").innerHTML = data;
-                    document.getElementById("popup").style.display = "block";
-                })
-                .catch(error => console.error("AJAX Error:", error));
-            }
-        });
+    // Close Modal
+    let closeBtn = document.querySelector(".close");
+    if (closeBtn) {
+        closeBtn.onclick = function () {
+            document.getElementById("myModal").style.display = "none";
+        };
+    }
 
-        // 🔹 Event untuk menutup pop-up saat tombol close diklik
-        document.querySelector(".close-btn").addEventListener("click", function () {
-            document.getElementById("popup").style.display = "none";
-        });
+    // Change select background color
+    function changeSelectColor(selectElement) {
+        var selectedValue = selectElement.value;
 
-        // 🔹 Event untuk verifikasi data
-        document.addEventListener("click", function (event) {
-            if (event.target.matches(".verify-btn")) {
-                let button = event.target;
-                let userId = button.getAttribute("data-userid");
-                let eventParam = button.getAttribute("data-event");
-                let column = button.getAttribute("data-column");
+        if (selectedValue === "dijadwalkan") {
+            selectElement.style.backgroundColor = "rgb(255, 251, 0)";
+        } else if (selectedValue === "ditunda") {
+            selectElement.style.backgroundColor = "rgb(255, 99, 71)";
+        } else if (selectedValue === "selesai") {
+            selectElement.style.backgroundColor = "rgb(34, 139, 34)";
+        }
+    }
 
-                fetch("verify.php", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams({ userId: userId, event: eventParam, column: column })
-                })
-                .then(() => {
-                    document.querySelector(".folder-btn[data-event='" + eventParam + "']").click();
-                });
-            }
-        });
+    document.querySelectorAll("select[name='status_ujian']").forEach(function (select) {
+        changeSelectColor(select);
+    });
+
+    document.addEventListener("change", function (event) {
+        if (event.target.matches("select[name='status_ujian']")) {
+            changeSelectColor(event.target);
+        }
+    });
+
+    $(document).on("click", ".folder-btn", function () {
+          let event = $(this).data("event");
+          let userId = $(this).data("userid");
+
+          console.log("Clicked button for event:", event, "User ID:", userId);
+
+          $.ajax({
+              url: "fetch_pdfs.php",
+              type: "POST",
+              data: { event: event, userId: userId },
+              success: function (response) {
+                  $("#popup-content").html(response);
+                  $("#popup").show();
+              },
+              error: function (xhr, status, error) {
+                  console.error("AJAX Error:", error);
+              }
+          });
+      });
+
+      $(document).on("click", ".close-btn", function () {
+          $("#popup").hide();
+      });
+          
+
+      $(document).off("click", ".verify-btn").on("click", ".verify-btn", function (e) {
+    e.preventDefault(); 
+
+    let userId = $(this).data("userid");
+    let event = $(this).data("event");
+    let column = $(this).data("column");
+
+    $(this).prop("disabled", true).text("Verifying...");
+
+    $.post("verify.php", { userId: userId, event: event, column: column }, function (response) {
+        console.log(response);
+        alert("Verification successful!");
+        location.reload();
+    }).fail(function (xhr) {
+        console.error("Error:", xhr.responseText);
+    });
+});
 
 
 </script>
