@@ -51,43 +51,150 @@ try {
         <!-- Navbar -->
         <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                <a class="navbar-brand brand-logo mr-5" href="https://nestpoliteknik.com/">
-                    <img src="../../assets/img/logo2.png" class="mr-2" alt="logo" />
-                </a>
-                <a class="navbar-brand brand-logo-mini" href="https://nestpoliteknik.com/">
-                    <img src="../../assets/img/Logo.webp" alt="logo" />
-                </a>
+                <a class="navbar-brand brand-logo mr-5" href="dashboard.php"><img src="../../assets/img/logo2.png" class="mr-2" alt="logo" /></a>
+                <a class="navbar-brand brand-logo-mini" href="dashboard.php"><img src="../../assets/img/Logo.webp" alt="logo" /></a>
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                    <span class="icon-menu"></span>
+                </button>
                 <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
                     <span class="icon-menu"></span>
                 </button>
+                
 
-                <!-- Profile Dropdown -->
+                <!--NAVBAR KANAN-->
                 <ul class="navbar-nav navbar-nav-right">
-                    <li class="nav-item nav-profile dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                            <img src="../../assets/img/orang.png" alt="profile" />
+                    <li class="nav-item dropdown">
+                        <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
+                            <i class="icon-bell mx-0"></i>
+                            <span class="count"></span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                            <div class="dropdown-header">
-                                <div class="profile-pic mb-3 d-flex justify-content-center">
-                                    <img src="../../assets/img/orang.png" alt="profile" class="rounded-circle" width="50" height="50" />
-                                </div>
-                                <div class="profile-info text-center">
-                                    <p class="font-weight-bold mb-1"><?php echo htmlspecialchars($nama_dosen); ?></p>
-                                    <p class="text-muted mb-1"><?php echo htmlspecialchars($nip); ?></p>
-                                    <p class="text-muted mb-1"><?php echo htmlspecialchars($prodi); ?></p>
-                                </div>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="../../index.php">
-                                    <i class="ti-power-off text-primary"></i>
-                                    Logout
-                                </a>
+
+                        <!-- NOTIFIKASI -->
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+                            <div id="notifications">
+                                <script>
+                                    function fetchNotifications() {
+                                        $.ajax({
+                                            url: '../../fetch_notif.php',
+                                            method: 'GET',
+                                            success: function(data) {
+                                                const notifications = JSON.parse(data);
+                                                const notificationCount = $('#notificationCount');
+                                                const notificationList = $('#notifications');
+
+                                                notificationCount.text(notifications.length);
+                                                notificationList.empty();
+
+                                                if (notifications.length === 0 || notifications.message === 'No unread notifications') {
+                                                    notificationList.append(`
+                                                        <a class="dropdown-item preview-item">
+                                                        <div class="preview-item-content">
+                                                            <h6 class="preview-subject font-weight-normal"></h6>
+                                                        </div>
+                                                        </a>
+                                                    `);
+                                                } else {
+                                                    notifications.forEach(function(notification) {
+                                                        const notificationItem = `
+                                                        <a class="dropdown-item preview-item" data-notification-id="${notification.id}">
+                                                        <div class="preview-thumbnail">
+                                                            <div class="preview-icon bg-info">
+                                                            <i class="ti-info-alt mx-0"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="preview-item-content">
+                                                            <h6 class="preview-subject font-weight-normal">${notification.message}</h6>
+                                                            <p class="font-weight-light small-text mb-0 text-muted">${timeAgo(notification.created_at)}</p>
+                                                        </div>
+                                                        </a>
+                                                        `;
+                                                        notificationList.append(notificationItem);
+                                                    });
+                                                }
+                                            },
+                                            error: function() {
+                                                console.log("Error fetching notifications.");
+                                            }
+                                        });
+                                    }
+
+                                    function timeAgo(time) {
+                                        const timeAgo = new Date(time);
+                                        const currentTime = new Date();
+                                        const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
+
+                                        if (diffInSeconds < 60) {
+                                            return `${diffInSeconds} seconds ago`;
+                                        }
+                                        const diffInMinutes = Math.floor(diffInSeconds / 60);
+                                        if (diffInMinutes < 60) {
+                                            return `${diffInMinutes} minutes ago`;
+                                        }
+                                        const diffInHours = Math.floor(diffInMinutes / 60);
+                                        if (diffInHours < 24) {
+                                            return `${diffInHours} hours ago`;
+                                        }
+                                        const diffInDays = Math.floor(diffInHours / 24);
+                                        return `${diffInDays} days ago`;
+                                    }
+
+                                    $(document).on('click', '.dropdown-item', function() {
+                                        const notificationId = $(this).data('notification-id');
+                                        markNotificationAsRead(notificationId);
+                                    });
+
+                                    function markNotificationAsRead(notificationId) {
+                                        $.ajax({
+                                            url: '../../mark_read.php',
+                                            method: 'POST',
+                                            data: {
+                                                id: notificationId
+                                            },
+                                            success: function(response) {
+                                                console.log(response);
+                                                fetchNotifications();
+                                            },
+                                            error: function() {
+                                                console.log("Error marking notification as read.");
+                                            }
+                                        });
+                                    }
+
+                                    $(document).ready(function() {
+                                        fetchNotifications();
+                                        setInterval(fetchNotifications, 30000);
+                                    });
+                                </script>
                             </div>
                         </div>
                     </li>
-                </ul>
+                    <!-- Profile Dropdown -->
+                    <ul class="navbar-nav navbar-nav-right">
+                        <li class="nav-item nav-profile dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+                                <img src="../../assets/img/orang.png" alt="profile" />
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                                <div class="dropdown-header">
+                                    <div class="profile-pic mb-3 d-flex justify-content-center">
+                                        <img src="../../assets/img/orang.png" alt="profile" class="rounded-circle" width="50" height="50" />
+                                    </div>
+                                    <div class="profile-info text-center">
+                                        <p class="font-weight-bold mb-1"><?php echo htmlspecialchars($nama_dosen); ?></p>
+                                        <p class="text-muted mb-1"><?php echo htmlspecialchars($nip); ?></p>
+                                        <p class="text-muted mb-1"><?php echo htmlspecialchars($prodi); ?></p>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="../../index.php">
+                                        <i class="ti-power-off text-primary"></i>
+                                        Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
             </div>
         </nav>
 
