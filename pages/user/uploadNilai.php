@@ -86,10 +86,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
         $columnName = '';
         switch ($fileCategory) {
             case 'Lembar Hasil Nilai Dosen Pembimbing 1':
-                $columnName = 'lembar_hasil_nilai_dosbim1(nilai)';
+                $columnName = 'lembar_hasil_nilai_dosbim1_nilai';
                 break;
             case 'Lembar Hasil Nilai Dosen Pembimbing 2':
-                $columnName = 'lembar_hasil_nilai_dosbim2(nilai)';
+                $columnName = 'lembar_hasil_nilai_dosbim2_nilai';
                 break;
             default:
                 throw new Exception("Kategori file tidak valid");
@@ -140,10 +140,10 @@ function getFileStatus($nama_mahasiswa, $tipe_file)
         $columnName = '';
         switch ($tipe_file) {
             case 'Lembar Hasil Nilai Dosen Pembimbing 1':
-                $columnName = 'lembar_hasil_nilai_dosbim1(nilai)';
+                $columnName = 'lembar_hasil_nilai_dosbim1_nilai';
                 break;
             case 'Lembar Hasil Nilai Dosen Pembimbing 2':
-                $columnName = 'lembar_hasil_nilai_dosbim2(nilai)';
+                $columnName = 'lembar_hasil_nilai_dosbim2_nilai';
                 break;
             case 'Lembar Persetujuan Laporan Tugas Akhir':
                 $columnName = 'lembar_persetujuan_laporan_ta_ujian';
@@ -203,6 +203,8 @@ $driveLinks = [
     <link rel="stylesheet" type="text/css" href="../../assets/css/user/uploadNilai.css" />
     <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 </head>

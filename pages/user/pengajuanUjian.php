@@ -4,93 +4,221 @@ $nama_mahasiswa = $_SESSION['username'] ?? 'farel';
 $event = 'tugas_akhir';
 
 try {
-  $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
-  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-  // Get student info
-  $check = "SELECT id_mahasiswa, nim, nama_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
-  $checkNim = $conn->prepare($check);
-  $checkNim->execute([':nama' => $nama_mahasiswa]);
-  $row = $checkNim->fetch(PDO::FETCH_ASSOC);
-
-  if ($row) {
-    $nim = $row['nim'];
-    $nama = $row['nama_mahasiswa'];
-    $prodi = $row['prodi'];
-    $id = $row['id_mahasiswa'];
-  } else {
-    $nim = 'K3522068';
-    $nama = 'Nama Default';
-    $prodi = 'PRODI';
-  }
-} catch (PDOException $e) {
-  echo "Connection failed: " . $e->getMessage();
-}
-
-// Function to get document status
-function getDocumentStatus($nama_mahasiswa, $id, $document_type)
-{
-  try {
     $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Mapping document name to column
-    $columnMap = [
-        'Lembar Persetujuan Laporan Tugas Akhir' => 'lembar_persetujuan_laporan_ta_ujian',
-        'Formulir Pendaftaran Ujian Tugas Akhir' => 'form_pendaftaran_ujian_ta_ujian',
-        'Lembar Kehadiran Seminar Proposal' => 'lembar_kehadiran_sempro_ujian',
-        'Buku Konsultasi Tugas Akhir' => 'buku_konsultasi_ta_ujian',
-        'Berita Acara' => 'lembar_berita_acara_seminar',
-    ];
+    // Get student info
+    $check = "SELECT id_mahasiswa, nim, nama_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
+    $checkNim = $conn->prepare($check);
+    $checkNim->execute([':nama' => $nama_mahasiswa]);
+    $row = $checkNim->fetch(PDO::FETCH_ASSOC);
 
-    if (!isset($columnMap[$document_type])) {
-      return 'Dokumen tidak valid';
+    if ($row) {
+        $nim = $row['nim'];
+        $nama = $row['nama_mahasiswa'];
+        $prodi = $row['prodi'];
+        $id = $row['id_mahasiswa'];
+    } else {
+        $nim = 'K3522068';
+        $nama = 'Nama Default';
+        $prodi = 'PRODI';
     }
+} catch (PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+}
 
-    $column = $columnMap[$document_type];
+// Function untuk cek status verifikasi TA
+function checkTAVerificationStatus($nama_mahasiswa)
+{
+    try {
+        $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Step 1: Check verification status in tugas_akhir
-    $sql2 = "SELECT `$column` FROM ujian WHERE id_mahasiswa = :id";
-    $stmt2 = $conn->prepare($sql2);
-    $stmt2->execute([':id' => $id]);
-    $verify = $stmt2->fetch(PDO::FETCH_ASSOC);
+        // Get student ID first
+        $stmt = $conn->prepare("SELECT id_mahasiswa FROM mahasiswa WHERE username = :nama");
+        $stmt->execute([':nama' => $nama_mahasiswa]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($verify && $verify[$column] == 1) {
-      return 'Terverifikasi'; // If verification status is 1
+        if (!$result) {
+            return false;
+        }
+
+        $id = $result['id_mahasiswa'];
+
+        // Check verification status for all required TA documents
+        $sql = "SELECT 
+            form_pendaftaran_sempro_seminar,
+            lembar_persetujuan_proposal_ta_seminar,
+            buku_konsultasi_ta_seminar
+        FROM tugas_akhir 
+        WHERE id_mahasiswa = :id";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $verificationStatus = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($verificationStatus) {
+            return array_sum($verificationStatus) === count($verificationStatus);
+        }
+
+        return false;
+    } catch (PDOException $e) {
+        error_log("Error checking TA verification: " . $e->getMessage());
+        return false;
     }
+}
 
-    // Step 2: Check if the file exists in mahasiswa
-    $sql = "SELECT `$column` FROM mahasiswa WHERE username = :nama";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([':nama' => $nama_mahasiswa]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+// Function untuk mengecek dokumen seminar
+function checkSeminarDocsVerification($nama_mahasiswa)
+{
+    try {
+        $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    if ($result && !empty($result[$column])) {
-      return 'Menunggu Verifikasi'; // File exists & verification is 0
+        $stmt = $conn->prepare("SELECT id_mahasiswa FROM mahasiswa WHERE username = :nama");
+        $stmt->execute([':nama' => $nama_mahasiswa]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            return false;
+        }
+
+        $id = $result['id_mahasiswa'];
+
+        $sql = "SELECT 
+            lembar_berita_acara_seminar,
+            lembar_persetujuan_laporan_ta_ujian,
+            form_pendaftaran_ujian_ta_ujian,
+            lembar_kehadiran_sempro_ujian,
+            buku_konsultasi_ta_ujian
+        FROM seminar_proposal 
+        WHERE id_mahasiswa = :id";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $verificationStatus = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($verificationStatus) {
+            return array_sum($verificationStatus) === count($verificationStatus);
+        }
+
+        return false;
+    } catch (PDOException $e) {
+        error_log("Error checking seminar verification: " . $e->getMessage());
+        return false;
     }
+}
 
-    return 'Belum Upload'; // No file & verification = 0
-  } catch (PDOException $e) {
-    return 'Error: ' . $e->getMessage();
-  }
+// Add restriction check based on page
+$currentPage = basename($_SERVER['PHP_SELF']);
+
+if ($currentPage === 'pengajuanSeminar.php') {
+    if (!checkTAVerificationStatus($nama_mahasiswa)) {
+?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian!',
+                    text: 'Silakan lengkapi semua file pada Upload Seminar dan Upload Berita Acara terlebih dahulu.',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'uploadSeminar.php';
+                    }
+                });
+            });
+        </script>
+    <?php
+        exit();
+    }
+} else if ($currentPage === 'pengajuanUjian.php') {
+    if (!checkTAVerificationStatus($nama_mahasiswa) || !checkSeminarDocsVerification($nama_mahasiswa)) {
+    ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian!',
+                    text: 'Anda harus menyelesaikan verifikasi dokumen TA dan Seminar terlebih dahulu.',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'uploadTA.php';
+                    }
+                });
+            });
+        </script>
+<?php
+        exit();
+    }
+}
+// Function to get document status
+function getDocumentStatus($nama_mahasiswa, $id, $document_type)
+{
+    try {
+        $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Mapping document name to column
+        $columnMap = [
+            'Lembar Persetujuan Laporan Tugas Akhir' => 'lembar_persetujuan_laporan_ta_ujian',
+            'Formulir Pendaftaran Ujian Tugas Akhir' => 'form_pendaftaran_ujian_ta_ujian',
+            'Lembar Kehadiran Seminar Proposal' => 'lembar_kehadiran_sempro_ujian',
+            'Buku Konsultasi Tugas Akhir' => 'buku_konsultasi_ta_ujian',
+            'Berita Acara' => 'lembar_berita_acara_seminar',
+        ];
+
+        if (!isset($columnMap[$document_type])) {
+            return 'Dokumen tidak valid';
+        }
+
+        $column = $columnMap[$document_type];
+
+        // Step 1: Check verification status in tugas_akhir
+        $sql2 = "SELECT `$column` FROM ujian WHERE id_mahasiswa = :id";
+        $stmt2 = $conn->prepare($sql2);
+        $stmt2->execute([':id' => $id]);
+        $verify = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+        if ($verify && $verify[$column] == 1) {
+            return 'Terverifikasi'; // If verification status is 1
+        }
+
+        // Step 2: Check if the file exists in mahasiswa
+        $sql = "SELECT `$column` FROM mahasiswa WHERE username = :nama";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':nama' => $nama_mahasiswa]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result && !empty($result[$column])) {
+            return 'Menunggu Verifikasi'; // File exists & verification is 0
+        }
+
+        return 'Belum Upload'; // No file & verification = 0
+    } catch (PDOException $e) {
+        return 'Error: ' . $e->getMessage();
+    }
 }
 
 function areAllDocumentsVerified($nama_mahasiswa, $id)
 {
-  $documents = [
-    'Form Pendaftaran dan Persetujuan Tema',
-    'Bukti Pembayaran',
-    'Bukti Transkrip Nilai',
-    'Bukti Lulus Mata kuliah Magang / PI'
-  ];
+    $documents = [
+        'Form Pendaftaran dan Persetujuan Tema',
+        'Bukti Pembayaran',
+        'Bukti Transkrip Nilai',
+        'Bukti Lulus Mata kuliah Magang / PI'
+    ];
 
-  foreach ($documents as $doc) {
-    $status = getDocumentStatus($nama_mahasiswa, $id, $doc);
-    if ($status !== 'Terverifikasi') {
-      return false;
+    foreach ($documents as $doc) {
+        $status = getDocumentStatus($nama_mahasiswa, $id, $doc);
+        if ($status !== 'Terverifikasi') {
+            return false;
+        }
     }
-  }
-  return true;
+    return true;
 }
 
 
@@ -126,6 +254,7 @@ echo "Status dokumen: " . $status;
     <!-- endinject -->
     <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
     <link rel="stylesheet" type="text/css" href="../../assets/css/user/pengajuan.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -410,6 +539,10 @@ echo "Status dokumen: " . $status;
 
                 .btn-submit:disabled {
                     background-color: #cccccc;
+                }
+
+                .swal2-popup {
+                    font-size: 0.9rem !important;
                 }
             </style>
             <!-- plugins:js -->

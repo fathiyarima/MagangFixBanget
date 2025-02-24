@@ -27,50 +27,176 @@ try {
     echo "Connection failed: " . $e->getMessage();
 }
 
+function checkTAVerificationStatus($nama_mahasiswa)
+{
+    try {
+        $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Get student ID first
+        $stmt = $conn->prepare("SELECT id_mahasiswa FROM mahasiswa WHERE username = :nama");
+        $stmt->execute([':nama' => $nama_mahasiswa]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            return false;
+        }
+
+        $id = $result['id_mahasiswa'];
+
+        // Check verification status for all required TA documents
+        $sql = "SELECT 
+            form_pendaftaran_persetujuan_tema_ta,
+            bukti_pembayaran_ta,
+            bukti_transkip_nilai_ta,
+            bukti_kelulusan_magang_ta
+        FROM tugas_akhir 
+        WHERE id_mahasiswa = :id";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $verificationStatus = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($verificationStatus) {
+            return array_sum($verificationStatus) === count($verificationStatus);
+        }
+
+        return false;
+    } catch (PDOException $e) {
+        error_log("Error checking TA verification: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Function untuk mengecek dokumen seminar
+function checkSeminarDocsVerification($nama_mahasiswa)
+{
+    try {
+        $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $stmt = $conn->prepare("SELECT id_mahasiswa FROM mahasiswa WHERE username = :nama");
+        $stmt->execute([':nama' => $nama_mahasiswa]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            return false;
+        }
+
+        $id = $result['id_mahasiswa'];
+
+        $sql = "SELECT 
+            form_pendaftaran_sempro_seminar,
+            lembar_persetujuan_proposal_ta_seminar,
+            buku_konsultasi_ta_seminar
+        FROM seminar_proposal 
+        WHERE id_mahasiswa = :id";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $verificationStatus = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($verificationStatus) {
+            return array_sum($verificationStatus) === count($verificationStatus);
+        }
+
+        return false;
+    } catch (PDOException $e) {
+        error_log("Error checking seminar verification: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Add restriction check based on page
+$currentPage = basename($_SERVER['PHP_SELF']);
+
+if ($currentPage === 'pengajuanSeminar.php') {
+    if (!checkTAVerificationStatus($nama_mahasiswa)) {
+?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian!',
+                    text: 'Silakan lengkapi semua file pada Upload Seminar dan Upload Berita Acara terlebih dahulu.',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'uploadSeminar.php';
+                    }
+                });
+            });
+        </script>
+    <?php
+        exit();
+    }
+} else if ($currentPage === 'pengajuanUjian.php') {
+    if (!checkTAVerificationStatus($nama_mahasiswa) || !checkSeminarDocsVerification($nama_mahasiswa)) {
+    ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian!',
+                    text: 'Anda harus menyelesaikan verifikasi dokumen TA dan Seminar terlebih dahulu.',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'uploadTA.php';
+                    }
+                });
+            });
+        </script>
+<?php
+        exit();
+    }
+}
 // Function to get document status
 function getDocumentStatus($nama_mahasiswa, $id, $document_type)
 {
-  try {
-    $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    try {
+        $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Mapping document name to column
-    $columnMap = [
-        'Form Pendaftaran Seminar Proposal' => 'form_pendaftaran_sempro_seminar',
-        'Lembar Persetujuan Proposal Tugas Akhir' => 'lembar_persetujuan_proposal_ta_seminar',
-        'Buku Konsultasi Tugas Akhir' => 'buku_konsultasi_ta_seminar',
-    ];
+        // Mapping document name to column
+        $columnMap = [
+            'Form Pendaftaran Seminar Proposal' => 'form_pendaftaran_sempro_seminar',
+            'Lembar Persetujuan Proposal Tugas Akhir' => 'lembar_persetujuan_proposal_ta_seminar',
+            'Buku Konsultasi Tugas Akhir' => 'buku_konsultasi_ta_seminar',
+        ];
 
-    if (!isset($columnMap[$document_type])) {
-      return 'Dokumen tidak valid';
+        if (!isset($columnMap[$document_type])) {
+            return 'Dokumen tidak valid';
+        }
+
+        $column = $columnMap[$document_type];
+
+        // Step 1: Check verification status in tugas_akhir
+        $sql2 = "SELECT `$column` FROM seminar_proposal WHERE id_mahasiswa = :id";
+        $stmt2 = $conn->prepare($sql2);
+        $stmt2->execute([':id' => $id]);
+        $verify = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+        if ($verify && $verify[$column] == 1) {
+            return 'Terverifikasi'; // If verification status is 1
+        }
+
+        // Step 2: Check if the file exists in mahasiswa
+        $sql = "SELECT `$column` FROM mahasiswa WHERE username = :nama";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':nama' => $nama_mahasiswa]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result && !empty($result[$column])) {
+            return 'Menunggu Verifikasi'; // File exists & verification is 0
+        }
+
+        return 'Belum Upload'; // No file & verification = 0
+    } catch (PDOException $e) {
+        return 'Error: ' . $e->getMessage();
     }
-
-    $column = $columnMap[$document_type];
-
-    // Step 1: Check verification status in tugas_akhir
-    $sql2 = "SELECT `$column` FROM seminar_proposal WHERE id_mahasiswa = :id";
-    $stmt2 = $conn->prepare($sql2);
-    $stmt2->execute([':id' => $id]);
-    $verify = $stmt2->fetch(PDO::FETCH_ASSOC);
-
-    if ($verify && $verify[$column] == 1) {
-      return 'Terverifikasi'; // If verification status is 1
-    }
-
-    // Step 2: Check if the file exists in mahasiswa
-    $sql = "SELECT `$column` FROM mahasiswa WHERE username = :nama";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([':nama' => $nama_mahasiswa]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($result && !empty($result[$column])) {
-      return 'Menunggu Verifikasi'; // File exists & verification is 0
-    }
-
-    return 'Belum Upload'; // No file & verification = 0
-  } catch (PDOException $e) {
-    return 'Error: ' . $e->getMessage();
-  }
 }
 
 function areAllDocumentsVerified($nama_mahasiswa, $id)
@@ -116,10 +242,19 @@ function areAllDocumentsVerified($nama_mahasiswa, $id)
     <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
     <link rel="stylesheet" type="text/css" href="../../assets/css/user/pengajuan.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
 <body>
+    <?php if (isset($_SESSION['error_message'])): ?>
+        <div class="alert alert-warning">
+            <?php
+            echo $_SESSION['error_message'];
+            unset($_SESSION['error_message']); // Clear the message after displaying
+            ?>
+        </div>
+    <?php endif; ?>
     <div class="container-scroller">
         <!-- partial:partials/_navbar.html -->
         <!--NAVBAR KIRI-->
@@ -157,31 +292,31 @@ function areAllDocumentsVerified($nama_mahasiswa, $id)
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-            <div id="notifications">
-            <script>
-              function fetchNotifications() {
-                $.ajax({
-                  url: '../../fetch_notif.php',
-                  method: 'GET',
-                  success: function(data) {
-                    const notifications = JSON.parse(data);
-                    const notificationCount = $('#notificationCount');
-                    const notificationList = $('#notifications');
-                          
-                    notificationCount.text(notifications.length);
-                    notificationList.empty();
+                            <div id="notifications">
+                                <script>
+                                    function fetchNotifications() {
+                                        $.ajax({
+                                            url: '../../fetch_notif.php',
+                                            method: 'GET',
+                                            success: function(data) {
+                                                const notifications = JSON.parse(data);
+                                                const notificationCount = $('#notificationCount');
+                                                const notificationList = $('#notifications');
 
-                    if (notifications.length === 0 || notifications.message === 'No unread notifications') {
-                      notificationList.append(`
+                                                notificationCount.text(notifications.length);
+                                                notificationList.empty();
+
+                                                if (notifications.length === 0 || notifications.message === 'No unread notifications') {
+                                                    notificationList.append(`
                         <a class="dropdown-item preview-item">
                           <div class="preview-item-content">
                             <h6 class="preview-subject font-weight-normal"></h6>
                           </div>
                         </a>
                       `);
-                    } else {
-                      notifications.forEach(function(notification) {
-                      const notificationItem = `
+                                                } else {
+                                                    notifications.forEach(function(notification) {
+                                                        const notificationItem = `
                         <a class="dropdown-item preview-item" data-notification-id="${notification.id}">
                           <div class="preview-thumbnail">
                             <div class="preview-icon bg-info">
@@ -194,64 +329,66 @@ function areAllDocumentsVerified($nama_mahasiswa, $id)
                           </div>
                         </a>
                         `;
-                        notificationList.append(notificationItem);
-                      });
-                    }
-                  },
-                error: function() {
-                  console.log("Error fetching notifications.");
-                }
-              });
-            }
+                                                        notificationList.append(notificationItem);
+                                                    });
+                                                }
+                                            },
+                                            error: function() {
+                                                console.log("Error fetching notifications.");
+                                            }
+                                        });
+                                    }
 
-              function timeAgo(time) {
-                const timeAgo = new Date(time);
-                const currentTime = new Date();
-                const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
+                                    function timeAgo(time) {
+                                        const timeAgo = new Date(time);
+                                        const currentTime = new Date();
+                                        const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
 
-                if (diffInSeconds < 60) {
-                  return `${diffInSeconds} seconds ago`;
-                }
-                const diffInMinutes = Math.floor(diffInSeconds / 60);
-                if (diffInMinutes < 60) {
-                  return `${diffInMinutes} minutes ago`;
-                }
-                const diffInHours = Math.floor(diffInMinutes / 60);
-                if (diffInHours < 24) {
-                  return `${diffInHours} hours ago`;
-                }
-                const diffInDays = Math.floor(diffInHours / 24);
-                return `${diffInDays} days ago`;
-            }
+                                        if (diffInSeconds < 60) {
+                                            return `${diffInSeconds} seconds ago`;
+                                        }
+                                        const diffInMinutes = Math.floor(diffInSeconds / 60);
+                                        if (diffInMinutes < 60) {
+                                            return `${diffInMinutes} minutes ago`;
+                                        }
+                                        const diffInHours = Math.floor(diffInMinutes / 60);
+                                        if (diffInHours < 24) {
+                                            return `${diffInHours} hours ago`;
+                                        }
+                                        const diffInDays = Math.floor(diffInHours / 24);
+                                        return `${diffInDays} days ago`;
+                                    }
 
-              $(document).on('click', '.dropdown-item', function() {
-                const notificationId = $(this).data('notification-id');
-                markNotificationAsRead(notificationId);
-              });
+                                    $(document).on('click', '.dropdown-item', function() {
+                                        const notificationId = $(this).data('notification-id');
+                                        markNotificationAsRead(notificationId);
+                                    });
 
-              function markNotificationAsRead(notificationId) {
-                $.ajax({
-                  url: '../../mark_read.php',
-                  method: 'POST',
-                  data: { id: notificationId },
-                  success: function(response) {
-                  console.log(response);
-                  fetchNotifications();
-                },
-                error: function() {
-                  console.log("Error marking notification as read.");
-                }
-              });
-            }
+                                    function markNotificationAsRead(notificationId) {
+                                        $.ajax({
+                                            url: '../../mark_read.php',
+                                            method: 'POST',
+                                            data: {
+                                                id: notificationId
+                                            },
+                                            success: function(response) {
+                                                console.log(response);
+                                                fetchNotifications();
+                                            },
+                                            error: function() {
+                                                console.log("Error marking notification as read.");
+                                            }
+                                        });
+                                    }
 
-            $(document).ready(function() {
-              fetchNotifications();
-              setInterval(fetchNotifications, 30000);
-            });
-          </script>
-              </div>
-            </div>
-          </li>
+                                    $(document).ready(function() {
+                                        fetchNotifications();
+                                        setInterval(fetchNotifications, 30000);
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </li>
 
                     <!--PROFIL-->
                     <li class="nav-item nav-profile dropdown">
@@ -488,6 +625,22 @@ function areAllDocumentsVerified($nama_mahasiswa, $id)
 
                 .btn-submit:disabled {
                     background-color: #cccccc;
+                }
+            </style>
+            <script>
+                <?php if (isset($_SESSION['error_message'])): ?>
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Perhatian',
+                        text: '<?php echo $_SESSION['error_message']; ?>',
+                        confirmButtonText: 'OK'
+                    });
+                    <?php unset($_SESSION['error_message']); ?>
+                <?php endif; ?>
+            </script>
+            <style>
+                .swal2-popup {
+                    font-size: 0.9rem !important;
                 }
             </style>
             <!-- plugins:js -->

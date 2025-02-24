@@ -3,52 +3,220 @@ session_start();
 $nama_mahasiswa = $_SESSION['username'] ?? 'farel';
 
 try {
+  $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+  // Get student info
+  $check = "SELECT id_mahasiswa, nim, nama_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
+  $checkNim = $conn->prepare($check);
+  $checkNim->execute([':nama' => $nama_mahasiswa]);
+  $row = $checkNim->fetch(PDO::FETCH_ASSOC);
+
+  if ($row) {
+    $nim = $row['nim'];
+    $nama = $row['nama_mahasiswa'];
+    $prodi = $row['prodi'];
+    $id = $row['id_mahasiswa'];
+  } else {
+    $nim = 'K3522068';
+    $nama = 'Nama Default';
+    $prodi = 'PRODI';
+  }
+} catch (PDOException $e) {
+  echo "Connection failed: " . $e->getMessage();
+}
+
+// Function untuk cek status verifikasi TA
+function checkTAVerificationStatus($nama_mahasiswa)
+{
+  try {
     $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Get student info
-    $check = "SELECT nim, nama_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
-    $checkNim = $conn->prepare($check);
-    $checkNim->execute([':nama' => $nama_mahasiswa]);
-    $row = $checkNim->fetch(PDO::FETCH_ASSOC);
+    // Get student ID first
+    $stmt = $conn->prepare("SELECT id_mahasiswa FROM mahasiswa WHERE username = :nama");
+    $stmt->execute([':nama' => $nama_mahasiswa]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($row) {
-        $nim = $row['nim'];
-        $nama = $row['nama_mahasiswa'];
-        $prodi = $row['prodi'];
-    } else {
-        $nim = 'K3522068';
-        $nama = 'Nama Default';
-        $prodi = 'PRODI';
+    if (!$result) {
+      return false;
     }
-} catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
+
+    $id = $result['id_mahasiswa'];
+
+    // Check verification status for all required TA documents
+    $sql = "SELECT 
+            lembar_berita_acara_seminar,
+            lembar_persetujuan_laporan_ta_ujian,
+            form_pendaftaran_ujian_ta_ujian,
+            lembar_kehadiran_sempro_ujian,
+            buku_konsultasi_ta_ujian
+      FROM tugas_akhir 
+      WHERE id_mahasiswa = :id";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':id' => $id]);
+    $verificationStatus = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($verificationStatus) {
+      return array_sum($verificationStatus) === count($verificationStatus);
+    }
+
+    return false;
+  } catch (PDOException $e) {
+    error_log("Error checking TA verification: " . $e->getMessage());
+    return false;
+  }
+}
+
+// Function untuk mengecek dokumen seminar
+function checkSeminarDocsVerification($nama_mahasiswa)
+{
+  try {
+    $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $stmt = $conn->prepare("SELECT id_mahasiswa FROM mahasiswa WHERE username = :nama");
+    $stmt->execute([':nama' => $nama_mahasiswa]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$result) {
+      return false;
+    }
+
+    $id = $result['id_mahasiswa'];
+
+    $sql = "SELECT 
+          lembar_hasil_nilai_dosbim1_nilai,
+          lembar_hasil_nilai_dosbim2_nilai
+      FROM seminar_proposal 
+      WHERE id_mahasiswa = :id";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':id' => $id]);
+    $verificationStatus = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($verificationStatus) {
+      return array_sum($verificationStatus) === count($verificationStatus);
+    }
+
+    return false;
+  } catch (PDOException $e) {
+    error_log("Error checking seminar verification: " . $e->getMessage());
+    return false;
+  }
+}
+
+// Add restriction check based on page
+$currentPage = basename($_SERVER['PHP_SELF']);
+
+if ($currentPage === 'pengajuanSeminar.php') {
+  if (!checkTAVerificationStatus($nama_mahasiswa)) {
+?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Perhatian!',
+          text: 'Silakan lengkapi semua file pada Upload Seminar dan Upload Berita Acara terlebih dahulu.',
+          confirmButtonText: 'OK'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = 'uploadSeminar.php';
+          }
+        });
+      });
+    </script>
+  <?php
+    exit();
+  }
+} else if ($currentPage === 'pengajuanUjian.php') {
+  if (!checkTAVerificationStatus($nama_mahasiswa) || !checkSeminarDocsVerification($nama_mahasiswa)) {
+  ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Perhatian!',
+          text: 'Anda harus menyelesaikan verifikasi dokumen TA dan Seminar terlebih dahulu.',
+          confirmButtonText: 'OK'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = 'uploadTA.php';
+          }
+        });
+      });
+    </script>
+<?php
+    exit();
+  }
 }
 
 // Function to get document status
 function getDocumentStatus($nama_mahasiswa, $document_type)
 {
-    try {
-        $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  try {
+    $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $columnMap = [
-            'Lembar Nilai Dosen Pembimbing 1' => 'lembar_hasil_nilai_dosbim1(nilai)',
-            'Lembar Nilai Dosen Pembimbing 2' => 'lembar_hasil_nilai_dosbim2(nilai)',
-        ];
+    $columnMap = [
+      'Lembar Nilai Dosen Pembimbing 1' => 'lembar_hasil_nilai_dosbim1_nilai',
+      'Lembar Nilai Dosen Pembimbing 2' => 'lembar_hasil_nilai_dosbim2_nilai',
+    ];
 
-        $column = $columnMap[$document_type];
-
-        $sql = "SELECT `$column` FROM mahasiswa WHERE username = :nama";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':nama' => $nama_mahasiswa]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $result && $result[$column] !== null ? 'Menunggu Verifikasi' : 'Belum Upload';
-    } catch (PDOException $e) {
-        return 'Error';
+    if (!isset($columnMap[$document_type])) {
+      return 'Dokumen tidak valid';
     }
+
+    $column = $columnMap[$document_type];
+
+    // Step 1: Check verification status in tugas_akhir
+    $sql2 = "SELECT `$column` FROM ujian WHERE id_mahasiswa = :id";
+    $stmt2 = $conn->prepare($sql2);
+    $stmt2->execute([':id' => $id]);
+    $verify = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+    if ($verify && $verify[$column] == 1) {
+      return 'Terverifikasi'; // If verification status is 1
+    }
+
+    // Step 2: Check if the file exists in mahasiswa
+    $sql = "SELECT `$column` FROM mahasiswa WHERE username = :nama";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':nama' => $nama_mahasiswa]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($result && !empty($result[$column])) {
+      return 'Menunggu Verifikasi'; // File exists & verification is 0
+    }
+
+    return 'Belum Upload'; // No file & verification = 0
+  } catch (PDOException $e) {
+    return 'Error: ' . $e->getMessage();
+  }
 }
+
+function areAllDocumentsVerified($nama_mahasiswa, $id)
+{
+  $documents = [
+    'Lembar Nilai Dosen Pembimbing 1',
+    'Lembar Nilai Dosen Pembimbing 2'
+  ];
+
+  foreach ($documents as $doc) {
+    $status = getDocumentStatus($nama_mahasiswa, $id, $doc);
+    if ($status !== 'Terverifikasi') {
+      return false;
+    }
+  }
+  return true;
+}
+// Contoh penggunaan fungsi
+$document_type = 'Bukti Pembayaran'; // Ubah sesuai dokumen yang ingin dicek
+$status = getDocumentStatus($nama_mahasiswa, $id, $document_type);
+echo "Status dokumen: " . $status;
 ?>
 
 <!DOCTYPE html>
@@ -75,7 +243,7 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
   <!-- endinject -->
   <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
   <link rel="stylesheet" type="text/css" href="../../assets/css/user/pengajuan.css" />
-
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -247,7 +415,7 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
                     ];
 
                     foreach ($documents as $doc) {
-                      $status = getDocumentStatus($nama_mahasiswa, $doc);
+                      $status = getDocumentStatus($nama_mahasiswa, $id, $doc);
                       $statusClass = '';
 
                       switch ($status) {
@@ -272,62 +440,53 @@ function getDocumentStatus($nama_mahasiswa, $document_type)
                       </div>
                     <?php } ?>
                   </div>
-
-                  <?php if (isset($_POST['submit_pengajuan'])): ?>
-                    <div class="alert alert-success mt-4">
-                      Pengajuan berhasil dikirim! Menunggu verifikasi admin.
-                    </div>
-                  <?php endif; ?>
-
-                  <div class="submit-section">
-                    <form method="post">
-                      <button type="submit" name="submit_pengajuan" class="btn-submit">
-                        Submit Pengajuan
-                      </button>
-                    </form>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    <!-- container-scroller -->
-    <script>
-                function showNotification() {
-                    const notification = document.getElementById('notification');
-                    notification.style.display = 'block';
-                    setTimeout(() => {
-                        notification.style.display = 'none';
-                    }, 3000);
-                }
+      <!-- container-scroller -->
+      <script>
+        function showNotification() {
+          const notification = document.getElementById('notification');
+          notification.style.display = 'block';
+          setTimeout(() => {
+            notification.style.display = 'none';
+          }, 3000);
+        }
 
-                // Show notification if form was submitted
-                <?php if (isset($_POST['submit_pengajuan'])): ?>
-                    showNotification();
-                <?php endif; ?>
-            </script>
-    <!-- plugins:js -->
-    <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
-    <script src="../../Template/skydash/vendors/chart.js/Chart.min.js"></script>
-    <script src="../../Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
-    <script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-    <script src="../../Template/skydash/js/dataTables.select.min.js"></script>
+        // Show notification if form was submitted
+        <?php if (isset($_POST['submit_pengajuan'])): ?>
+          showNotification();
+        <?php endif; ?>
+      </script>
+      <style>
+        .swal2-popup {
+          font-size: 0.9rem !important;
+        }
+      </style>
+      <!-- plugins:js -->
+      <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
+      <!-- endinject -->
+      <!-- Plugin js for this page -->
+      <script src="../../Template/skydash/vendors/chart.js/Chart.min.js"></script>
+      <script src="../../Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
+      <script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+      <script src="../../Template/skydash/js/dataTables.select.min.js"></script>
 
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
-    <script src="../../Template/skydash/js/off-canvas.js"></script>
-    <script src="../../Template/skydash/js/hoverable-collapse.js"></script>
-    <script src="../../Template/skydash/js/../../Template.js"></script>
-    <script src="../../Template/skydash/js/settings.js"></script>
-    <script src="../../Template/skydash/js/todolist.js"></script>
-    <!-- endinject -->
-    <!-- Custom js for this page-->
-    <script src="../../Template/skydash/js/dashboard.js"></script>
-    <script src="../../Template/skydash/js/Chart.roundedBarCharts.js"></script>
-    <!-- End custom js for this page-->
+      <!-- End plugin js for this page -->
+      <!-- inject:js -->
+      <script src="../../Template/skydash/js/off-canvas.js"></script>
+      <script src="../../Template/skydash/js/hoverable-collapse.js"></script>
+      <script src="../../Template/skydash/js/../../Template.js"></script>
+      <script src="../../Template/skydash/js/settings.js"></script>
+      <script src="../../Template/skydash/js/todolist.js"></script>
+      <!-- endinject -->
+      <!-- Custom js for this page-->
+      <script src="../../Template/skydash/js/dashboard.js"></script>
+      <script src="../../Template/skydash/js/Chart.roundedBarCharts.js"></script>
+      <!-- End custom js for this page-->
 </body>
 
 </html>
