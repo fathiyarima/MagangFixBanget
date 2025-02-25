@@ -73,7 +73,7 @@ try {
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
           <span class="icon-menu"></span>
         </button>
-        
+
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
@@ -467,33 +467,33 @@ try {
                                 // Tombol Download
                                 if (!empty($row['lembar_persetujuan_proposal_ta_seminar'])) {
                                   echo "<td>
-                                <a href='downloadsempro.php?id=" . $id . "' target='_blank' 
-                                  class='btn btn-outline-primary btn-fw'>
-                                    <i class='mdi mdi-download'></i> Download
-                                </a>
-                              </td>";
+                                          <a href='downloadsempro.php?id=" . $id . "' target='_blank' 
+                                            class='btn btn-outline-primary btn-fw'>
+                                              <i class='mdi mdi-download'></i> Download
+                                          </a>
+                                        </td>";
                                 } else {
                                   echo "<td><span class='badge badge-warning'>No file</span></td>";
                                 }
 
                                 // Form Upload
                                 echo '<td>
-                        <form id="uploadForm_' . $id . '" method="POST" action="../../pages/dospem/uploadsempro.php" 
-                              enctype="multipart/form-data" onsubmit="return validateForm(' . $id . ')">
-                            <input type="file" 
-                                  name="lembar_persetujuan_proposal_ta_seminar" 
-                                  id="file_' . $id . '" 
-                                  accept=".pdf" 
-                                  style="display: none;"
-                                  onchange="handleFileSelect(' . $id . ')">
-                            <input type="hidden" name="id_mahasiswa" value="' . $id . '">
-                            <button type="button" 
-                                    onclick="document.getElementById(\'file_' . $id . '\').click();" 
-                                    class="btn btn-outline-primary btn-fw">
-                                <i class="mdi mdi-upload"></i> Upload
-                            </button>
-                        </form>
-                    </td>';
+                                        <form id="uploadForm_' . $id . '" method="POST" action="../../pages/dospem/uploadsempro.php" 
+                                              enctype="multipart/form-data" onsubmit="return validateForm(' . $id . ')">
+                                            <input type="file" 
+                                                  name="lembar_persetujuan_proposal_ta_seminar" 
+                                                  id="file_' . $id . '" 
+                                                  accept=".pdf" 
+                                                  style="display: none;"
+                                                  onchange="handleFileSelect(' . $id . ')">
+                                            <input type="hidden" name="id_mahasiswa" value="' . $id . '">
+                                            <button type="button" 
+                                                    onclick="document.getElementById(\'file_' . $id . '\').click();" 
+                                                    class="btn btn-outline-primary btn-fw">
+                                                <i class="mdi mdi-upload"></i> Upload
+                                            </button>
+                                        </form>
+                                    </td>';
                                 echo "</tr>";
                               }
                             }
