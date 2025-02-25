@@ -13,7 +13,6 @@ if (isset($_SESSION['username'])) {
 
         $rowDosen = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // If it's a dosen_pembimbing, fetch notifications for that user
         if ($rowDosen) {
             $user_id = $rowDosen['id_dosen'];
             $sql = "SELECT id, message, created_at FROM notif WHERE id_dosen = :user_id AND status_dosen = 'unread'";
@@ -27,7 +26,6 @@ if (isset($_SESSION['username'])) {
                 echo json_encode($notifications);
             }
         } else {
-            // If not found in dosen_pembimbing, check mahasiswa
             $queryMahasiswa = "SELECT 'mahasiswa' AS source_table, id_mahasiswa, username, pass, nim FROM mahasiswa WHERE username = :username";
             $stmt = $pdo->prepare($queryMahasiswa);
             $stmt->execute(['username' => $username]);
@@ -52,7 +50,6 @@ if (isset($_SESSION['username'])) {
         }
 
     } catch (PDOException $e) {
-        // Error handling if query fails
         echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
     }
 } else {
