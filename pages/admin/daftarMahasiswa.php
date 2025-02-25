@@ -22,25 +22,17 @@
 
   <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/mahasiswa.css">
   <link rel="stylesheet" href="../../assets/css/css/admin/mahasiswa.css">
-  <!-- Add these before closing </body> tag -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <!-- jQuery and Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
 </head>
-
 <body>
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo mr-5" href="index.php"><img src="../../assets/img/logo2.png" class="mr-2" alt="logo" /></a>
-        <a class="navbar-brand brand-logo-mini" href="index.php"><img src="../../assets/img/Logo.webp" alt="logo" /></a>
+        <a class="navbar-brand brand-logo mr-5" href="index.php"><img src="../../assets/img/logo2.png" class="mr-2" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="index.php"><img src="../../assets/img/Logo.webp" alt="logo"/></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="collapse" data-target="#sidebar">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
           <span class="icon-menu"></span>
         </button>
         <ul class="navbar-nav mr-lg-2">
@@ -106,14 +98,14 @@
           </li>
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-              <img src="../../Template/skydash/images/faces/face28.jpg" alt="profile" />
+              <img src="../../Template/skydash/images/faces/face28.jpg" alt="profile"/>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
               <a class="dropdown-item">
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
-              <a class="dropdown-item" href="../../index.php">
+              <a class="dropdown-item">
                 <i class="ti-power-off text-primary"></i>
                 Logout
               </a>
@@ -138,12 +130,8 @@
         <div id="theme-settings" class="settings-panel">
           <i class="settings-close ti-close"></i>
           <p class="settings-heading">SIDEBAR SKINS</p>
-          <div class="sidebar-bg-options selected" id="sidebar-light-theme">
-            <div class="img-ss rounded-circle bg-light border mr-3"></div>Light
-          </div>
-          <div class="sidebar-bg-options" id="sidebar-dark-theme">
-            <div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark
-          </div>
+          <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
           <p class="settings-heading mt-2">HEADER SKINS</p>
           <div class="color-tiles mx-0 px-4">
             <div class="tiles success"></div>
@@ -307,8 +295,8 @@
       </div>
       <!-- partial -->
       <!-- partial:partials/_sidebar.html -->
-      <?php
-      $current_page = basename($_SERVER['PHP_SELF']);
+      <?php 
+        $current_page = basename($_SERVER['PHP_SELF']); 
       ?>
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
@@ -333,8 +321,8 @@
 
           <!-- Pendaftaran Dropdown -->
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic"
-              aria-expanded="<?= in_array($current_page, ['pendaftaranTA.php', 'pendaftaranSeminar.php', 'pendaftaranUjian.php']) ? 'true' : 'false'; ?>"
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic" 
+              aria-expanded="<?= in_array($current_page, ['pendaftaranTA.php', 'pendaftaranSeminar.php', 'pendaftaranUjian.php']) ? 'true' : 'false'; ?>" 
               aria-controls="ui-basic">
               <i class="icon-layout menu-icon"></i>
               <span class="menu-title">Pendaftaran</span>
