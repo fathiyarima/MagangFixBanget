@@ -175,6 +175,7 @@ $driveLinks = [
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Skydash Admin</title>
     <!-- plugins:css -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="../../Template/skydash/vendors/feather/feather.css">
     <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
     <link rel="stylesheet" href="../../Template/skydash/vendors/css/vendor.bundle.base.css">
@@ -190,6 +191,7 @@ $driveLinks = [
     <!-- endinject -->
     <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
     <link rel="stylesheet" type="text/css" href="../../assets/css/user/uploadTugasAkhir.css" />
+    <link rel="stylesheet" type="text/css" href="../../assets/css/user/uploadBeritaAcara.css" />
     <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
@@ -234,7 +236,101 @@ $driveLinks = [
 
                         <!-- NOTIFIKASI -->
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-                            <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
+                            <div id="notifications">
+                                <script>
+                                    function fetchNotifications() {
+                                        $.ajax({
+                                            url: '../../fetch_notif.php',
+                                            method: 'GET',
+                                            success: function(data) {
+                                                const notifications = JSON.parse(data);
+                                                const notificationCount = $('#notificationCount');
+                                                const notificationList = $('#notifications');
+
+                                                notificationCount.text(notifications.length);
+                                                notificationList.empty();
+
+                                                if (notifications.length === 0 || notifications.message === 'No unread notifications') {
+                                                    notificationList.append(`
+                        <a class="dropdown-item preview-item">
+                          <div class="preview-item-content">
+                            <h6 class="preview-subject font-weight-normal"></h6>
+                          </div>
+                        </a>
+                      `);
+                                                } else {
+                                                    notifications.forEach(function(notification) {
+                                                        const notificationItem = `
+                        <a class="dropdown-item preview-item" data-notification-id="${notification.id}">
+                          <div class="preview-thumbnail">
+                            <div class="preview-icon bg-info">
+                              <i class="ti-info-alt mx-0"></i>
+                            </div>
+                          </div>
+                          <div class="preview-item-content">
+                            <h6 class="preview-subject font-weight-normal">${notification.message}</h6>
+                            <p class="font-weight-light small-text mb-0 text-muted">${timeAgo(notification.created_at)}</p>
+                          </div>
+                        </a>
+                        `;
+                                                        notificationList.append(notificationItem);
+                                                    });
+                                                }
+                                            },
+                                            error: function() {
+                                                console.log("Error fetching notifications.");
+                                            }
+                                        });
+                                    }
+
+                                    function timeAgo(time) {
+                                        const timeAgo = new Date(time);
+                                        const currentTime = new Date();
+                                        const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
+
+                                        if (diffInSeconds < 60) {
+                                            return `${diffInSeconds} seconds ago`;
+                                        }
+                                        const diffInMinutes = Math.floor(diffInSeconds / 60);
+                                        if (diffInMinutes < 60) {
+                                            return `${diffInMinutes} minutes ago`;
+                                        }
+                                        const diffInHours = Math.floor(diffInMinutes / 60);
+                                        if (diffInHours < 24) {
+                                            return `${diffInHours} hours ago`;
+                                        }
+                                        const diffInDays = Math.floor(diffInHours / 24);
+                                        return `${diffInDays} days ago`;
+                                    }
+
+                                    $(document).on('click', '.dropdown-item', function() {
+                                        const notificationId = $(this).data('notification-id');
+                                        markNotificationAsRead(notificationId);
+                                    });
+
+                                    function markNotificationAsRead(notificationId) {
+                                        $.ajax({
+                                            url: '../../mark_read.php',
+                                            method: 'POST',
+                                            data: {
+                                                id: notificationId
+                                            },
+                                            success: function(response) {
+                                                console.log(response);
+                                                fetchNotifications();
+                                            },
+                                            error: function() {
+                                                console.log("Error marking notification as read.");
+                                            }
+                                        });
+                                    }
+
+                                    $(document).ready(function() {
+                                        fetchNotifications();
+                                        setInterval(fetchNotifications, 30000);
+                                    });
+                                </script>
+                            </div>
                         </div>
                     </li>
 
@@ -532,7 +628,44 @@ $driveLinks = [
                 <?php unset($_SESSION['notification']); ?>
             <?php endif; ?>
         </script>
+        <script>
+            $(document).ready(function() {
+                $('#notificationDropdown').on('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
 
+                    // Get current state
+                    const isExpanded = $(this).attr('aria-expanded') === 'true';
+
+                    // Toggle the state
+                    if (isExpanded) {
+                        // Close dropdown
+                        $(this).attr('aria-expanded', 'false');
+                        $(this).parent('.nav-item').removeClass('show');
+                        $('.dropdown-menu[aria-labelledby="notificationDropdown"]').removeClass('show');
+                    } else {
+                        // Open dropdown
+                        $(this).attr('aria-expanded', 'true');
+                        $(this).parent('.nav-item').addClass('show');
+                        $('.dropdown-menu[aria-labelledby="notificationDropdown"]').addClass('show');
+                    }
+                });
+
+                // Close dropdown when clicking elsewhere
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('.nav-item.dropdown').length) {
+                        $('.nav-item.dropdown').removeClass('show');
+                        $('#notificationDropdown').attr('aria-expanded', 'false');
+                        $('.dropdown-menu').removeClass('show');
+                    }
+                });
+
+                // Prevent dropdown from closing when clicking inside it
+                $('.dropdown-menu').on('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        </script>
         <style>
             /* Add these styles to your CSS */
             .swal2-popup.swal2-toast {

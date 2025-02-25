@@ -38,23 +38,23 @@ function checkTAFilesStatus($nama_mahasiswa)
 
 function checkUjianVerificationStatus($nama_mahasiswa)
 {
-  try {
-    $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    try {
+        $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Get student ID first
-    $stmt = $conn->prepare("SELECT id_mahasiswa FROM mahasiswa WHERE username = :nama");
-    $stmt->execute([':nama' => $nama_mahasiswa]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Get student ID first
+        $stmt = $conn->prepare("SELECT id_mahasiswa FROM mahasiswa WHERE username = :nama");
+        $stmt->execute([':nama' => $nama_mahasiswa]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$result) {
-      return false;
-    }
+        if (!$result) {
+            return false;
+        }
 
-    $id = $result['id_mahasiswa'];
+        $id = $result['id_mahasiswa'];
 
-    // Check verification status for all required TA documents
-    $sql = "SELECT 
+        // Check verification status for all required TA documents
+        $sql = "SELECT 
             lembar_berita_acara_seminar,
             lembar_persetujuan_laporan_ta_ujian,
             form_pendaftaran_ujian_ta_ujian,
@@ -63,19 +63,19 @@ function checkUjianVerificationStatus($nama_mahasiswa)
       FROM verifikasi_dokumen
       WHERE id_mahasiswa = :id";
 
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([':id' => $id]);
-    $verificationStatus = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $verificationStatus = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($verificationStatus) {
-      return array_sum($verificationStatus) === count($verificationStatus);
+        if ($verificationStatus) {
+            return array_sum($verificationStatus) === count($verificationStatus);
+        }
+
+        return false;
+    } catch (PDOException $e) {
+        error_log("Error checking TA verification: " . $e->getMessage());
+        return false;
     }
-
-    return false;
-  } catch (PDOException $e) {
-    error_log("Error checking TA verification: " . $e->getMessage());
-    return false;
-  }
 }
 
 // Mengubah query untuk mengambil nim dan nama_mahasiswa
@@ -106,73 +106,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
         $fileType = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $fileCategory = $_POST['file_type'] ?? '';
 
-    // Format nama file
-    $newFileName = $nama_mahasiswa . '_' . str_replace(' ', '_', $fileCategory) . '_' . $nama_mahasiswa . '.' . $fileType;
+        // Format nama file
+        $newFileName = $nama_mahasiswa . '_' . str_replace(' ', '_', $fileCategory) . '_' . $nama_mahasiswa . '.' . $fileType;
 
-    // Validasi file
-    if ($fileType != "pdf") {
-        showNotification('error', 'Maaf, hanya file PDF yang diperbolehkan.');
-    } elseif ($file['size'] > 2000000) { // 2MB
-        showNotification('error', 'Maaf, ukuran file terlalu besar (maksimal 2MB).');
-    }
-
-    try {
-        // Koneksi ke database
-        $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        // Baca file sebagai binary
-        $fileContent = file_get_contents($file['tmp_name']);
-        if ($fileContent === false) {
-            throw new Exception("Gagal membaca file");
+        // Validasi file
+        if ($fileType != "pdf") {
+            showNotification('error', 'Maaf, hanya file PDF yang diperbolehkan.');
+        } elseif ($file['size'] > 2000000) { // 2MB
+            showNotification('error', 'Maaf, ukuran file terlalu besar (maksimal 2MB).');
         }
 
-        // Tentukan nama kolom berdasarkan tipe file
-        $columnName = '';
-        switch ($fileCategory) {
-            case 'Lembar Hasil Nilai Dosen Pembimbing 1':
-                $columnName = 'lembar_hasil_nilai_dosbim1_nilai';
-                break;
-            case 'Lembar Hasil Nilai Dosen Pembimbing 2':
-                $columnName = 'lembar_hasil_nilai_dosbim2_nilai';
-                break;
-            default:
-                throw new Exception("Kategori file tidak valid");
-        }
+        try {
+            // Koneksi ke database
+            $conn = new PDO("mysql:host=localhost;dbname=sistem_ta", "root", "");
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Cek apakah data mahasiswa sudah ada
-        $checkSql = "SELECT username FROM mahasiswa WHERE username = :nama";
-        $checkStmt = $conn->prepare($checkSql);
-        $checkStmt->execute([':nama' => $nama_mahasiswa]);
+            // Baca file sebagai binary
+            $fileContent = file_get_contents($file['tmp_name']);
+            if ($fileContent === false) {
+                throw new Exception("Gagal membaca file");
+            }
 
-        if ($checkStmt->rowCount() > 0) {
-            $sql = "UPDATE mahasiswa SET `$columnName` = :file_content WHERE username = :nama";
-        } else {
-            $sql = "INSERT INTO mahasiswa (nama_mahasiswa, `$columnName`) 
+            // Tentukan nama kolom berdasarkan tipe file
+            $columnName = '';
+            switch ($fileCategory) {
+                case 'Lembar Hasil Nilai Dosen Pembimbing 1':
+                    $columnName = 'lembar_hasil_nilai_dosbim1_nilai';
+                    break;
+                case 'Lembar Hasil Nilai Dosen Pembimbing 2':
+                    $columnName = 'lembar_hasil_nilai_dosbim2_nilai';
+                    break;
+                default:
+                    throw new Exception("Kategori file tidak valid");
+            }
+
+            // Cek apakah data mahasiswa sudah ada
+            $checkSql = "SELECT username FROM mahasiswa WHERE username = :nama";
+            $checkStmt = $conn->prepare($checkSql);
+            $checkStmt->execute([':nama' => $nama_mahasiswa]);
+
+            if ($checkStmt->rowCount() > 0) {
+                $sql = "UPDATE mahasiswa SET `$columnName` = :file_content WHERE username = :nama";
+            } else {
+                $sql = "INSERT INTO mahasiswa (nama_mahasiswa, `$columnName`) 
                    VALUES (:nama, :file_content)";
+            }
+
+            $stmt = $conn->prepare($sql);
+            $params = [
+                ':nama' => $nama_mahasiswa,
+                ':file_content' => $fileContent
+            ];
+
+            if ($checkStmt->rowCount() == 0) {
+                $params[':nama'] = $nama_mahasiswa;
+            }
+
+            $result = $stmt->execute($params);
+
+            if ($result) {
+                showNotification('success', 'File berhasil diupload! Silakan tunggu verifikasi dari admin.');
+            } else {
+                throw new Exception("Gagal menyimpan ke database");
+            }
+        } catch (Exception $e) {
+            showNotification('error', 'Error: ' . $e->getMessage());
         }
-
-        $stmt = $conn->prepare($sql);
-        $params = [
-            ':nama' => $nama_mahasiswa,
-            ':file_content' => $fileContent
-        ];
-
-        if ($checkStmt->rowCount() == 0) {
-            $params[':nama'] = $nama_mahasiswa;
-        }
-
-        $result = $stmt->execute($params);
-
-        if ($result) {
-            showNotification('success', 'File berhasil diupload! Silakan tunggu verifikasi dari admin.');
-        } else {
-            throw new Exception("Gagal menyimpan ke database");
-        }
-    } catch (Exception $e) {
-        showNotification('error', 'Error: ' . $e->getMessage());
     }
-}
 }
 
 // Fungsi untuk mendapatkan status file dari database
@@ -232,6 +232,7 @@ $driveLinks = [
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Skydash Admin</title>
     <!-- plugins:css -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="../../Template/skydash/vendors/feather/feather.css">
     <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
     <link rel="stylesheet" href="../../Template/skydash/vendors/css/vendor.bundle.base.css">
@@ -294,7 +295,101 @@ $driveLinks = [
 
                         <!-- NOTIFIKASI -->
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-                            <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
+                            <div id="notifications">
+                                <script>
+                                    function fetchNotifications() {
+                                        $.ajax({
+                                            url: '../../fetch_notif.php',
+                                            method: 'GET',
+                                            success: function(data) {
+                                                const notifications = JSON.parse(data);
+                                                const notificationCount = $('#notificationCount');
+                                                const notificationList = $('#notifications');
+
+                                                notificationCount.text(notifications.length);
+                                                notificationList.empty();
+
+                                                if (notifications.length === 0 || notifications.message === 'No unread notifications') {
+                                                    notificationList.append(`
+                        <a class="dropdown-item preview-item">
+                          <div class="preview-item-content">
+                            <h6 class="preview-subject font-weight-normal"></h6>
+                          </div>
+                        </a>
+                      `);
+                                                } else {
+                                                    notifications.forEach(function(notification) {
+                                                        const notificationItem = `
+                        <a class="dropdown-item preview-item" data-notification-id="${notification.id}">
+                          <div class="preview-thumbnail">
+                            <div class="preview-icon bg-info">
+                              <i class="ti-info-alt mx-0"></i>
+                            </div>
+                          </div>
+                          <div class="preview-item-content">
+                            <h6 class="preview-subject font-weight-normal">${notification.message}</h6>
+                            <p class="font-weight-light small-text mb-0 text-muted">${timeAgo(notification.created_at)}</p>
+                          </div>
+                        </a>
+                        `;
+                                                        notificationList.append(notificationItem);
+                                                    });
+                                                }
+                                            },
+                                            error: function() {
+                                                console.log("Error fetching notifications.");
+                                            }
+                                        });
+                                    }
+
+                                    function timeAgo(time) {
+                                        const timeAgo = new Date(time);
+                                        const currentTime = new Date();
+                                        const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
+
+                                        if (diffInSeconds < 60) {
+                                            return `${diffInSeconds} seconds ago`;
+                                        }
+                                        const diffInMinutes = Math.floor(diffInSeconds / 60);
+                                        if (diffInMinutes < 60) {
+                                            return `${diffInMinutes} minutes ago`;
+                                        }
+                                        const diffInHours = Math.floor(diffInMinutes / 60);
+                                        if (diffInHours < 24) {
+                                            return `${diffInHours} hours ago`;
+                                        }
+                                        const diffInDays = Math.floor(diffInHours / 24);
+                                        return `${diffInDays} days ago`;
+                                    }
+
+                                    $(document).on('click', '.dropdown-item', function() {
+                                        const notificationId = $(this).data('notification-id');
+                                        markNotificationAsRead(notificationId);
+                                    });
+
+                                    function markNotificationAsRead(notificationId) {
+                                        $.ajax({
+                                            url: '../../mark_read.php',
+                                            method: 'POST',
+                                            data: {
+                                                id: notificationId
+                                            },
+                                            success: function(response) {
+                                                console.log(response);
+                                                fetchNotifications();
+                                            },
+                                            error: function() {
+                                                console.log("Error marking notification as read.");
+                                            }
+                                        });
+                                    }
+
+                                    $(document).ready(function() {
+                                        fetchNotifications();
+                                        setInterval(fetchNotifications, 30000);
+                                    });
+                                </script>
+                            </div>
                         </div>
                     </li>
 
@@ -415,7 +510,7 @@ $driveLinks = [
                         <h6>NIM: <?php echo htmlspecialchars($nim); ?></h6>
 
                         <div class="alert-info">
-                        Disini kamu dapat melakukan upload Dokumen. Setelah Dokumen terupload, tunggu beberapa waktu hingga status pada halaman pengejuan berubah menjadi <span class="text-success">Terverifikasi.</span>
+                            Disini kamu dapat melakukan upload Dokumen. Setelah Dokumen terupload, tunggu beberapa waktu hingga status pada halaman pengejuan berubah menjadi <span class="text-success">Terverifikasi.</span>
                         </div>
                         <div class="upload-container">
 
@@ -592,7 +687,44 @@ $driveLinks = [
                 <?php unset($_SESSION['notification']); ?>
             <?php endif; ?>
         </script>
+        <script>
+            $(document).ready(function() {
+                $('#notificationDropdown').on('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
 
+                    // Get current state
+                    const isExpanded = $(this).attr('aria-expanded') === 'true';
+
+                    // Toggle the state
+                    if (isExpanded) {
+                        // Close dropdown
+                        $(this).attr('aria-expanded', 'false');
+                        $(this).parent('.nav-item').removeClass('show');
+                        $('.dropdown-menu[aria-labelledby="notificationDropdown"]').removeClass('show');
+                    } else {
+                        // Open dropdown
+                        $(this).attr('aria-expanded', 'true');
+                        $(this).parent('.nav-item').addClass('show');
+                        $('.dropdown-menu[aria-labelledby="notificationDropdown"]').addClass('show');
+                    }
+                });
+
+                // Close dropdown when clicking elsewhere
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('.nav-item.dropdown').length) {
+                        $('.nav-item.dropdown').removeClass('show');
+                        $('#notificationDropdown').attr('aria-expanded', 'false');
+                        $('.dropdown-menu').removeClass('show');
+                    }
+                });
+
+                // Prevent dropdown from closing when clicking inside it
+                $('.dropdown-menu').on('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        </script>
         <style>
             /* Add these styles to your CSS */
             .swal2-popup.swal2-toast {
