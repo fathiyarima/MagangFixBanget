@@ -15,8 +15,7 @@ if ($event == "seminar_proposal") {
     ];
 } elseif ($event == "tugas_akhir") {
     $documents = [
-        "form_pendaftaran_ta", 
-        "form_persetujuan_ta", 
+        "form_pendaftaran_persetujuan_tema_ta",
         "bukti_pembayaran_ta", 
         "bukti_transkip_nilai_ta", 
         "bukti_kelulusan_magang_ta"
@@ -31,14 +30,12 @@ if ($event == "seminar_proposal") {
     die("Invalid event selected.");
 }
 
-// Gunakan backtick untuk mengapit nama kolom yang mengandung tanda kurung
 $docColumns = implode(", ", array_map(fn($col) => "m.`$col`", $documents));
-$verificationColumns = implode(", ", array_map(fn($col) => "e.`$col` AS `verified_$col`", $documents));
+$verificationColumns = implode(", ", array_map(fn($col) => "v.`$col` AS `verified_$col`", $documents));
 
-// Fetch document data from `mahasiswa` and verification status from the event table
 $query = "SELECT m.id_mahasiswa, $docColumns, $verificationColumns 
           FROM mahasiswa m
-          LEFT JOIN $event e ON m.id_mahasiswa = e.id_mahasiswa
+          LEFT JOIN verifikasi_dokumen v ON m.id_mahasiswa = v.id_mahasiswa
           WHERE m.id_mahasiswa = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $userId);
@@ -48,7 +45,7 @@ $row = $result->fetch_assoc();
 
 $output = "<ul>";
 foreach ($documents as $columnName) {
-    $fileData = $row[$columnName];
+    $fileData = $row[$columnName] ?? null;
     $verifiedColumn = "verified_" . $columnName;
 
     $downloadButton = (!empty($fileData)) ? 
@@ -59,7 +56,7 @@ foreach ($documents as $columnName) {
         "✔ Verified" : 
         "<button class='verify-btn' data-userid='$userId' data-event='$event' data-column='$columnName'>Verify</button>";
 
-    $output .= "<tr><td>$columnName</td> <td>$verified</td> <td>$downloadButton</td></tr></li>";
+    $output .= "<tr><td>$columnName</td> <td>$verified</td> <td>$downloadButton</td></tr>";
 }
 $output .= "</ul>";
 
