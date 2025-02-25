@@ -489,7 +489,7 @@
                 </div>
               </div>
             </div>
-            <button id="openModalBtn" class="btn btn-primary">Add Data</button>
+            <button id="openModalBtn" class="btn btn-primary btn-spacing">Add Data</button>
             <button id="openModal" class="btn btn-primary">Add Batch</button>
 
             <div id="myModal" class="modal">
@@ -686,6 +686,11 @@
                 background-color: #0056b3;
                 /* Warna biru lebih gelap saat hover */
               }
+
+              .btn-spacing {
+                margin-right: 10px; /* Atur jarak sesuai keinginan */
+              }
+
             </style>
 
             <style>

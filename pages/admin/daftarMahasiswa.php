@@ -491,7 +491,7 @@
                 </div>
               </div>
             </div>
-            <button id="openModalBtn" class="btn btn-primary">Add Data</button>
+            <button id="openModalBtn" class="btn btn-primary btn-spacing">Add Data</button>
             <button id="openModal" class="btn btn-primary">Add Batch</button>
 
             <div id="myModal" class="modal">
@@ -671,6 +671,11 @@
               .btn-submit:hover {
                 background-color: #0056b3;
               }
+
+              .btn-spacing {
+                margin-right: 10px; /* Atur jarak sesuai keinginan */
+              }
+
             </style>
 
             <script>
