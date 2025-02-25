@@ -185,7 +185,7 @@ if ($row) {
                   <p class="font-weight-bold mb-1"><?php echo htmlspecialchars($nama_admin); ?></p>
                   <p class="text-muted mb-1"><?php echo htmlspecialchars($nomor_telepon); ?></p>
                 </div>
-                <div class="dropdown-divider"></div>
+                <div class="droopdown-divider"></div>
                 <a class="dropdown-item" href="../../index.php">
                   <i class="ti-power-off text-primary"></i>
                   Logout

@@ -36,6 +36,7 @@ try {
                     window.history.back();
                 });
                 </script>";
+                exit();
             
         }
 
