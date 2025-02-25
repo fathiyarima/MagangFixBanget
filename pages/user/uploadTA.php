@@ -173,7 +173,7 @@ $driveLinks = [
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Skydash Admin</title>
+    <title>Upload Tugas Akhir</title>
     <!-- plugins:css -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="../../Template/skydash/vendors/feather/feather.css">
@@ -189,7 +189,7 @@ $driveLinks = [
     <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
     <link rel="stylesheet" href="../../assets/css/css/user.css">
     <!-- endinject -->
-    <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
+    <link rel="shortcut icon" href="../../assets/img/Logo.webp" />
     <link rel="stylesheet" type="text/css" href="../../assets/css/user/uploadTugasAkhir.css" />
     <link rel="stylesheet" type="text/css" href="../../assets/css/user/uploadBeritaAcara.css" />
     <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>

@@ -283,7 +283,7 @@ function getDocumentStatus($nama_mahasiswa, $id, $document_type)
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Skydash Admin</title>
+  <title>Pengajuan Nilai</title>
   <!-- plugins:css -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" href="../../Template/skydash/vendors/feather/feather.css">
@@ -299,7 +299,7 @@ function getDocumentStatus($nama_mahasiswa, $id, $document_type)
   <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
   <link rel="stylesheet" href="../../assets/css/css/pengajuan.css">
   <!-- endinject -->
-  <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
+  <link rel="shortcut icon" href="../../assets/img/Logo.webp" />
   <link rel="stylesheet" type="text/css" href="../../assets/css/user/pengajuan.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>

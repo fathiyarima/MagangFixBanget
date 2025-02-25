@@ -35,7 +35,7 @@ try {
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Dosen Pembimbing </title>
+  <title>Dokumen Ujian</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="../../Template/skydash/vendors/feather/feather.css">
   <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
@@ -49,7 +49,7 @@ try {
   <!-- inject:css -->
   <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
   <!-- endinject -->
-  <link rel="shortcut icon" href="../../Template/skydash/images/favicon.png" />
+  <link rel="shortcut icon" href="../../assets/img/Logo.webp" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
