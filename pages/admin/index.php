@@ -421,7 +421,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../index.php">
+            <a class="nav-link active" href="../../index.php">
               <i class="icon-head menu-icon"></i>
               <span class="menu-title">Log Out</span>
             </a>
@@ -590,54 +590,6 @@
           }
           $conn->close();
           ?>
-          <canvas id="myChart4"></canvas>
-          <script>
-            var xValues = <?php echo json_encode($xValues); ?>;
-            var yValues = <?php echo json_encode($yValues); ?>;
-
-            var barColors = ["#73ad91", "#ebd382", "#d25d5d", ];
-
-            new Chart("myChart4", {
-              type: "doughnut",
-              data: {
-                labels: xValues,
-                datasets: [{
-                  backgroundColor: barColors,
-                  data: yValues
-                }]
-              },
-              options: {
-                title: {
-                  display: true,
-                  text: "Jumlah Pendaftar Ujian"
-                }
-              }
-            });
-          </script>
-
-          <?php
-          $conn->connect("127.0.0.1", "root", "", "sistem_ta");
-
-          if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-          }
-
-          $sql = "SELECT status_pengajuan, COUNT(*) as count FROM tugas_akhir
-                          WHERE status_pengajuan IN ('Disetujui', 'Revisi', 'Ditolak') 	
-                          GROUP BY status_pengajuan";
-          $result = $conn->query($sql);
-
-          $xValues = [];
-          $yValues = [];
-
-          if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-              $xValues[] = $row['status_pengajuan'];
-              $yValues[] = $row['count'];
-            }
-          }
-          $conn->close();
-          ?>
           <canvas id="myChart3"></canvas>
           <script>
             var xValues = <?php echo json_encode($xValues); ?>;
@@ -658,6 +610,54 @@
                 title: {
                   display: true,
                   text: "Jumlah Pendaftar Seminar"
+                }
+              }
+            });
+          </script>
+
+          <?php
+          $conn->connect("127.0.0.1", "root", "", "sistem_ta");
+
+          if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+          }
+
+          $sql = "SELECT status_ujian, COUNT(*) as count FROM ujian
+                          WHERE status_ujian IN ('dijadwalkan', 'selesai') 	
+                          GROUP BY status_ujian";
+          $result = $conn->query($sql);
+
+          $xValues = [];
+          $yValues = [];
+
+          if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+              $xValues[] = $row['status_ujian'];
+              $yValues[] = $row['count'];
+            }
+          }
+          $conn->close();
+          ?>
+          <canvas id="myChart4"></canvas>
+          <script>
+            var xValues = <?php echo json_encode($xValues); ?>;
+            var yValues = <?php echo json_encode($yValues); ?>;
+
+            var barColors = ["#73ad91", "#ebd382", "#d25d5d", ];
+
+            new Chart("myChart4", {
+              type: "doughnut",
+              data: {
+                labels: xValues,
+                datasets: [{
+                  backgroundColor: barColors,
+                  data: yValues
+                }]
+              },
+              options: {
+                title: {
+                  display: true,
+                  text: "Jumlah Pendaftar Ujian"
                 }
               }
             });

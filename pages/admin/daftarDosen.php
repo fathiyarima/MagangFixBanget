@@ -521,11 +521,14 @@
             </div>
 
             <div id="ModalBatch" class="modal">
+            <div class="modal-content">
+            <span class="close" id="closeModalBatch">&times;</span>
               <form action="upload_aksi_dosen.php" method="post" enctype="multipart/form-data">
                 <label for="file">Choose an Excel file to upload:</label>
                 <input type="file" name="excel_file" id="excel_file" required>
                 <button type="submit" name="submit">Upload</button>
               </form>
+              </div>
             </div>
 
             <div id="editModal" class="modal">
@@ -573,27 +576,40 @@
 
             <style>
               /* Styling untuk modal */
+              .nav-link.active {
+                background: #193042;
+                position: relative;
+                color: white !important;
+              }
               .modal {
-                display: none;
-                position: fixed;
-                z-index: 1;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgba(0, 0, 0, 0.5);
-                display: flex;
-                justify-content: center;
-                align-items: center;
+                  display: none;
+                  position: fixed;
+                  z-index: 1000;
+                  left: 0;
+                  top: 0;
+                  width: 100vw;
+                  height: 100vh;
+                  background-color: rgba(0, 0, 0, 0.5);
+                  justify-content: center;
+                  align-items: center;
+                  padding: 20px; /* Ensures space around the modal */
               }
 
               .modal-content {
-                background-color: #fff;
-                padding: 20px;
-                border-radius: 8px;
-                width: 50%;
-                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+                  background-color: #fff;
+                  padding: 20px;
+                  border-radius: 8px;
+                  width: 40%;
+                  max-width: 600px;
+                  height: 80vh;
+                  flex-direction: column;
+                  overflow: hidden; /* Prevents unnecessary scrolling */
+              }
+
+              .modal-content form {
+                  flex-grow: 1; /* Ensures form takes available space */
+                  overflow-y: auto; /* Allows scrolling within form */
+                  max-height: calc(80vh - 40px); /* Ensures form doesn't overflow */
               }
 
               .close {
@@ -679,44 +695,6 @@
                 margin-right: 10px; /* Atur jarak sesuai keinginan */
               }
 
-            </style>
-
-            <style>
-              .modal {
-                display: none;
-                position: relative;
-                z-index: 1;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgba(0, 0, 0, 0.4);
-                padding-top: 60px;
-              }
-
-              .modal-content {
-                background-color: #fefefe;
-                margin: 5% auto;
-                padding: 20px;
-                border: 1px solid #888;
-                width: 80%;
-              }
-
-              .close {
-                color: #aaa;
-                float: right;
-                font-size: 28px;
-                font-weight: bold;
-              }
-
-              .close:hover,
-              .close:focus {
-                color: black;
-                text-decoration: none;
-                cursor: pointer;
-              }
-
               .deleteBtn {
                 background-color: #dc3545;
                 /* Warna merah */
@@ -736,15 +714,6 @@
             </style>
 
             <script>
-              document.getElementById("openModal").onclick = function() {
-                document.getElementById("ModalBatch").style.display = "flex";
-              }
-
-              document.querySelector(".close").onclick = function() {
-                document.getElementById("ModalBatch").style.display = "none";
-              }
-
-
               document.getElementById("openModalBtn").onclick = function() {
                 document.getElementById("myModal").style.display = "flex";
               }
@@ -753,11 +722,28 @@
                 document.getElementById("myModal").style.display = "none";
               }
 
+              document.getElementById("openModal").onclick = function() {
+                document.getElementById("ModalBatch").style.display = "flex";
+              }
+
+              document.getElementById("closeModalBatch").onclick = function() {
+                document.getElementById("ModalBatch").style.display = "none";
+              }
+            
+
               window.onclick = function(event) {
                 if (event.target == document.getElementById("myModal")) {
                   document.getElementById("myModal").style.display = "none";
                 }
               }
+
+              document.getElementById("openModalBtn").onclick = function() {
+                document.getElementById("myModal").style.display = "flex";
+              };
+
+              document.getElementsByClassName("close")[0].onclick = function() {
+                document.getElementById("myModal").style.display = "none";
+              };
 
               document.querySelectorAll(".editBtn").forEach(button => {
                 button.addEventListener("click", function() {
