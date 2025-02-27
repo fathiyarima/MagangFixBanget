@@ -56,7 +56,7 @@ if ($row) {
 <body>
   <div class="container-scroller">
     <?php
-    include "bar.php";
+    include "sidebar.php";
     ?>
       <!-- partial -->
       <div class="main-panel">

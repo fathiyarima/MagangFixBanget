@@ -71,7 +71,7 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
     <!-- partial:partials/_navbar.html -->
       <!-- partial -->
       <?php
-          include "bar.php";
+          include "sidebar.php";
 
           // Ambil total pendaftar tugas akhir
           $sqlUjian = "SELECT COUNT(*) AS total FROM ujian";
