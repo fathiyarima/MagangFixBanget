@@ -339,7 +339,7 @@ try {
                                                         <td>" . htmlspecialchars($data['judul']) . "</td>
                                                     </tr>";
                                             }
-                                            echo '</tbody></table>';
+                                            echo '</tbody></table></div>';
                                         }
                                         ?>
 
