@@ -56,7 +56,11 @@ if ($row) {
 <body>
   <div class="container-scroller">
     <?php
+<<<<<<< Updated upstream
+    include "sidebar.php";
+=======
     include "bar.php";
+>>>>>>> Stashed changes
     ?>
       <!-- partial -->
       <div class="main-panel">

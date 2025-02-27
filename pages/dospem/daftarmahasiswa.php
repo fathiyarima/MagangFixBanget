@@ -260,9 +260,13 @@ try {
                                         </p>
                                         <div class="table-responsive">
                                             <?php
+<<<<<<< Updated upstream
                                         if ($conn->connect_error) {
                                             die("Koneksi gagal: " . $conn->connect_error);
                                         }
+=======
+                                            try {
+>>>>>>> Stashed changes
 
                                         if (session_status() == PHP_SESSION_NONE) {
                                             session_start();

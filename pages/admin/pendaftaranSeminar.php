@@ -77,7 +77,11 @@ if ($row) {
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
      <?php
+<<<<<<< Updated upstream
+    include "sidebar.php";
+=======
     include "bar.php";
+>>>>>>> Stashed changes
     ?>
       <!-- partial -->
       <?php

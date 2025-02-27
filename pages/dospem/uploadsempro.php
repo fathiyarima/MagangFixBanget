@@ -106,7 +106,11 @@ try {
 
         // Create notification
         $message = "File Seminar Proposal telah di upload oleh siswa " . $nama_mahasiswa . ".";
+<<<<<<< Updated upstream
         $notification_sql = "INSERT INTO notif (id_dosen, id_mahasiswa, message, status_mahasiswa) VALUES (?, ?, ?, 'unread')";
+=======
+        $notification_sql = "INSERT INTO notif (id_dosen, id_mahasiswa, message, status) VALUES (?, ?, ?, 'unread')";
+>>>>>>> Stashed changes
         $stmt_notify = $conn2->prepare($notification_sql);
         $stmt_notify->execute([$id_dosen, $id_mahasiswa, $message]);
 
