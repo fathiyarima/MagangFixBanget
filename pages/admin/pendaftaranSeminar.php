@@ -77,11 +77,7 @@ if ($row) {
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
      <?php
-<<<<<<< Updated upstream
     include "sidebar.php";
-=======
-    include "bar.php";
->>>>>>> Stashed changes
     ?>
       <!-- partial -->
       <?php
@@ -178,7 +174,6 @@ if ($row) {
                                   </thead>
                                   <tbody>
                                   <?php
-                                    $conn = new mysqli("127.0.0.1", "root", "", "sistem_ta");
 
                                     $sql1 = "SELECT mahasiswa.id_mahasiswa, mahasiswa.nama_mahasiswa, mahasiswa.nim, seminar_proposal.tanggal_seminar, seminar_proposal.status_seminar
                                             FROM mahasiswa 

@@ -19,12 +19,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-<<<<<<< Updated upstream
         $hashedPass = password_hash($pass, PASSWORD_DEFAULT);
 
 
-=======
->>>>>>> Stashed changes
         $stmt = $conn->prepare("INSERT INTO `dosen_pembimbing`(`nama_dosen`, `username`, `pass`, `nip`, `prodi`, `nomor_telepon`) VALUES (?, ?, ?, ?, ?, ?)");
 
         $stmt->bind_param("ssssss", $nama, $username, $hashedPass, $nip, $prodi, $nomor_telepon);

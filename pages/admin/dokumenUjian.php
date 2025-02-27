@@ -81,7 +81,6 @@ if ($row) {
                           </thead>
                           <tbody>
                             <?php
-                            $conn = new mysqli('127.0.0.1', 'root', '', 'sistem_ta');
                             $sql1 = "SELECT id_mahasiswa, nama_mahasiswa, nim, prodi, lembar_persetujuan_laporan_ta_ujian, form_pendaftaran_ujian_ta_ujian, lembar_kehadiran_sempro_ujian FROM mahasiswa WHERE 1";
                             $result = $conn->query($sql1);
 

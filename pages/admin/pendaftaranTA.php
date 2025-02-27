@@ -54,14 +54,7 @@ if ($row) {
     <!-- partial:partials/_navbar.html -->
 
       <?php
-<<<<<<< Updated upstream
           include "sidebar.php";
-=======
-          include "bar.php";
-          if ($conn->connect_error) {
-              die("Koneksi gagal: " . $conn->connect_error);
-          }
->>>>>>> Stashed changes
 
           // Ambil total pendaftar tugas akhir
           $sqlTA = "SELECT COUNT(*) AS total FROM tugas_akhir";
