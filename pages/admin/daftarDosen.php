@@ -12,12 +12,10 @@ $row = $checkNomer_telepon->fetch(PDO::FETCH_ASSOC);
 
 if ($row) {
   $nomor_telepon = $row['nomor_telepon'];
-  $nama_admin= $row['nama_admin'];
-  
+  $nama_admin = $row['nama_admin'];
 } else {
   $nomor_telepon = '0857364562';
   $nama_admin = 'Nama Default';
-  
 }
 ?>
 <!DOCTYPE html>
@@ -45,13 +43,14 @@ if ($row) {
   <link rel="stylesheet" href="../../assets/css/css/admin/mahasiswa.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo mr-5" href="index.php"><img src="../../assets/img/logo2.png" class="mr-2" alt="logo"/></a>
-        <a class="navbar-brand brand-logo-mini" href="index.php"><img src="../../assets/img/Logo.webp" alt="logo"/></a>
+        <a class="navbar-brand brand-logo mr-5" href="index.php"><img src="../../assets/img/logo2.png" class="mr-2" alt="logo" /></a>
+        <a class="navbar-brand brand-logo-mini" href="index.php"><img src="../../assets/img/Logo.webp" alt="logo" /></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -73,35 +72,35 @@ if ($row) {
           <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="icon-bell mx-0"></i>
-              <span class="count" id="notificationCount"></span> 
+              <span class="count" id="notificationCount"></span>
               <!-- Notification count here -->
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-            <div id="notifications">
-            <script>
-              function fetchNotifications() {
-                $.ajax({
-                  url: '../../fetch_notif.php',
-                  method: 'GET',
-                  success: function(data) {
-                    const notifications = JSON.parse(data);
-                    const notificationCount = $('#notificationCount');
-                    const notificationList = $('#notifications');
-                          
-                    notificationCount.text(notifications.length);
-                    notificationList.empty();
+              <div id="notifications">
+                <script>
+                  function fetchNotifications() {
+                    $.ajax({
+                      url: '../../fetch_notif.php',
+                      method: 'GET',
+                      success: function(data) {
+                        const notifications = JSON.parse(data);
+                        const notificationCount = $('#notificationCount');
+                        const notificationList = $('#notifications');
 
-                    if (notifications.length === 0 || notifications.message === 'No unread notifications') {
-                      notificationList.append(`
+                        notificationCount.text(notifications.length);
+                        notificationList.empty();
+
+                        if (notifications.length === 0 || notifications.message === 'No unread notifications') {
+                          notificationList.append(`
                         <a class="dropdown-item preview-item">
                           <div class="preview-item-content">
                             <h6 class="preview-subject font-weight-normal"></h6>
                           </div>
                         </a>
                       `);
-                    } else {
-                      notifications.forEach(function(notification) {
-                      const notificationItem = `
+                        } else {
+                          notifications.forEach(function(notification) {
+                            const notificationItem = `
                         <a class="dropdown-item preview-item" data-notification-id="${notification.id}">
                           <div class="preview-thumbnail">
                             <div class="preview-icon bg-info">
@@ -114,61 +113,63 @@ if ($row) {
                           </div>
                         </a>
                         `;
-                        notificationList.append(notificationItem);
-                      });
+                            notificationList.append(notificationItem);
+                          });
+                        }
+                      },
+                      error: function() {
+                        console.log("Error fetching notifications.");
+                      }
+                    });
+                  }
+
+                  function timeAgo(time) {
+                    const timeAgo = new Date(time);
+                    const currentTime = new Date();
+                    const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
+
+                    if (diffInSeconds < 60) {
+                      return `${diffInSeconds} seconds ago`;
                     }
-                  },
-                error: function() {
-                  console.log("Error fetching notifications.");
-                }
-              });
-            }
+                    const diffInMinutes = Math.floor(diffInSeconds / 60);
+                    if (diffInMinutes < 60) {
+                      return `${diffInMinutes} minutes ago`;
+                    }
+                    const diffInHours = Math.floor(diffInMinutes / 60);
+                    if (diffInHours < 24) {
+                      return `${diffInHours} hours ago`;
+                    }
+                    const diffInDays = Math.floor(diffInHours / 24);
+                    return `${diffInDays} days ago`;
+                  }
 
-              function timeAgo(time) {
-                const timeAgo = new Date(time);
-                const currentTime = new Date();
-                const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
+                  $(document).on('click', '.dropdown-item', function() {
+                    const notificationId = $(this).data('notification-id');
+                    markNotificationAsRead(notificationId);
+                  });
 
-                if (diffInSeconds < 60) {
-                  return `${diffInSeconds} seconds ago`;
-                }
-                const diffInMinutes = Math.floor(diffInSeconds / 60);
-                if (diffInMinutes < 60) {
-                  return `${diffInMinutes} minutes ago`;
-                }
-                const diffInHours = Math.floor(diffInMinutes / 60);
-                if (diffInHours < 24) {
-                  return `${diffInHours} hours ago`;
-                }
-                const diffInDays = Math.floor(diffInHours / 24);
-                return `${diffInDays} days ago`;
-            }
+                  function markNotificationAsRead(notificationId) {
+                    $.ajax({
+                      url: '../../mark_read.php',
+                      method: 'POST',
+                      data: {
+                        id: notificationId
+                      },
+                      success: function(response) {
+                        console.log(response);
+                        fetchNotifications();
+                      },
+                      error: function() {
+                        console.log("Error marking notification as read.");
+                      }
+                    });
+                  }
 
-              $(document).on('click', '.dropdown-item', function() {
-                const notificationId = $(this).data('notification-id');
-                markNotificationAsRead(notificationId);
-              });
-
-              function markNotificationAsRead(notificationId) {
-                $.ajax({
-                  url: '../../mark_read.php',
-                  method: 'POST',
-                  data: { id: notificationId },
-                  success: function(response) {
-                  console.log(response);
-                  fetchNotifications();
-                },
-                error: function() {
-                  console.log("Error marking notification as read.");
-                }
-              });
-            }
-
-            $(document).ready(function() {
-              fetchNotifications();
-              setInterval(fetchNotifications, 30000);
-            });
-          </script>
+                  $(document).ready(function() {
+                    fetchNotifications();
+                    setInterval(fetchNotifications, 30000);
+                  });
+                </script>
               </div>
             </div>
           </li>
@@ -193,7 +194,7 @@ if ($row) {
               </div>
             </div>
           </li>
-          
+
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
           <span class="icon-menu"></span>
@@ -208,8 +209,12 @@ if ($row) {
         <div id="theme-settings" class="settings-panel">
           <i class="settings-close ti-close"></i>
           <p class="settings-heading">SIDEBAR SKINS</p>
-          <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
-          <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
+          <div class="sidebar-bg-options selected" id="sidebar-light-theme">
+            <div class="img-ss rounded-circle bg-light border mr-3"></div>Light
+          </div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme">
+            <div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark
+          </div>
           <p class="settings-heading mt-2">HEADER SKINS</p>
           <div class="color-tiles mx-0 px-4">
             <div class="tiles success"></div>
@@ -373,8 +378,8 @@ if ($row) {
       </div>
       <!-- partial -->
       <!-- partial:partials/_sidebar.html -->
-      <?php 
-        $current_page = basename($_SERVER['PHP_SELF']); 
+      <?php
+      $current_page = basename($_SERVER['PHP_SELF']);
       ?>
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
@@ -399,8 +404,8 @@ if ($row) {
 
           <!-- Pendaftaran Dropdown -->
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" 
-              aria-expanded="<?= in_array($current_page, ['pendaftaranTA.php', 'pendaftaranSeminar.php', 'pendaftaranUjian.php']) ? 'true' : 'false'; ?>" 
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic"
+              aria-expanded="<?= in_array($current_page, ['pendaftaranTA.php', 'pendaftaranSeminar.php', 'pendaftaranUjian.php']) ? 'true' : 'false'; ?>"
               aria-controls="ui-basic">
               <i class="icon-layout menu-icon"></i>
               <span class="menu-title">Pendaftaran</span>
@@ -511,8 +516,34 @@ if ($row) {
                   <p class="card-title">Daftar Dosen</p>
                   <div class="row">
                     <div class="col-12">
-                      <div class="table-responsive">
-                        <table id="example" class="display expandable-table" style="width:100%">
+                      <?php
+                      $servername = "127.0.0.1";
+                      $username = "root";
+                      $password = "";
+                      $dbname = "sistem_ta";
+
+                      $conn = new mysqli($servername, $username, $password, $dbname);
+
+                      if ($conn->connect_error) {
+                        die("Koneksi gagal: " . $conn->connect_error);
+                      }
+
+                      $limit = 10;
+                      $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                      $offset = ($page - 1) * $limit;
+
+                      $sql1 = "SELECT id_dosen, nama_dosen, nip, prodi, nomor_telepon, username, pass FROM dosen_pembimbing LIMIT $limit OFFSET $offset";
+                      $result = $conn->query($sql1);
+
+                      $totalQuery = "SELECT COUNT(id_dosen) AS total FROM dosen_pembimbing";
+                      $totalResult = $conn->query($totalQuery);
+                      $totalRow = $totalResult->fetch_assoc();
+                      $totalData = $totalRow['total'];
+                      $totalPages = ceil($totalData / $limit);
+                      ?>
+
+                      <div style="overflow-x: auto;">
+                        <table id="example" class="display expandable-table" style="width:100%; white-space: nowrap;">
                           <thead>
                             <tr>
                               <th>No.</th>
@@ -528,11 +559,7 @@ if ($row) {
                           </thead>
                           <tbody>
                             <?php
-                            $conn = new mysqli('127.0.0.1', 'root', '', 'sistem_ta');
-                            $sql1 = "SELECT id_dosen, nama_dosen, nip, prodi, nomor_telepon, username, pass FROM dosen_pembimbing WHERE 1";
-                            $result = $conn->query($sql1);
-
-                            while ($row = mysqli_fetch_array($result)) {
+                            while ($row = $result->fetch_assoc()) {
                               echo "<tr>";
                               echo "<td>" . $row['id_dosen'] . "</td>";
                               echo "<td>" . $row['nama_dosen'] . "</td>";
@@ -545,12 +572,84 @@ if ($row) {
                               echo "<td><button class='deleteBtn' data-id='" . $row['id_dosen'] . "'>Hapus</button></td>";
                               echo "</tr>";
                             }
-                            $conn->close();
                             ?>
                           </tbody>
                         </table>
                       </div>
+
+                      <hr>
+
+                      <div class="pagination-container">
+                        <div class="pagination-info">PAGES <?php echo $page; ?> OF <?php echo $totalPages; ?></div>
+                        <div class="pagination">
+                          <?php if ($page > 1): ?>
+                            <a href="?page=1" class="btn">FIRST</a>
+                            <a href="?page=<?php echo $page - 1; ?>" class="btn">PREV</a>
+                          <?php endif; ?>
+
+                          <?php
+                          if ($totalPages <= 10) {
+                            for ($i = 1; $i <= $totalPages; $i++) {
+                              echo "<a href='?page=$i' class='btn " . ($i == $page ? "active" : "") . "'>$i</a>";
+                            }
+                          } else {
+                            if ($page > 3) echo "<a href='?page=1' class='btn'>1</a> ... ";
+
+                            for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++) {
+                              echo "<a href='?page=$i' class='btn " . ($i == $page ? "active" : "") . "'>$i</a>";
+                            }
+
+                            if ($page < $totalPages - 2) echo " ... <a href='?page=$totalPages' class='btn'>$totalPages</a>";
+                          }
+                          ?>
+
+                          <?php if ($page < $totalPages): ?>
+                            <a href="?page=<?php echo $page + 1; ?>" class="btn">NEXT</a>
+                            <a href="?page=<?php echo $totalPages; ?>" class="btn">LAST</a>
+                          <?php endif; ?>
+                        </div>
+                      </div>
                     </div>
+
+                    <style>
+                      .pagination-container {
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
+                        margin-top: 20px;
+                        width: 100%;
+                      }
+
+                      .pagination-info {
+                        background-color: #333;
+                        color: white;
+                        padding: 8px 12px;
+                        margin-right: 10px;
+                        border-radius: 5px;
+                      }
+
+                      .pagination {
+                        display: flex;
+                      }
+
+                      .pagination .btn {
+                        margin: 0 3px;
+                        padding: 8px 12px;
+                        text-decoration: none;
+                        background-color: #007bff;
+                        color: white;
+                        border-radius: 5px;
+                      }
+
+                      .pagination .btn.active {
+                        background-color: #7E99A3;
+                      }
+                    </style>
+
+                    <?php
+                    $conn->close();
+                    ?>
+
                   </div>
                 </div>
               </div>
@@ -603,13 +702,13 @@ if ($row) {
             </div>
 
             <div id="ModalBatch" class="modal">
-            <div class="modal-content">
-            <span class="close" id="closeModalBatch">&times;</span>
-              <form action="upload_aksi_dosen.php" method="post" enctype="multipart/form-data">
-                <label for="file">Choose an Excel file to upload:</label>
-                <input type="file" name="excel_file" id="excel_file" required>
-                <button type="submit" name="submit">Upload</button>
-              </form>
+              <div class="modal-content">
+                <span class="close" id="closeModalBatch">&times;</span>
+                <form action="upload_aksi_dosen.php" method="post" enctype="multipart/form-data">
+                  <label for="file">Choose an Excel file to upload:</label>
+                  <input type="file" name="excel_file" id="excel_file" required>
+                  <button type="submit" name="submit">Upload</button>
+                </form>
               </div>
             </div>
 
@@ -668,35 +767,41 @@ if ($row) {
                 position: relative;
                 color: white !important;
               }
+
               .modal {
-                  display: none;
-                  position: fixed;
-                  z-index: 1000;
-                  left: 0;
-                  top: 0;
-                  width: 100vw;
-                  height: 100vh;
-                  background-color: rgba(0, 0, 0, 0.5);
-                  justify-content: center;
-                  align-items: center;
-                  padding: 20px; /* Ensures space around the modal */
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                background-color: rgba(0, 0, 0, 0.5);
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                /* Ensures space around the modal */
               }
 
               .modal-content {
-                  background-color: #fff;
-                  padding: 20px;
-                  border-radius: 8px;
-                  width: 40%;
-                  max-width: 600px;
-                  height: 80vh;
-                  flex-direction: column;
-                  overflow: hidden; /* Prevents unnecessary scrolling */
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                width: 40%;
+                max-width: 600px;
+                height: 80vh;
+                flex-direction: column;
+                overflow: hidden;
+                /* Prevents unnecessary scrolling */
               }
 
               .modal-content form {
-                  flex-grow: 1; /* Ensures form takes available space */
-                  overflow-y: auto; /* Allows scrolling within form */
-                  max-height: calc(80vh - 40px); /* Ensures form doesn't overflow */
+                flex-grow: 1;
+                /* Ensures form takes available space */
+                overflow-y: auto;
+                /* Allows scrolling within form */
+                max-height: calc(80vh - 40px);
+                /* Ensures form doesn't overflow */
               }
 
               .close {
@@ -756,7 +861,7 @@ if ($row) {
                 border: 2px solid #007bff;
                 box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
               }
-                            
+
               .btn-submit {
                 background-color: #007bff;
                 color: white;
@@ -795,7 +900,8 @@ if ($row) {
               }
 
               .btn-spacing {
-                margin-right: 10px; /* Atur jarak sesuai keinginan */
+                margin-right: 10px;
+                /* Atur jarak sesuai keinginan */
               }
 
               .deleteBtn {
@@ -832,7 +938,7 @@ if ($row) {
               document.getElementById("closeModalBatch").onclick = function() {
                 document.getElementById("ModalBatch").style.display = "none";
               }
-            
+
 
               window.onclick = function(event) {
                 if (event.target == document.getElementById("myModal")) {

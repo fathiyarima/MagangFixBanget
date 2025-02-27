@@ -815,9 +815,6 @@ if ($row) {
                                         "</textarea>
                                       </div>";
 
-
-                              
-
                                 echo "<p class='small-text' id='revisi-text-" . $row['id_mahasiswa'] . "' style='display:none;'>" . $row['alasan_revisi'] . "</p>";
 
                                 echo "</td>";
