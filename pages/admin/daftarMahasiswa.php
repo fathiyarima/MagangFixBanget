@@ -12,12 +12,10 @@ $row = $checkNomer_telepon->fetch(PDO::FETCH_ASSOC);
 
 if ($row) {
   $nomor_telepon = $row['nomor_telepon'];
-  $nama_admin= $row['nama_admin'];
-  
+  $nama_admin = $row['nama_admin'];
 } else {
   $nomor_telepon = '0857364562';
   $nama_admin = 'Nama Default';
-  
 }
 ?>
 <!DOCTYPE html>
@@ -45,6 +43,7 @@ if ($row) {
   <link rel="stylesheet" href="../../assets/css/css/admin/mahasiswa.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
@@ -134,6 +133,7 @@ if ($row) {
                           </thead>
                           <tbody>
                             <?php
+                            $conn = new mysqli('127.0.0.1', 'root', '', 'sistem_ta');
                             $sql1 = "SELECT id_mahasiswa, nama_mahasiswa, nim, prodi, kelas, nomor_telepon, username, pass FROM mahasiswa WHERE 1";
                             $result = $conn->query($sql1);
 
@@ -214,13 +214,13 @@ if ($row) {
             </div>
 
             <div id="ModalBatch" class="modal">
-            <div class="modal-content">
-            <span class="close" id="closeModalBatch">&times;</span>
-              <form action="upload_aksi.php" method="post" enctype="multipart/form-data">
-                <label for="file">Choose an Excel file to upload:</label>
-                <input type="file" name="excel_file" id="excel_file" required>
-                <button type="submit" name="submit">Upload</button>
-              </form>
+              <div class="modal-content">
+                <span class="close" id="closeModalBatch">&times;</span>
+                <form action="upload_aksi.php" method="post" enctype="multipart/form-data">
+                  <label for="file">Choose an Excel file to upload:</label>
+                  <input type="file" name="excel_file" id="excel_file" required>
+                  <button type="submit" name="submit">Upload</button>
+                </form>
               </div>
             </div>
 
@@ -278,49 +278,55 @@ if ($row) {
 
             <style>
               .modal {
-                  display: none;
-                  position: fixed;
-                  z-index: 1000;
-                  left: 0;
-                  top: 0;
-                  width: 100vw;
-                  height: 100vh;
-                  background-color: rgba(0, 0, 0, 0.5);
-                  justify-content: center;
-                  align-items: center;
-                  padding: 20px; /* Ensures space around the modal */
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                background-color: rgba(0, 0, 0, 0.5);
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                /* Ensures space around the modal */
               }
 
               .modal-content {
-                  background-color: #fff;
-                  padding: 20px;
-                  border-radius: 8px;
-                  width: 40%;
-                  max-width: 600px;
-                  height: 80vh;
-                  flex-direction: column;
-                  overflow: hidden; /* Prevents unnecessary scrolling */
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                width: 40%;
+                max-width: 600px;
+                height: 80vh;
+                flex-direction: column;
+                overflow: hidden;
+                /* Prevents unnecessary scrolling */
               }
 
               .modal-content form {
-                  flex-grow: 1; /* Ensures form takes available space */
-                  overflow-y: auto; /* Allows scrolling within form */
-                  max-height: calc(80vh - 40px); /* Ensures form doesn't overflow */
+                flex-grow: 1;
+                /* Ensures form takes available space */
+                overflow-y: auto;
+                /* Allows scrolling within form */
+                max-height: calc(80vh - 40px);
+                /* Ensures form doesn't overflow */
               }
 
               .close {
-                  color: #555;
-                  position: absolute;
-                  right: 15px;
-                  top: 10px;
-                  font-size: 24px;
-                  font-weight: bold;
-                  cursor: pointer;
+                color: #555;
+                position: absolute;
+                right: 15px;
+                top: 10px;
+                font-size: 24px;
+                font-weight: bold;
+                cursor: pointer;
               }
 
               .close:hover {
-                  color: red;
+                color: red;
               }
+
               /* Styling untuk form */
               .form-group {
                 display: flex;
@@ -350,6 +356,7 @@ if ($row) {
                 box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
                 /* Efek glow */
               }
+
               select {
                 padding: 8px;
                 border: 1px solid #ccc;
@@ -382,7 +389,8 @@ if ($row) {
               }
 
               .btn-spacing {
-                margin-right: 10px; /* Atur jarak sesuai keinginan */
+                margin-right: 10px;
+                /* Atur jarak sesuai keinginan */
               }
 
               .editBtn {
@@ -423,11 +431,9 @@ if ($row) {
                 background-color: #c82333;
                 /* Warna merah lebih gelap */
               }
-
             </style>
 
             <script>
-
               document.getElementById("openModalBtn").onclick = function() {
                 document.getElementById("myModal").style.display = "flex";
               }
@@ -443,7 +449,7 @@ if ($row) {
               document.getElementById("closeModalBatch").onclick = function() {
                 document.getElementById("ModalBatch").style.display = "none";
               }
-            
+
 
               window.onclick = function(event) {
                 if (event.target == document.getElementById("myModal")) {

@@ -262,114 +262,163 @@ try {
                                             <?php
                                             try {
 
-                                                // Check connection
-                                                if ($conn->connect_error) {
-                                                    throw new Exception("Connection failed: " . $conn->connect_error);
-                                                }
+                                        $conn = new mysqli($servername, $username, $password, $dbname);
+                                        if ($conn->connect_error) {
+                                            die("Koneksi gagal: " . $conn->connect_error);
+                                        }
 
-                                                // Get dosen name (assuming it's passed via GET or POST)
-                                                if (isset($_SESSION['nama_dosen'])) {
-                                                    $nama_dosen = $_SESSION['nama_dosen'];
-                                                } else {
-                                                    throw new Exception("Nama dosen tidak ditemukan");
-                                                }
+                                        if (session_status() == PHP_SESSION_NONE) {
+                                            session_start();
+                                        }
+                                        
+                                        $nama_dosen = $_SESSION['nama_dosen'];
 
-                                                // Check dosen
-                                                $check_dosen_sql = "SELECT id_dosen FROM dosen_pembimbing WHERE nama_dosen=?";
-                                                $stmt_check_dosen = $conn->prepare($check_dosen_sql);
-                                                if (!$stmt_check_dosen) {
-                                                    throw new Exception("Error preparing dosen check query: " . $conn->error);
-                                                }
+                                        $sql_dosen = "SELECT id_dosen FROM dosen_pembimbing WHERE nama_dosen=?";
+                                        $stmt_dosen = $conn->prepare($sql_dosen);
+                                        $stmt_dosen->bind_param("s", $nama_dosen);
+                                        $stmt_dosen->execute();
+                                        $stmt_dosen->store_result();
 
-                                                $stmt_check_dosen->bind_param("s", $nama_dosen);
-                                                $stmt_check_dosen->execute();
-                                                $stmt_check_dosen->store_result();
+                                        if ($stmt_dosen->num_rows == 0) {
+                                            die("Dosen tidak ditemukan");
+                                        }
+                                        $stmt_dosen->bind_result($id_dosen);
+                                        $stmt_dosen->fetch();
+                                        $stmt_dosen->close();
 
-                                                if ($stmt_check_dosen->num_rows == 0) {
-                                                    throw new Exception("Dosen tidak ditemukan");
-                                                }
+                                        $limit = 10;
+                                        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                                        $offset = ($page - 1) * $limit;
 
-                                                $stmt_check_dosen->bind_result($id_dosen);
-                                                $stmt_check_dosen->fetch();
-                                                $stmt_check_dosen->close();
+                                        $sql_mahasiswa = "SELECT id_mahasiswa FROM mahasiswa_dosen WHERE id_dosen=? LIMIT ? OFFSET ?";
+                                        $stmt_mahasiswa = $conn->prepare($sql_mahasiswa);
+                                        $stmt_mahasiswa->bind_param("iii", $id_dosen, $limit, $offset);
+                                        $stmt_mahasiswa->execute();
+                                        $result_mahasiswa = $stmt_mahasiswa->get_result();
 
-                                                // Check mahasiswa
-                                                $sql_im = "SELECT id_mahasiswa FROM mahasiswa_dosen WHERE id_dosen=?";
-                                                $stmt_im = $conn->prepare($sql_im);
-                                                if (!$stmt_im) {
-                                                    throw new Exception("Error preparing mahasiswa query: " . $conn->error);
-                                                }
+                                        $totalQuery = "SELECT COUNT(id_mahasiswa) AS total FROM mahasiswa_dosen WHERE id_dosen=?";
 
-                                                $stmt_im->bind_param("i", $id_dosen);
-                                                $stmt_im->execute();
-                                                $result_im = $stmt_im->get_result();
+                                        $stmt_total = $conn->prepare($totalQuery);
+                                        $stmt_total->bind_param("i", $id_dosen);
+                                        $stmt_total->execute();
+                                        $totalResult = $stmt_total->get_result();
+                                        $totalRow = $totalResult->fetch_assoc();
+                                        $totalData = $totalRow['total'];
+                                        $totalPages = ceil($totalData / $limit);
 
-                                                if ($result_im->num_rows == 0) {
-                                                    echo "<div class='alert alert-info'>Tidak ada mahasiswa yang dibimbing.</div>";
-                                                } else {
-                                                    // If we have students, show the table
-                                                    echo '<table class="table table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>No</th>
-                                                                <th>Nama</th>
-                                                                <th>Nim</th>
-                                                                <th>Prodi</th>
-                                                                <th>Kelas</th>
-                                                                <th>No Telepon</th>
-                                                                <th>Tema</th>
-                                                                <th>Judul</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>';
+                                        if ($result_mahasiswa->num_rows == 0) {
+                                            echo "<div class='alert alert-info'>Tidak ada mahasiswa yang dibimbing.</div>";
+                                        } else {
+                                            echo '<table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Nama</th>
+                                                        <th>Nim</th>
+                                                        <th>Prodi</th>
+                                                        <th>Kelas</th>
+                                                        <th>No Telepon</th>
+                                                        <th>Tema</th>
+                                                        <th>Judul</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>';
 
-                                                    $id_mahasiswa_list = [];
-                                                    while ($row = $result_im->fetch_assoc()) {
-                                                        $id_mahasiswa_list[] = $row['id_mahasiswa'];
-                                                    }
+                                            $no = $offset + 1;
+                                            while ($row = $result_mahasiswa->fetch_assoc()) {
+                                                $id_mahasiswa = $row['id_mahasiswa'];
+                                                $sql_detail = "SELECT nama_mahasiswa, nim, prodi, kelas, nomor_telepon, tema, judul FROM mahasiswa WHERE id_mahasiswa=?";
+                                                $stmt_detail = $conn->prepare($sql_detail);
+                                                $stmt_detail->bind_param("i", $id_mahasiswa);
+                                                $stmt_detail->execute();
+                                                $result_detail = $stmt_detail->get_result();
+                                                $data = $result_detail->fetch_assoc();
 
-                                                    if (count($id_mahasiswa_list) > 0) {
-                                                        $id_mahasiswa_placeholder = str_repeat('?,', count($id_mahasiswa_list) - 1) . '?';
-                                                        $sql1 = "SELECT id_mahasiswa, nama_mahasiswa, nim, prodi, kelas, nomor_telepon, tema, judul 
-                                                        FROM mahasiswa 
-                                                        WHERE id_mahasiswa IN ($id_mahasiswa_placeholder)";
-
-                                                        $stmt1 = $conn->prepare($sql1);
-                                                        if (!$stmt1) {
-                                                            throw new Exception("Error preparing mahasiswa detail query: " . $conn->error);
-                                                        }
-
-                                                        $types = str_repeat('i', count($id_mahasiswa_list));
-                                                        $stmt1->bind_param($types, ...$id_mahasiswa_list);
-                                                        $stmt1->execute();
-                                                        $result = $stmt1->get_result();
-
-                                                        $no = 1;
-                                                        while ($row = $result->fetch_assoc()) {
-                                                            echo "<tr>";
-                                                            echo "<td>" . $no++ . "</td>";
-                                                            echo "<td>" . htmlspecialchars($row['nama_mahasiswa']) . "</td>";
-                                                            echo "<td>" . htmlspecialchars($row['nim']) . "</td>";
-                                                            echo "<td>" . htmlspecialchars($row['prodi']) . "</td>";
-                                                            echo "<td>" . htmlspecialchars($row['kelas']) . "</td>";
-                                                            echo "<td>" . htmlspecialchars($row['nomor_telepon']) . "</td>";
-                                                            echo "<td>" . htmlspecialchars($row['tema']) . "</td>";
-                                                            echo "<td>" . htmlspecialchars($row['judul']) . "</td>";
-                                                            echo "</tr>";
-                                                        }
-                                                    }
-
-                                                    echo '</tbody></table>';
-                                                }
-                                            } catch (Exception $e) {
-                                                echo "<div class='alert alert-danger'>" . htmlspecialchars($e->getMessage()) . "</div>";
-                                            } finally {
-                                                if (isset($conn)) {
-                                                    $conn->close();
-                                                }
+                                                echo "<tr>
+                                                        <td>" . $no++ . "</td>
+                                                        <td>" . htmlspecialchars($data['nama_mahasiswa']) . "</td>
+                                                        <td>" . htmlspecialchars($data['nim']) . "</td>
+                                                        <td>" . htmlspecialchars($data['prodi']) . "</td>
+                                                        <td>" . htmlspecialchars($data['kelas']) . "</td>
+                                                        <td>" . htmlspecialchars($data['nomor_telepon']) . "</td>
+                                                        <td>" . htmlspecialchars($data['tema']) . "</td>
+                                                        <td>" . htmlspecialchars($data['judul']) . "</td>
+                                                    </tr>";
                                             }
-                                            ?>
+                                            echo '</tbody></table>';
+                                        }
+                                        ?>
+
+                                        <hr>
+
+                                        <div class="pagination-container">
+                                            <div class="pagination-info">PAGES <?php echo $page; ?> OF <?php echo $totalPages; ?></div>
+                                            <div class="pagination">
+                                                <?php if ($page > 1): ?>
+                                                    <a href="?page=1" class="btn">FIRST</a>
+                                                    <a href="?page=<?php echo $page - 1; ?>" class="btn">PREV</a>
+                                                <?php endif; ?>
+
+                                                <?php
+                                                if ($totalPages <= 10) {
+                                                    for ($i = 1; $i <= $totalPages; $i++) {
+                                                        echo "<a href='?page=$i' class='btn " . ($i == $page ? "active" : "") . "'>$i</a>";
+                                                    }
+                                                } else {
+                                                    if ($page > 3) echo "<a href='?page=1' class='btn'>1</a> ... ";
+
+                                                    for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++) {
+                                                        echo "<a href='?page=$i' class='btn " . ($i == $page ? "active" : "") . "'>$i</a>";
+                                                    }
+
+                                                    if ($page < $totalPages - 2) echo " ... <a href='?page=$totalPages' class='btn'>$totalPages</a>";
+                                                }
+                                                ?>
+
+                                                <?php if ($page < $totalPages): ?>
+                                                    <a href="?page=<?php echo $page + 1; ?>" class="btn">NEXT</a>
+                                                    <a href="?page=<?php echo $totalPages; ?>" class="btn">LAST</a>
+                                                <?php endif; ?>
+                                            </div>
                                         </div>
+                                        <style>
+                                            .pagination-container {
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: flex-end;
+                                                margin-top: 20px;
+                                                width: 100%;
+                                            }
+
+                                            .pagination-info {
+                                                background-color: #333;
+                                                color: white;
+                                                padding: 8px 12px;
+                                                margin-right: 10px;
+                                                border-radius: 5px;
+                                            }
+
+                                            .pagination {
+                                                display: flex;
+                                            }
+
+                                            .pagination .btn {
+                                                margin: 0 5px;
+                                                padding: 8px 12px;
+                                                text-decoration: none;
+                                                background-color: #007bff;
+                                                color: white;
+                                                border-radius: 5px;
+                                            }
+
+                                            .pagination .btn.active {
+                                                background-color: #7E99A3;
+                                            }
+                                        </style>
+                                        <?php
+                                        $conn->close();
+                                        ?>
+
                                     </div>
                                 </div>
                             </div>
@@ -409,4 +458,3 @@ try {
     <script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
     <script src="../../Template/skydash/js/dataTables.select.min.js"></script>
     <script src="../../Template/skydash/js/off-canvas.js"></script>
-    
