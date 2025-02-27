@@ -1,5 +1,7 @@
 <?php
 include "../../config/connection.php";
+file_put_contents("debug_log.txt", print_r($_POST, true));
+error_log(print_r($_POST, true));
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -29,9 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("sssssss", $nama, $username, $hashedPass, $nim, $prodi, $kelas, $nomor_telepon);
 
         if ($stmt->execute()) {
-            echo "New record created successfully!";
+            echo json_encode(["status" => "success", "message" => "New record created successfully!"]);
         } else {
-            echo "Error executing statement: " . $stmt->error;
+            echo json_encode(["status" => "error", "message" => "Error executing statement: " . $stmt->error]);
+
         }
 
         $stmt->close();
