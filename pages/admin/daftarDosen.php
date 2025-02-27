@@ -41,6 +41,7 @@ if ($row) {
 
   <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/mahasiswa.css">
   <link rel="stylesheet" href="../../assets/css/css/admin/mahasiswa.css">
+  <link rel="stylesheet" href="../../assets/css/admin/daftardosen.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
@@ -458,57 +459,6 @@ if ($row) {
         </ul>
       </nav>
       <!-- partial -->
-
-      <style>
-        /* Styling Tabel */
-        /* Styling Tabel */
-        /* Styling Tabel */
-        /* Styling Tabel */
-        table {
-          border-collapse: collapse;
-          width: 100%;
-          background: #fff;
-          border-radius: 8px;
-          overflow: hidden;
-        }
-
-        /* Header tetap berwarna biru */
-        th {
-          background-color: #4B49AC !important;
-          color: white;
-          padding: 12px;
-          text-align: center;
-        }
-
-        /* Styling untuk isi tabel */
-        td {
-          background-color: #ffffff;
-          color: black;
-          padding: 12px;
-          text-align: center;
-        }
-
-        /* Menghilangkan garis antar kolom */
-        th,
-        td {
-          border: none !important;
-        }
-
-        /* Menambahkan garis hanya antar baris */
-        tr {
-          border-bottom: 1px solid #ddd;
-        }
-
-        /* Menghilangkan garis di baris terakhir agar lebih rapi */
-        tr:last-child {
-          border-bottom: none;
-        }
-
-        .card-title{
-          text-align: center;
-        }
-      </style>
-
       <!--Advanced-->
       <div class="main-panel">
         <div class="content-wrapper">
@@ -614,41 +564,6 @@ if ($row) {
                         </div>
                       </div>
                     </div>
-
-                    <style>
-                      .pagination-container {
-                        display: flex;
-                        align-items: center;
-                        justify-content: flex-end;
-                        margin-top: 20px;
-                        width: 100%;
-                      }
-
-                      .pagination-info {
-                        background-color: #333;
-                        color: white;
-                        padding: 8px 12px;
-                        margin-right: 10px;
-                        border-radius: 5px;
-                      }
-
-                      .pagination {
-                        display: flex;
-                      }
-
-                      .pagination .btn {
-                        margin: 0 3px;
-                        padding: 8px 12px;
-                        text-decoration: none;
-                        background-color: #007bff;
-                        color: white;
-                        border-radius: 5px;
-                      }
-
-                      .pagination .btn.active {
-                        background-color: #7E99A3;
-                      }
-                    </style>
 
                     <?php
                     $conn->close();
@@ -764,167 +679,6 @@ if ($row) {
             </div>
 
 
-            <style>
-              /* Styling untuk modal */
-              .nav-link.active {
-                background: #4B49AC;
-                position: relative;
-                color: white !important;
-              }
-
-              .modal {
-                display: none;
-                position: fixed;
-                z-index: 1000;
-                left: 0;
-                top: 0;
-                width: 100vw;
-                height: 100vh;
-                background-color: rgba(0, 0, 0, 0.5);
-                justify-content: center;
-                align-items: center;
-                padding: 20px;
-                /* Ensures space around the modal */
-              }
-
-              .modal-content {
-                background-color: #fff;
-                padding: 20px;
-                border-radius: 8px;
-                width: 40%;
-                max-width: 600px;
-                height: 80vh;
-                flex-direction: column;
-                overflow: hidden;
-                /* Prevents unnecessary scrolling */
-              }
-
-              .modal-content form {
-                flex-grow: 1;
-                /* Ensures form takes available space */
-                overflow-y: auto;
-                /* Allows scrolling within form */
-                max-height: calc(80vh - 40px);
-                /* Ensures form doesn't overflow */
-              }
-
-              .close {
-                color: #555;
-                float: right;
-                font-size: 24px;
-                font-weight: bold;
-                cursor: pointer;
-              }
-
-              .close:hover {
-                color: red;
-              }
-
-              /* Styling untuk form */
-              .form-group {
-                display: flex;
-                flex-direction: column;
-                margin-bottom: 10px;
-              }
-
-              label {
-                font-weight: bold;
-                margin-bottom: 5px;
-              }
-
-              input {
-                padding: 8px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                width: 100%;
-                outline: none;
-                /* Menghilangkan border bawaan browser */
-                transition: border 0.3s ease-in-out;
-              }
-
-              /* Saat input dalam keadaan aktif (focus) */
-              input:focus {
-                border: 2px solid #007bff;
-                /* Border tetap muncul dengan warna biru */
-                box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
-                /* Efek glow */
-              }
-
-              select {
-                padding: 8px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                width: 100%;
-                outline: none;
-                background-color: white;
-                font-size: 16px;
-                transition: border 0.3s ease-in-out;
-              }
-
-              select:focus {
-                border: 2px solid #007bff;
-                box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
-              }
-
-              .btn-submit {
-                background-color: #007bff;
-                color: white;
-                padding: 10px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                width: 100%;
-                font-size: 16px;
-              }
-
-              .btn-submit:hover {
-                background-color: #0056b3;
-              }
-
-              .editBtn {
-                background-color: #007bff;
-                /* Warna biru */
-                color: white;
-                /* Warna teks putih */
-                border: none;
-                /* Hapus border */
-                padding: 8px 16px;
-                /* Ukuran padding */
-                border-radius: 8px;
-                /* Membuat sudut membulat */
-                cursor: pointer;
-                /* Ubah kursor menjadi pointer */
-                font-size: 14px;
-                transition: background 0.3s ease-in-out;
-              }
-
-              .editBtn:hover {
-                background-color: #0056b3;
-                /* Warna biru lebih gelap saat hover */
-              }
-
-              .btn-spacing {
-                margin-right: 10px;
-                /* Atur jarak sesuai keinginan */
-              }
-
-              .deleteBtn {
-                background-color: #dc3545;
-                /* Warna merah */
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 8px;
-                cursor: pointer;
-                font-size: 14px;
-                transition: background 0.3s ease-in-out;
-              }
-
-              .deleteBtn:hover {
-                background-color: #c82333;
-                /* Warna merah lebih gelap */
-              }
-            </style>
 
             <script>
               document.getElementById("openModalBtn").onclick = function() {
