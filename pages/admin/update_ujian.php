@@ -67,12 +67,12 @@ if (isset($_POST['id_mahasiswa'], $_POST['status_ujian'], $_POST['tanggal_ujian'
         // Jika sudah ada, lakukan update
         $sql = "UPDATE ujian SET status_ujian = ?, tanggal_ujian = ? WHERE id_mahasiswa = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sdi", $status_ujian, $tgl, $id_mahasiswa);
+        $stmt->bind_param("ssi", $status_ujian, $tgl, $id_mahasiswa);
     } else {
         // Jika belum ada, lakukan insert
         $sql = "INSERT INTO ujian (id_mahasiswa, status_ujian, tanggal_ujian) VALUES (?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isd", $id_mahasiswa, $status_ujian, $tgl);
+        $stmt->bind_param("iss", $id_mahasiswa, $status_ujian, $tgl);
     }
     $check_stmt->close();
 

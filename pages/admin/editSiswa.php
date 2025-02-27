@@ -9,7 +9,9 @@ $kelas = $_POST['kelas'];
 $telepon = $_POST['nomor_telepon'];
 $username = $_POST['username'];
 $pass = $_POST['password'];
-$sql = "UPDATE mahasiswa SET nama_mahasiswa='$nama', nim='$nim', prodi='$prodi', kelas='$kelas', nomor_telepon='$telepon', username='$username', pass='$pass' WHERE id_mahasiswa='$id'";
+$hashedPass = password_hash($pass, PASSWORD_DEFAULT);
+
+$sql = "UPDATE mahasiswa SET nama_mahasiswa='$nama', nim='$nim', prodi='$prodi', kelas='$kelas', nomor_telepon='$telepon', username='$username', pass='$hashedPass' WHERE id_mahasiswa='$id'";
 
 if ($conn->query($sql) === TRUE) {
   echo "Success";
