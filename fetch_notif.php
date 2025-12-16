@@ -2,7 +2,7 @@
 ob_start(); // Prevent unexpected output
 session_start();
 header('Content-Type: application/json'); // Ensure JSON response
-include "../../config/connection.php";
+include "config/connection.php";
 
 if (!isset($_SESSION['username'])) {
     echo json_encode(['error' => 'User not logged in']);

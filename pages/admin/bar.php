@@ -40,110 +40,18 @@
         </button>
         
         <ul class="navbar-nav navbar-nav-right">
-          <!-- Notification Dropdown -->
-          <li class="nav-item dropdown">
-            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
-              <i class="icon-bell mx-0"></i>
-              <span class="count" id="notificationCount"></span> 
-              <!-- Notification count here -->
-            </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-            <div id="notifications">
-            <script>
-              function fetchNotifications() {
-                $.ajax({
-                  url: '../../fetch_notif.php',
-                  method: 'GET',
-                  success: function(data) {
-                    const notifications = JSON.parse(data);
-                    const notificationCount = $('#notificationCount');
-                    const notificationList = $('#notifications');
-                          
-                    notificationCount.text(notifications.length);
-                    notificationList.empty();
-
-                    if (notifications.length === 0 || notifications.message === 'No unread notifications') {
-                      notificationList.append(`
-                        <a class="dropdown-item preview-item">
-                          <div class="preview-item-content">
-                            <h6 class="preview-subject font-weight-normal"></h6>
-                          </div>
-                        </a>
-                      `);
-                    } else {
-                      notifications.forEach(function(notification) {
-                      const notificationItem = `
-                        <a class="dropdown-item preview-item" data-notification-id="${notification.id}">
-                          <div class="preview-thumbnail">
-                            <div class="preview-icon bg-info">
-                              <i class="ti-info-alt mx-0"></i>
-                            </div>
-                          </div>
-                          <div class="preview-item-content">
-                            <h6 class="preview-subject font-weight-normal">${notification.message}</h6>
-                            <p class="font-weight-light small-text mb-0 text-muted">${timeAgo(notification.created_at)}</p>
-                          </div>
-                        </a>
-                        `;
-                        notificationList.append(notificationItem);
-                      });
-                    }
-                  },
-                error: function() {
-                  console.log("Error fetching notifications.");
-                }
-              });
-            }
-
-              function timeAgo(time) {
-                const timeAgo = new Date(time);
-                const currentTime = new Date();
-                const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
-
-                if (diffInSeconds < 60) {
-                  return `${diffInSeconds} seconds ago`;
-                }
-                const diffInMinutes = Math.floor(diffInSeconds / 60);
-                if (diffInMinutes < 60) {
-                  return `${diffInMinutes} minutes ago`;
-                }
-                const diffInHours = Math.floor(diffInMinutes / 60);
-                if (diffInHours < 24) {
-                  return `${diffInHours} hours ago`;
-                }
-                const diffInDays = Math.floor(diffInHours / 24);
-                return `${diffInDays} days ago`;
-            }
-
-              $(document).on('click', '.dropdown-item', function() {
-                const notificationId = $(this).data('notification-id');
-                markNotificationAsRead(notificationId);
-              });
-
-              function markNotificationAsRead(notificationId) {
-                $.ajax({
-                  url: '../../mark_read.php',
-                  method: 'POST',
-                  data: { id: notificationId },
-                  success: function(response) {
-                  console.log(response);
-                  fetchNotifications();
-                },
-                error: function() {
-                  console.log("Error marking notification as read.");
-                }
-              });
-            }
-
-            $(document).ready(function() {
-              fetchNotifications();
-              setInterval(fetchNotifications, 30000);
-            });
-          </script>
-              </div>
-            </div>
-          </li>
-
+  <!-- Notification Dropdown -->
+  <li class="nav-item dropdown">
+    <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
+      <i class="icon-bell mx-0"></i>
+      <span class="count" id="notificationCount"></span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+      <div id="notifications">
+        <!-- Notifications will be inserted here -->
+      </div>
+    </div>
+  </li>
           <!-- Profile Dropdown -->
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
@@ -428,3 +336,121 @@
         </ul>
       </nav>
       </html>
+
+<script>
+  function fetchNotifications() {
+    $.ajax({
+      url: '../../fetch_notif.php',
+      method: 'GET',
+      success: function(data) {
+        console.log("Raw response:", data); // Debug: see what we're getting
+        
+        try {
+          const notifications = JSON.parse(data);
+          console.log("Parsed notifications:", notifications); // Debug: see parsed data
+          
+          const notificationCount = $('#notificationCount');
+          const notificationList = $('#notifications');
+                
+          notificationCount.text(notifications.length);
+          notificationList.empty();
+
+          if (notifications.length === 0 || notifications.message === 'No unread notifications') {
+            notificationList.append(`
+              <a class="dropdown-item preview-item">
+                <div class="preview-item-content">
+                  <h6 class="preview-subject font-weight-normal">No new notifications</h6>
+                </div>
+              </a>
+            `);
+          } else {
+            notifications.forEach(function(notification) {
+              const notificationItem = `
+                <a class="dropdown-item preview-item" data-notification-id="${notification.id}">
+                  <div class="preview-thumbnail">
+                    <div class="preview-icon bg-info">
+                      <i class="ti-info-alt mx-0"></i>
+                    </div>
+                  </div>
+                  <div class="preview-item-content">
+                    <h6 class="preview-subject font-weight-normal">${notification.message}</h6>
+                    <p class="font-weight-light small-text mb-0 text-muted">${timeAgo(notification.created_at)}</p>
+                  </div>
+                </a>
+              `;
+              notificationList.append(notificationItem);
+            });
+          }
+        } catch (e) {
+          console.error("JSON parse error:", e);
+          console.log("Data received:", data);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("AJAX Error Details:");
+        console.error("Status:", status);
+        console.error("Error:", error);
+        console.error("Response Text:", xhr.responseText);
+        console.error("Status Code:", xhr.status);
+        
+        // Show error in notification area
+        $('#notifications').html(`
+          <a class="dropdown-item preview-item">
+            <div class="preview-item-content">
+              <h6 class="preview-subject font-weight-normal text-danger">Error loading notifications</h6>
+              <p class="small-text">${error}</p>
+            </div>
+          </a>
+        `);
+      }
+    });
+  }
+
+  function timeAgo(time) {
+    const timeAgo = new Date(time);
+    const currentTime = new Date();
+    const diffInSeconds = Math.floor((currentTime - timeAgo) / 1000);
+
+    if (diffInSeconds < 60) {
+      return `${diffInSeconds} seconds ago`;
+    }
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes} minutes ago`;
+    }
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) {
+      return `${diffInHours} hours ago`;
+    }
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays} days ago`;
+  }
+
+  $(document).on('click', '.dropdown-item[data-notification-id]', function() {
+    const notificationId = $(this).data('notification-id');
+    if (notificationId) {
+      markNotificationAsRead(notificationId);
+    }
+  });
+
+  function markNotificationAsRead(notificationId) {
+    $.ajax({
+      url: '../../mark_read.php',
+      method: 'POST',
+      data: { id: notificationId },
+      success: function(response) {
+        console.log("Mark read response:", response);
+        fetchNotifications();
+      },
+      error: function(xhr, status, error) {
+        console.error("Error marking notification as read:", error);
+      }
+    });
+  }
+
+  $(document).ready(function() {
+    console.log("Initializing notifications..."); // Debug
+    fetchNotifications();
+    setInterval(fetchNotifications, 30000);
+  });
+</script>
