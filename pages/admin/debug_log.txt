@@ -1,0 +1,10 @@
+Array
+(
+    [nama_mahasiswa] => Alex
+    [nim] => K4324182
+    [prodi] => Seni Kuliner
+    [kelas] => B
+    [nomor_telepon] => 085555555555
+    [username] => Alex
+    [pass] => Alex
+)

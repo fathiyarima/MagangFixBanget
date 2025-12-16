@@ -165,7 +165,7 @@ if ($row) {
 
             <div id="myModal" class="modal">
               <div class="modal-content">
-                <span class="close">&times;</span>
+                <span class="close" id="myModal">&times;</span>
                 <h2>Add Data Dosen</h2>
                 <form id="studentForm">
                   <div class="form-group">
@@ -276,7 +276,7 @@ if ($row) {
                 document.getElementById("myModal").style.display = "none";
               }
 
-              document.getElementById("openModal").onclick = function() {
+              document.getElementById("openModalBatch").onclick = function() {
                 document.getElementById("ModalBatch").style.display = "flex";
               }
 

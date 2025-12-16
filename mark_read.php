@@ -2,7 +2,6 @@
 session_start();
 include "../../config/connection.php";
 
-// ✅ Check if notification ID is provided in POST
 if (!isset($_POST['id'])) {
     echo json_encode(['message' => 'Invalid request: No notification ID']);
     exit();

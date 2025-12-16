@@ -38,17 +38,72 @@ if ($row) {
   <link rel="stylesheet" href="../../assets/css/css/admin/dashboard.css">
   <style>
     body.dark-mode {
-      background-color: #121212;
-      color: #e0e0e0;
-    }
-    body.dark-mode .card {
-      background-color: #1e1e1e !important;
-      color: #fff;
-    }
-    body.dark-mode .btn {
-      border-color: #fff;
-      color: #fff;
-    }
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+body.dark-mode .content-wrapper {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+body.dark-mode .card {
+  background-color: #1e1e1e !important;
+  color: #fff;
+}
+
+body.dark-mode .card .card-title {
+  color: #fff;
+}
+
+body.dark-mode .btn {
+  border-color: #fff;
+  color: #fff;
+}
+
+body.dark-mode .footer {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+body.dark-mode .navbar-menu-wrapper{
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+body.dark-mode .navbar-brand-wrapper{
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+body.dark-mode .sidebar{
+  background-color: #8174A0;
+  color: #fff;
+}
+
+/* Optional: style other elements inside content-wrapper */
+body.dark-mode .modal-content {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+body.dark-mode table {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+body.dark-mode th,
+body.dark-mode td {
+  border-color: #444;
+}
     #loader {
       position: fixed;
       top: 0;

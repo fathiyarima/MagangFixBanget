@@ -12,17 +12,25 @@ $query = "SELECT $column FROM mahasiswa WHERE id_mahasiswa = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $userId);
 $stmt->execute();
-$stmt->bind_result($fileData);
-$stmt->fetch();
+
+// Get the result set instead of binding
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
 $stmt->close();
 $conn->close();
 
-if (!$fileData) {
+if (!$row || !$row[$column]) {
     die("File not found.");
 }
 
+$fileData = $row[$column];
+
+// Set headers before outputting data
 header("Content-Type: application/pdf");
-header("Content-Disposition: attachment; filename='$column.pdf'");
+header("Content-Length: " . strlen($fileData));
+header("Content-Disposition: attachment; filename='" . basename($column) . ".pdf'");
+
 echo $fileData;
 exit();
 ?>

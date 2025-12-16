@@ -41,28 +41,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
     $file = $_FILES['file_upload'];
     $fileType = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     $fileCategory = $_POST['file_type'] ?? '';
-
+    
     // Format nama file
     $newFileName = $nama_mahasiswa . '_' . str_replace(' ', '_', $fileCategory) . '_' . $nama_mahasiswa . '.' . $fileType;
-
+    
     // Validasi file
     if ($fileType != "pdf") {
         showNotification('error', 'Maaf, hanya file PDF yang diperbolehkan.');
     } elseif ($file['size'] > 2000000) { // 2MB
         showNotification('error', 'Maaf, ukuran file terlalu besar (maksimal 2MB).');
     }
-
+    
     try {
         // Koneksi ke database
         include '../../config/connection.php';
         $conn2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+        
         // Baca file sebagai binary
         $fileContent = file_get_contents($file['tmp_name']);
         if ($fileContent === false) {
             throw new Exception("Gagal membaca file");
         }
-
+        
         // Tentukan nama kolom berdasarkan tipe file
         $columnName = '';
         switch ($fileCategory) {
@@ -84,12 +84,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
             default:
                 throw new Exception("Kategori file tidak valid");
         }
-
+        
         // Cek apakah data mahasiswa sudah ada
         $checkSql = "SELECT username FROM mahasiswa WHERE username = :nama";
         $checkStmt = $conn2->prepare($checkSql);
         $checkStmt->execute([':nama' => $nama_mahasiswa]);
-
+        
         if ($checkStmt->rowCount() > 0) {
             // Update data yang sudah ada
             $sql = "UPDATE mahasiswa SET `$columnName` = :file_content WHERE username = :nama";
@@ -97,26 +97,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
             // Insert data baru
             $sql = "INSERT INTO mahasiswa (username, `$columnName`) VALUES (:nama, :file_content)";
         }
-
+        
         $stmt = $conn2->prepare($sql);
-        $params = [
-            ':nama' => $nama_mahasiswa,
-            ':file_content' => $fileContent
-        ];
-
-        // Tambahkan parameter nama jika melakukan INSERT
-        if ($checkStmt->rowCount() == 0) {
-            $params[':nama'] = $nama_mahasiswa;
-        }
-
-        $result = $stmt->execute($params);
-
-
+        
+        // **KEY CHANGE: Bind BLOB parameter explicitly with PDO::PARAM_LOB**
+        $stmt->bindParam(':nama', $nama_mahasiswa, PDO::PARAM_STR);
+        $stmt->bindParam(':file_content', $fileContent, PDO::PARAM_LOB);
+        
+        $result = $stmt->execute();
+        
         if ($result) {
             showNotification('success', 'File berhasil diupload! Silakan tunggu verifikasi dari admin.');
         } else {
             throw new Exception("Gagal menyimpan ke database");
         }
+        
     } catch (Exception $e) {
         showNotification('error', 'Error: ' . $e->getMessage());
     }
