@@ -146,7 +146,7 @@ body.dark-mode td {
           <div class="col-md-4 mb-4" data-aos="fade-right">
             <div class="card text-center">
               <div class="card-body">
-                <img src="../../assets/img/profile-default.png" alt="admin" class="rounded-circle mb-2" width="80">
+                <img src="../../assets/img/admin/profile-default.png" alt="admin" class="rounded-circle mb-2" width="80">
                 <h5 class="card-title"><?php echo $nama_admin; ?></h5>
                 <p class="card-text text-muted">Admin Sistem</p>
                 <p><i class="ti-mobile"></i> <?php echo $nomor_telepon; ?></p>

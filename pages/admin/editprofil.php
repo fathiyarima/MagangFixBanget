@@ -11,7 +11,7 @@ if (!isset($_SESSION['username'])) {
 $username = $_SESSION['username'];
 
 // Ambil data admin
-$stmt = $conn2->prepare("SELECT username, nama_admin, nomor_telepon FROM admin WHERE username = :username");
+$stmt = $conn2->prepare("SELECT foto, username, nama_admin, nomor_telepon FROM admin WHERE username = :username");
 $stmt->execute([':username' => $username]);
 $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -25,23 +25,51 @@ if (isset($_POST['update'])) {
     $nomor_telepon = trim($_POST['nomor_telepon']);
     $password = $_POST['password'];
 
+    // FOTO PROFIL
+$foto_baru = $admin['foto'];
+
+if (!empty($_FILES['foto']['name'])) {
+    $ext_valid = ['jpg', 'jpeg', 'png', 'webp'];
+    $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
+
+    if (!in_array($ext, $ext_valid)) {
+        echo "<script>alert('Format foto harus JPG, PNG, atau WEBP');</script>";
+        exit;
+    }
+
+    if ($_FILES['foto']['size'] > 2 * 1024 * 1024) {
+        echo "<script>alert('Ukuran foto maksimal 2MB');</script>";
+        exit;
+    }
+
+    $foto_baru = uniqid() . '.' . $ext;
+    move_uploaded_file($_FILES['foto']['tmp_name'], "../../assets/img/admin/" . $foto_baru);
+
+    if ($admin['foto'] && $admin['foto'] !== 'default.png') {
+        @unlink("../../assets/img/admin/" . $admin['foto']);
+    }
+}
+
+
     if (!empty($password) && strlen($password) < 6) {
         echo "<script>alert('Password minimal 6 karakter');</script>";
     } else {
         if (!empty($password)) {
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
-            $update = $conn2->prepare("UPDATE admin SET nama_admin=:nama, nomor_telepon=:telp, password=:pass WHERE username=:username");
+            $update = $conn2->prepare("UPDATE admin SET nama_admin=:nama, nomor_telepon=:telp, password=:pass, foto = :foto WHERE username=:username");
             $update->execute([
                 ':nama' => $nama_admin,
+                ':foto' => $foto_baru,
                 ':telp' => $nomor_telepon,
                 ':pass' => $password_hash,
                 ':username' => $username
             ]);
         } else {
-            $update = $conn2->prepare("UPDATE admin SET nama_admin=:nama, nomor_telepon=:telp WHERE username=:username");
+            $update = $conn2->prepare("UPDATE admin SET nama_admin=:nama, nomor_telepon=:telp, foto = :foto WHERE username=:username");
             $update->execute([
                 ':nama' => $nama_admin,
                 ':telp' => $nomor_telepon,
+                ':foto' => $foto_baru,
                 ':username' => $username
             ]);
         }
@@ -85,7 +113,15 @@ if (isset($_POST['update'])) {
             <h5 class="mb-0">Edit Profil Admin</h5>
           </div>
           <div class="card-body">
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="form-group mb-3 text-center">
+  <img src="../../assets/img/admin/<?= htmlspecialchars($admin['foto']); ?>"
+       class="rounded-circle mb-2"
+       width="120" height="120"
+       style="object-fit:cover;">
+  <input type="file" name="foto" class="form-control mt-2">
+  <small class="text-muted">JPG / PNG / WEBP (Max 2MB)</small>
+</div>
 
               <div class="form-group mb-3">
                 <label>Username</label>
