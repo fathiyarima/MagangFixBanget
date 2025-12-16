@@ -51,7 +51,7 @@
         </ul>
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item dropdown">
-            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
+            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="icon-bell mx-0"></i>
               <span class="count" id="notificationCount"></span> 
               <!-- Notification count here -->
@@ -168,6 +168,10 @@
                   <p class="text-muted mb-1"><?php echo htmlspecialchars($nomor_telepon); ?></p>
                 </div>
                 <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="editprofil.php">
+                  <i class="ti-user text-primary"></i>
+                  Edit Profil
+                </a>
                 <a class="dropdown-item" href="../../index.php">
                   <i class="ti-power-off text-primary"></i>
                   Logout
@@ -382,6 +386,7 @@
               <span class="menu-title">Daftar Mahasiswa</span>
             </a>
           </li>
+          
 
           <!-- Pendaftaran Dropdown -->
           <li class="nav-item">
@@ -438,4 +443,18 @@
           </li>
         </ul>
       </nav>
+      <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
+
+<!-- Plugin js -->
+<script src="../../Template/skydash/vendors/chart.js/Chart.min.js"></script>
+<script src="../../Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+
+<!-- Core Skydash js -->
+<script src="../../Template/skydash/js/off-canvas.js"></script>
+<script src="../../Template/skydash/js/hoverable-collapse.js"></script>
+<script src="../../Template/skydash/js/template.js"></script>
+<script src="../../Template/skydash/js/settings.js"></script>
+<script src="../../Template/skydash/js/todolist.js"></script>
+
       </html>

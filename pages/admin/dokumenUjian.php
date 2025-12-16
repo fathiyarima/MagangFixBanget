@@ -42,6 +42,7 @@ if ($row) {
 
   <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/mahasiswa.css">
   <link rel="stylesheet" href="../../assets/css/css/admin/mahasiswa.css">
+  <link rel="stylesheet" href="../../assets/css/admin/kumpulanstylediadmin.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
@@ -66,7 +67,7 @@ if ($row) {
 
         /* Header tetap berwarna biru */
         th {
-          background-color: #4B49AC !important;
+          background-color: #1b4f72 !important;
           color: white;
           padding: 12px;
           text-align: center;

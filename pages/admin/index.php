@@ -36,6 +36,12 @@ if ($row) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
   <link rel="stylesheet" href="../../assets/css/css/admin/dashboard.css">
+  <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
+
+<script src="../../Template/skydash/js/off-canvas.js"></script>
+<script src="../../Template/skydash/js/hoverable-collapse.js"></script>
+<script src="../../Template/skydash/js/settings.js"></script>
+<script src="../../Template/skydash/js/todolist.js"></script>
   <style>
     body.dark-mode {
   background-color: #121212;
@@ -203,6 +209,9 @@ body.dark-mode td {
     </div>
   </div>
 
+  <!-- Skydash JS (WAJIB untuk tombol garis tiga) -->
+
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -254,6 +263,7 @@ body.dark-mode td {
     animateCounter('countTA', <?php echo json_encode((int)$totalTA) ?>);
     animateCounter('countSeminar', <?php echo json_encode((int)$totalSem) ?>);
     animateCounter('countUjian', <?php echo json_encode((int)$totalUj) ?>);
+    
   </script>
 </body>
 </html>

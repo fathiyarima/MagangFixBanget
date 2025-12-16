@@ -168,6 +168,10 @@
                   <p class="text-muted mb-1"><?php echo htmlspecialchars($nomor_telepon); ?></p>
                 </div>
                 <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="editprofil.php">
+                  <i class="ti-user text-primary"></i>
+                  Edit Profil
+                </a>
                 <a class="dropdown-item" href="../../index.php">
                   <i class="ti-power-off text-primary"></i>
                   Logout
