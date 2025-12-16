@@ -10,312 +10,195 @@ $check = "SELECT nomor_telepon, nama_admin FROM admin WHERE username = :nama";
 $checkNomer_telepon = $conn2->prepare($check);
 $checkNomer_telepon->execute([':nama' => $nama_admin]);
 $row = $checkNomer_telepon->fetch(PDO::FETCH_ASSOC);
+$countTA = $conn2->query("SELECT COUNT(*) as totalTA FROM `tugas_akhir` WHERE 1");
+$totalTA = (int) $countTA->fetch(PDO::FETCH_ASSOC)['totalTA'];
+$countSem = $conn2->query("SELECT COUNT(*) as totalSem FROM `seminar_proposal` WHERE 1");
+$totalSem = (int) $countSem->fetch(PDO::FETCH_ASSOC)['totalSem'];
+$countUj = $conn2->query("SELECT COUNT(*) as totalUj FROM `ujian` WHERE 1");
+$totalUj = (int) $countUj->fetch(PDO::FETCH_ASSOC)['totalUj'];
 
 if ($row) {
   $nomor_telepon = $row['nomor_telepon'];
   $nama_admin= $row['nama_admin'];
-  
 } else {
   $nomor_telepon = '0857364562';
   $nama_admin = 'Nama Default';
-  
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-
-  <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Dashboard Admin</title>
-  <!-- plugins:css -->
-  <link rel="stylesheet" href="../../Template/skydash/vendors/feather/feather.css">
-  <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" href="../../Template/skydash/vendors/css/vendor.bundle.base.css">
-  <!-- endinject -->
-  <!-- Plugin css for this page -->
-  <link rel="stylesheet" href="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
-  <link rel="stylesheet" href="../../Template/skydash/vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" type="text/css" href="../../Template/skydash/js/select.dataTables.min.css">
-  <!-- End plugin css for this page -->
-  <!-- inject:css -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-  <link rel="stylesheet" href="../../Template/skydash/css/vertical-layout-light/style.css">
-  <!-- endinject -->
-  <link rel="shortcut icon" href="../../assets/img/Logo.webp" />
-
-  <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/dashboard.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
   <link rel="stylesheet" href="../../assets/css/css/admin/dashboard.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    body.dark-mode .card {
+      background-color: #1e1e1e !important;
+      color: #fff;
+    }
+    body.dark-mode .btn {
+      border-color: #fff;
+      color: #fff;
+    }
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
 </head>
 
 <body>
+  <div id="loader">
+    <div class="spinner-border text-primary"></div>
+  </div>
   <div class="container-scroller">
-    <?php
-    include "sidebar.php";
-    ?>
-      <!-- partial -->
-      <div class="main-panel">
-        <div class="content-wrapper">
-          <div class="row">
-            <div class="col-md-12 grid-margin">
-              <div class="row">
-                <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                  <h3 class="font-weight-bold">Selamat Datang di Politeknik NEST</h3>
-                </div>
+    <?php include "sidebar2.php"; ?>
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h4 id="greeting"></h4>
+            <h5 id="clock" class="text-primary"></h5>
+          </div>
+          <button class="btn btn-sm btn-dark" onclick="toggleDarkMode()">🌙 Mode Gelap</button>
+        </div>
+        <h3 class="font-weight-bold">Selamat Datang di Politeknik NEST</h3>
+
+        <div class="row mt-4">
+          <div class="col-md-4 mb-4" data-aos="fade-right">
+            <div class="card text-center">
+              <div class="card-body">
+                <img src="../../assets/img/profile-default.png" alt="admin" class="rounded-circle mb-2" width="80">
+                <h5 class="card-title"><?php echo $nama_admin; ?></h5>
+                <p class="card-text text-muted">Admin Sistem</p>
+                <p><i class="ti-mobile"></i> <?php echo $nomor_telepon; ?></p>
               </div>
             </div>
           </div>
-
-          <?php
-
-          // Ambil total pendaftar tugas akhir
-          $sqlTA = "SELECT COUNT(*) AS total FROM tugas_akhir";
-          $resultTA = $conn->query($sqlTA);
-          $totalTA = ($resultTA->num_rows > 0) ? $resultTA->fetch_assoc()['total'] : 0;
-
-          // Ambil total pendaftar seminar
-          $sqlSeminar = "SELECT COUNT(*) AS total FROM seminar_proposal";
-          $resultSeminar = $conn->query($sqlSeminar);
-          $totalSeminar = ($resultSeminar->num_rows > 0) ? $resultSeminar->fetch_assoc()['total'] : 0;
-
-          // Ambil total pendaftar ujian
-          $sqlUjian = "SELECT COUNT(*) AS total FROM ujian";
-          $resultUjian = $conn->query($sqlUjian);
-          $totalUjian = ($resultUjian->num_rows > 0) ? $resultUjian->fetch_assoc()['total'] : 0;
-          ?>
-
-          <div class="row">
-            <!-- Card 1 -->
-            <div class="col-md-4 mb-4">
-              <a href="pendaftaranTA.php">
-                <div class="card card-dark-blue">
-                  <div class="card-body text-center">
-                    <p class="mb-4">Total Pendaftar Tugas Akhir</p>
-                    <p class="fs-30 mb-2"><?php echo number_format($totalTA); ?></p>
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="col-md-4 mb-4">
-              <a href="pendaftaranSeminar.php">
-                <div class="card card-dark-blue">
-                  <div class="card-body text-center">
-                    <p class="mb-4">Total Pendaftar Seminar</p>
-                    <p class="fs-30 mb-2"><?php echo number_format($totalSeminar); ?></p>
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="col-md-4 mb-4">
-              <a href="pendaftaranUjian.php">
-                <div class="card card-light-blue">
-                  <div class="card-body text-center">
-                    <p class="mb-4">Total Pendaftar Ujian</p>
-                    <p class="fs-30 mb-2"><?php echo number_format($totalUjian); ?></p>
-                  </div>
-                </div>
-              </a>
+          <div class="col-md-8 mb-4" data-aos="fade-left">
+            <div class="alert alert-info" role="alert">
+              🔔 Sistem akan mengalami perawatan pada tanggal 5 Juli pukul 22.00 WIB.
             </div>
           </div>
-
-
-          <div class="row">
-            <!-- Chart 1 -->
-            <div class="col-md-4">
-              <canvas id="myChart2"></canvas>
-            </div>
-            <!-- Chart 2 -->
-            <div class="col-md-4">
-              <canvas id="myChart3"></canvas>
-            </div>
-            <!-- Chart 3 -->
-            <div class="col-md-4">
-              <canvas id="myChart4"></canvas>
-            </div>
-          </div>
-          <?php
-
-          if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-          }
-
-          $sql = "SELECT status_pengajuan, COUNT(*) as count FROM tugas_akhir
-                          WHERE status_pengajuan IN ('Disetujui', 'Revisi', 'Ditolak') 	
-                          GROUP BY status_pengajuan";
-          $result = $conn->query($sql);
-
-          $xValues = [];
-          $yValues = [];
-
-          if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-              $xValues[] = $row['status_pengajuan'];
-              $yValues[] = $row['count'];
-            }
-          }
-          ?>
-          <canvas id="myChart2"></canvas>
-          <script>
-            var xValues = <?php echo json_encode($xValues); ?>;
-            var yValues = <?php echo json_encode($yValues); ?>;
-
-            var barColors = ["#73ad91", "#ebd382", "#d25d5d", ];
-
-            new Chart("myChart2", {
-              type: "doughnut",
-              data: {
-                labels: xValues,
-                datasets: [{
-                  backgroundColor: barColors,
-                  data: yValues
-                }]
-              },
-              options: {
-                title: {
-                  display: true,
-                  text: "Jumlah Pendaftar Tugas Akhir"
-                }
-              }
-            });
-          </script>
-
-          <?php
-
-          if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-          }
-
-          $sql = "SELECT status_seminar, COUNT(*) as count FROM seminar_proposal
-                          WHERE status_seminar IN ('dijadwalkan', 'ditunda', 'selesai')
-                          GROUP BY status_seminar";
-          $result = $conn->query($sql);
-
-          $xValues = [];
-          $yValues = [];
-
-          if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-              $xValues[] = $row['status_seminar'];
-              $yValues[] = $row['count'];
-            }
-          }
-          ?>
-          <canvas id="myChart3"></canvas>
-          <script>
-            var xValues = <?php echo json_encode($xValues); ?>;
-            var yValues = <?php echo json_encode($yValues); ?>;
-
-            var barColors = ["#73ad91", "#ebd382", "#d25d5d", ];
-
-            new Chart("myChart3", {
-              type: "doughnut",
-              data: {
-                labels: xValues,
-                datasets: [{
-                  backgroundColor: barColors,
-                  data: yValues
-                }]
-              },
-              options: {
-                title: {
-                  display: true,
-                  text: "Jumlah Pendaftar Seminar"
-                }
-              }
-            });
-          </script>
-
-          <?php
-
-          if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-          }
-
-          $sql = "SELECT status_ujian, COUNT(*) as count FROM ujian
-                          WHERE status_ujian IN ('dijadwalkan', 'selesai') 	
-                          GROUP BY status_ujian";
-          $result = $conn->query($sql);
-
-          $xValues = [];
-          $yValues = [];
-
-          if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-              $xValues[] = $row['status_ujian'];
-              $yValues[] = $row['count'];
-            }
-          }
-          $conn->close();
-          ?>
-          <canvas id="myChart4"></canvas>
-          <script>
-            var xValues = <?php echo json_encode($xValues); ?>;
-            var yValues = <?php echo json_encode($yValues); ?>;
-
-            var barColors = ["#73ad91", "#ebd382", "#d25d5d", ];
-
-            new Chart("myChart4", {
-              type: "doughnut",
-              data: {
-                labels: xValues,
-                datasets: [{
-                  backgroundColor: barColors,
-                  data: yValues
-                }]
-              },
-              options: {
-                title: {
-                  display: true,
-                  text: "Jumlah Pendaftar Ujian"
-                }
-              }
-            });
-          </script>
-          
-          <?php
-          include '../../pages/footer.php';
-          ?>
-
         </div>
+
+        <div class="row mb-4" data-aos="zoom-in">
+          <div class="col">
+            <a href="daftarMahasiswa.php" class="btn btn-outline-primary w-100">
+              <i class="ti-user"></i> Data Mahasiswa
+            </a>
+          </div>
+          <div class="col">
+            <a href="dokumenTA.php" class="btn btn-outline-secondary w-100">
+              <i class="ti-folder"></i> Dokumen
+            </a>
+          </div>
+          <div class="col">
+            <a href="pendaftaranTA.php" class="btn btn-outline-success w-100">
+              <i class="ti-calendar"></i> Pendaftaran
+            </a>
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-md-4 text-center" data-aos="fade-up">
+            <h4>Total TA</h4>
+            <h1 class="text-success" id="countTA">0</h1>
+          </div>
+          <div class="col-md-4 text-center" data-aos="fade-up" data-aos-delay="200">
+            <h4>Total Seminar</h4>
+            <h1 class="text-info" id="countSeminar">0</h1>
+          </div>
+          <div class="col-md-4 text-center" data-aos="fade-up" data-aos-delay="400">
+            <h4>Total Ujian</h4>
+            <h1 class="text-danger" id="countUjian">0</h1>
+          </div>
+        </div>
+
+        <div class="row mb-4 mt-5">
+          <div class="col">
+            <div class="card bg-light text-center p-4 shadow-sm" data-aos="fade-up">
+              <blockquote class="blockquote mb-0">
+                <p>"Kesuksesan bukanlah akhir, kegagalan bukanlah kehancuran, keberanian untuk melanjutkan adalah yang terpenting."</p>
+                <footer class="blockquote-footer">Winston Churchill</footer>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+
+        <?php include '../../pages/footer.php'; ?>
       </div>
     </div>
-    <!-- main-panel ends -->
   </div>
-  <!-- page-body-wrapper ends -->
-  </div>
-  <!-- container-scroller -->
 
-  <!-- plugins:js -->
-  <script src="../../Template/skydash/vendors/js/vendor.bundle.base.js"></script>
-  <!-- endinject -->
-  <!-- Plugin js for this page -->
-  <script src="../../Template/skydash/vendors/chart.js/Chart.min.js"></script>
-  <script src="../../Template/skydash/vendors/datatables.net/jquery.dataTables.js"></script>
-  <script src="../../Template/skydash/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-  <script src="../../Template/skydash/js/dataTables.select.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
 
-  <!-- End plugin js for this page -->
-  <!-- inject:js -->
-  <script src="../../Template/skydash/js/off-canvas.js"></script>
-  <script src="../../Template/skydash/js/hoverable-collapse.js"></script>
-  <script src="../../Template/skydash/js/Template.js"></script>
-  <script src="../../Template/skydash/js/settings.js"></script>
-  <script src="../../Template/skydash/js/todolist.js"></script>
-  <!-- endinject -->
-  <!-- Custom js for this page-->
-  <script src="../../Template/skydash/js/dashboard.js"></script>
-  <script src="../../Template/skydash/js/Chart.roundedBarCharts.js"></script>
-  <!-- End custom js for this page-->
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    function getGreeting() {
+      const now = new Date();
+      const hour = now.getHours();
+      if (hour < 12) return "Selamat pagi 👋";
+      if (hour < 18) return "Selamat siang ☀️";
+      return "Selamat malam 🌙";
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").innerText = now.toLocaleTimeString("id-ID");
+      document.getElementById("greeting").innerText = getGreeting();
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    window.addEventListener("load", () => {
+      const loader = document.getElementById("loader");
+      loader.style.opacity = 0;
+      setTimeout(() => loader.style.display = "none", 500);
+    });
+
+    function animateCounter(id, target, duration = 1500) {
+      let el = document.getElementById(id);
+      let start = 0;
+      let increment = target / (duration / 20);
+      let counter = setInterval(() => {
+        start += increment;
+        if (start >= target) {
+          el.innerText = target;
+          clearInterval(counter);
+        } else {
+          el.innerText = Math.floor(start);
+        }
+      }, 20);
+    }
+
+    animateCounter('countTA', <?php echo json_encode((int)$totalTA) ?>);
+    animateCounter('countSeminar', <?php echo json_encode((int)$totalSem) ?>);
+    animateCounter('countUjian', <?php echo json_encode((int)$totalUj) ?>);
+  </script>
 </body>
-
 </html>

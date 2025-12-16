@@ -49,7 +49,500 @@ if ($row) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=folder_open" />
-  
+  <style>
+
+/* Stats Cards Enhancement */
+.card-light-danger {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-light-danger:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.card-light-danger .card-body {
+    color: white;
+}
+
+.card-light-danger p {
+    color: rgba(255,255,255,0.9);
+}
+
+.fs-30 {
+    font-size: 2.5rem !important;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Chart Container */
+#myChart2 {
+    max-width: 300px;
+    max-height: 300px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+/* Table Improvements */
+.table-responsive {
+    overflow-x: auto;
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    background: white;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 0;
+}
+
+th, td {
+    padding: 15px 12px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+th {
+    background: linear-gradient(135deg, #4B49AC 0%, #6c5ce7 100%);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+tbody tr {
+    transition: all 0.3s ease;
+}
+
+tbody tr:hover {
+    background: linear-gradient(135deg, #f8f9ff 0%, #e3e7ff 100%);
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(75, 73, 172, 0.1);
+}
+
+/* Card Enhancement */
+.card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 50px rgba(0,0,0,0.12);
+}
+
+.card-body {
+    padding: 30px;
+}
+
+.card-title {
+    text-align: center;
+    color: #2d3436;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.card-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(135deg, #4B49AC 0%, #6c5ce7 100%);
+    border-radius: 2px;
+}
+
+/* Form Elements Enhancement */
+input[type="date"] {
+    border: 2px solid #e0e6ed;
+    padding: 8px 12px;
+    border-radius: 10px;
+    text-align: center;
+    width: 160px;
+    background: white;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+input[type="date"]:focus {
+    border-color: #4B49AC;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(75, 73, 172, 0.1);
+}
+
+/* Dropdown Enhancements */
+select {
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 2px solid #e0e6ed;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: white;
+    font-size: 0.9rem;
+}
+
+select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(75, 73, 172, 0.1);
+}
+
+select option[value="Revisi"] {
+    background: #ffeaa7;
+    color: #2d3436;
+}
+
+select option[value="Ditolak"] {
+    background: #fd79a8;
+    color: white;
+}
+
+select option[value="Disetujui"] {
+    background: #00b894;
+    color: white;
+}
+
+/* Status-based styling */
+select[name="status_pengajuan"] {
+    font-weight: bold;
+    min-width: 120px;
+}
+
+/* Dosen Pembimbing Dropdown */
+select[name="dosen_pembimbing"] {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%) !important;
+    color: white;
+    border: none;
+    font-weight: 600;
+    min-width: 150px;
+}
+
+select[name="dosen_pembimbing"]:hover {
+    background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%) !important;
+}
+
+select[name="dosen_pembimbing"] option {
+    background: #ddd6fe;
+    color: #2d3436;
+}
+
+/* Button Enhancements */
+.btn-update, .btn-inverse-success {
+    background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.btn-update:hover, .btn-inverse-success:hover {
+    background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
+}
+
+/* Icon Styling */
+.icon-folder, .material-symbols-outlined {
+    font-size: 24px;
+    color: #4B49AC;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.icon-folder:hover, .material-symbols-outlined:hover {
+    color: #6c5ce7;
+    background: rgba(75, 73, 172, 0.1);
+    transform: scale(1.1);
+}
+
+.folder-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Popup Enhancements */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+}
+
+.popup-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 60%;
+    max-width: 800px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideInUp 0.4s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #636e72;
+    transition: all 0.3s ease;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.close-btn:hover {
+    color: #d63031;
+    background: rgba(214, 48, 49, 0.1);
+}
+
+/* Popup Table */
+.popup-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.popup-table th, .popup-table td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.popup-table th {
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.popup-table tbody tr:hover {
+    background: #f8f9ff;
+}
+
+/* Verify Button */
+.verify-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+    color: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.verify-btn:hover {
+    background: linear-gradient(135deg, #00cec9 0%, #00b894 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+}
+
+.verify-btn:disabled {
+    background: #ddd;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* No File Text */
+.no-file {
+    color: #d63031;
+    font-weight: 600;
+    font-style: italic;
+}
+
+/* Revision Textbox */
+.revisi-textbox {
+    margin-top: 10px;
+}
+
+.revisi-textbox textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #e0e6ed;
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: border-color 0.3s ease;
+}
+
+.revisi-textbox textarea:focus {
+    border-color: #4B49AC;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(75, 73, 172, 0.1);
+}
+
+.small-text {
+    font-size: 0.8rem;
+    color: #636e72;
+    font-style: italic;
+    margin-top: 5px;
+    line-height: 1.4;
+}
+
+/* Footer Enhancement */
+.footer {
+    background: white;
+    border-top: 1px solid #f0f0f0;
+    padding: 20px 0;
+    margin-top: 40px;
+}
+
+.footer a {
+    color: #4B49AC;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #6c5ce7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .popup-content {
+        width: 90%;
+        padding: 20px;
+    }
+    
+    .card-body {
+        padding: 20px;
+    }
+    
+    th, td {
+        padding: 10px 8px;
+        font-size: 0.85rem;
+    }
+    
+    .fs-30 {
+        font-size: 2rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .table-responsive {
+        font-size: 0.8rem;
+    }
+    
+    th, td {
+        padding: 8px 6px;
+    }
+    
+    select, input[type="date"] {
+        font-size: 0.8rem;
+        padding: 6px 8px;
+    }
+    
+    .btn-update, .btn-inverse-success {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Animation for table rows */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+tbody tr {
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+tbody tr:nth-child(1) { animation-delay: 0.1s; }
+tbody tr:nth-child(2) { animation-delay: 0.2s; }
+tbody tr:nth-child(3) { animation-delay: 0.3s; }
+tbody tr:nth-child(4) { animation-delay: 0.4s; }
+tbody tr:nth-child(5) { animation-delay: 0.5s; }
+
+/* Loading state for buttons */
+.btn-update:disabled, .btn-inverse-success:disabled {
+    background: #ddd;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Enhanced focus states for accessibility */
+button:focus, select:focus, input:focus, textarea:focus {
+    outline: 2px solid #4B49AC;
+    outline-offset: 2px;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition: all 0.3s ease;
+}
+</style>
   <script>
   function changeSelectColor(selectElement) {
     var selectedValue = selectElement.value;
@@ -352,7 +845,7 @@ function changeSelectColor(selectElement) {
               
         <!-- content-wrapper ends -->
         <?php
-          include '../../pages/footer.php';
+          include 'footer.php';
         ?>
 
       </div>

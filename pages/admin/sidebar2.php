@@ -34,7 +34,7 @@
         <a class="navbar-brand brand-logo-mini" href="index.php"><img src="../../assets/img/Logo.webp" alt="logo"/></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
           <span class="icon-menu"></span>
         </button>
         <ul class="navbar-nav mr-lg-2">
@@ -51,7 +51,7 @@
         </ul>
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item dropdown">
-            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
+            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
               <i class="icon-bell mx-0"></i>
               <span class="count" id="notificationCount"></span> 
               <!-- Notification count here -->
@@ -155,7 +155,7 @@
 
           <!-- Profile Dropdown -->
           <li class="nav-item nav-profile dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
               <img src="../../assets/img/orang.png" alt="profile" />
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
@@ -177,7 +177,7 @@
           </li>
           
         </ul>
-        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
           <span class="icon-menu"></span>
         </button>
       </div>
@@ -211,10 +211,10 @@
         <i class="settings-close ti-close"></i>
         <ul class="nav nav-tabs border-top" id="setting-panel" role="tablist">
           <li class="nav-item">
-            <a class="nav-link active" id="todo-tab" data-toggle="tab" href="#todo-section" role="tab" aria-controls="todo-section" aria-expanded="true">TO DO LIST</a>
+            <a class="nav-link active" id="todo-tab" data-bs-toggle="tab" href="#todo-section" role="tab" aria-controls="todo-section" aria-expanded="true">TO DO LIST</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="chats-tab" data-toggle="tab" href="#chats-section" role="tab" aria-controls="chats-section">CHATS</a>
+            <a class="nav-link" id="chats-tab" data-bs-toggle="tab" href="#chats-section" role="tab" aria-controls="chats-section">CHATS</a>
           </li>
         </ul>
         <div class="tab-content" id="setting-content">
@@ -360,7 +360,7 @@
       <!-- partial -->
       <!-- partial:partials/_sidebar.html -->
       <?php 
-        $current_page = basename($_SERVER['PHP_SELF']); 
+        $current_page = 'index.php'; 
       ?>
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
@@ -385,7 +385,7 @@
 
           <!-- Pendaftaran Dropdown -->
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" 
+            <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" 
               aria-expanded="<?= in_array($current_page, ['pendaftaranTA.php', 'pendaftaranSeminar.php', 'pendaftaranUjian.php']) ? 'true' : 'false'; ?>" 
               aria-controls="ui-basic">
               <i class="icon-layout menu-icon"></i>
@@ -409,7 +409,7 @@
 
           <!-- Dokumen Dropdown -->
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic2"
+            <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic2"
               aria-expanded="<?= in_array($current_page, ['dokumenTA.php', 'dokumenSeminar.php', 'dokumenUjian.php']) ? 'true' : 'false'; ?>"
               aria-controls="ui-basic2">
               <i class="icon-paper menu-icon"></i>
