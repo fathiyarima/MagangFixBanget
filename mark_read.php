@@ -49,7 +49,7 @@ try {
     } elseif ($user_type === 'mahasiswa') {
         $stmt = $pdo->prepare("UPDATE notif SET status_mahasiswa = 'read' WHERE id = :notification_id AND id_mahasiswa = :user_id AND status_mahasiswa = 'unread'");
     } elseif ($user_type === 'admin') {
-        $stmt = $pdo->prepare("UPDATE notif SET status_admin = 'read' WHERE id = :notification_id AND status_admin = 'unread'");
+        $stmt = $pdo->prepare("UPDATE notif SET status_admin = 'read' WHERE id = :notification_id AND admin = :user_id AND status_admin = 'unread'");
     }
 
     $stmt->execute(['notification_id' => $notificationId, 'user_id' => $user_id]);

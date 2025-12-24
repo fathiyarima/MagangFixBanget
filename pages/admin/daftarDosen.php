@@ -159,7 +159,7 @@ if ($row) {
             </div>
             <div class="d-flex justify-content-end gap-2 mb-4">
               <button id="openModalBtn" class="btn btn-primary">➕ Add Data</button>
-              <button id="openModalBatch" class="btn btn-outline-primary">📥 Add Batch</button>
+              <button id="openModal" class="btn btn-outline-primary">📥 Add Batch</button>
             </div>
 
 
