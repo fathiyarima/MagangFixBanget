@@ -92,11 +92,9 @@ if ($row) {
                                 <th>NIM</th>
                                 <th>Program Studi</th>
                                 <th>Kelas</th>
-                                <th>Nomor Telepon</th>
-                                <th>Username</th>
-                                <th>Password</th>
                                 <th>Edit</th>
                                 <th>Hapus</th>
+                                <th>Preview</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -108,11 +106,21 @@ if ($row) {
                                 echo "<td>" . $row['nim'] . "</td>";
                                 echo "<td>" . $row['prodi'] . "</td>";
                                 echo "<td>" . $row['kelas'] . "</td>";
-                                echo "<td>" . $row['nomor_telepon'] . "</td>";
-                                echo "<td>" . $row['username'] . "</td>";
-                                echo "<td>" . $row['pass'] . "</td>";
                                 echo "<td><button class='editBtn' data-id='" . $row['id_mahasiswa'] . "'>Edit</button></td>";
                                 echo "<td><button class='deleteBtn' data-id='" . $row['id_mahasiswa'] . "'>Hapus</button></td>";
+                                echo "<td>
+                                  <button class='previewMhsBtn btn btn-info'
+                                    data-nama='{$row['nama_mahasiswa']}'
+                                    data-nim='{$row['nim']}'
+                                    data-prodi='{$row['prodi']}'
+                                    data-kelas='{$row['kelas']}'
+                                    data-telp='{$row['nomor_telepon']}'
+                                    data-username='{$row['username']}'>
+                                    Preview
+                                  </button>
+                                </td>";
+
+
                                 echo "</tr>";
                               }
                               ?>
@@ -277,7 +285,30 @@ if ($row) {
                   <button type="submit" class="btn-submit">Simpan Perubahan</button>
                 </form>
               </div>
+        </div>
+    </div>
+</div>
             </div>
+
+            <div id="previewMhsModal" class="modal">
+                <div class="modal-content" style="max-width:420px">
+                  <span class="close" id="closePreviewMhs">&times;</span>
+
+                  <div class="profile-card">
+
+                    <h3 id="m_nama"></h3>
+                    <p><strong>NIM:</strong> <span id="m_nim"></span></p>
+                    <p><strong>Kelas:</strong> <span id="m_kelas"></span></p>
+                    <p><strong>Program Studi:</strong> <span id="m_prodi"></span></p>
+                    <p><strong>Nomor Telepon:</strong> <span id="m_telp"></span></p>
+                    <p><strong>Username:</strong> <span id="m_username"></span></p>
+                    <p>
+                      <strong>Password:</strong>
+                      <span id="m_password">••••••••</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
 
             <script>
               document.getElementById("openModalBtn").onclick = function() {
@@ -387,6 +418,257 @@ if ($row) {
                   }
                 });
               };
+              // ===== PREVIEW PROFILE FUNCTIONALITY =====
+
+// Function to get initials from name
+function getInitials(name) {
+    return name
+        .split(' ')
+        .map(word => word[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2);
+}
+
+// Function to determine badge color based on program study
+function getProdiColor(prodi) {
+    const colors = {
+        'Teknologi Informasi': { bg: '#e3f2fd', text: '#1565c0' },
+        'Seni Kuliner': { bg: '#f3e5f5', text: '#7b1fa2' },
+        'Perhotelan': { bg: '#e8f5e9', text: '#2e7d32' }
+    };
+    
+    for (const [key, color] of Object.entries(colors)) {
+        if (prodi.includes(key)) {
+            return color;
+        }
+    }
+    return { bg: '#f5f5f5', text: '#333' };
+}
+
+// Function to determine badge color based on class
+function getKelasColor(kelas) {
+    const colors = {
+        'A': { bg: '#e3f2fd', text: '#1565c0' },
+        'B': { bg: '#f3e5f5', text: '#7b1fa2' },
+        'C': { bg: '#e8f5e9', text: '#2e7d32' },
+        'D': { bg: '#fff3e0', text: '#ef6c00' },
+        'E': { bg: '#fce4ec', text: '#c2185b' }
+    };
+    
+    const firstChar = kelas.charAt(0).toUpperCase();
+    return colors[firstChar] || { bg: '#f5f5f5', text: '#333' };
+}
+
+// Toggle password visibility
+function togglePassword() {
+    const passwordDisplay = document.getElementById('previewPassword');
+    const eyeIcon = document.querySelector('.btn-show-password i');
+    
+    if (passwordDisplay.classList.contains('show')) {
+        passwordDisplay.textContent = '••••••••';
+        passwordDisplay.classList.remove('show');
+        eyeIcon.className = 'fas fa-eye';
+    } else {
+        passwordDisplay.textContent = '[Password Terenkripsi]';
+        passwordDisplay.classList.add('show');
+        eyeIcon.className = 'fas fa-eye-slash';
+    }
+}
+
+// Print profile function
+function printProfile() {
+    const printContent = document.querySelector('.preview-modal-content').cloneNode(true);
+    const printWindow = window.open('', '_blank');
+    
+    // Remove action buttons for print
+    const actionButtons = printContent.querySelector('.profile-actions');
+    if (actionButtons) actionButtons.remove();
+    
+    // Remove eye button
+    const eyeButton = printContent.querySelector('.btn-show-password');
+    if (eyeButton) eyeButton.remove();
+    
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Profil Mahasiswa</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; }
+                    .profile-card { max-width: 500px; margin: 0 auto; }
+                    .profile-avatar { 
+                        width: 100px; height: 100px; 
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        border-radius: 50%; display: flex; align-items: center;
+                        justify-content: center; color: white; font-size: 32px;
+                        margin: 0 auto 20px; font-weight: bold;
+                    }
+                    .profile-name { text-align: center; margin-bottom: 20px; }
+                    .profile-details { background: #f5f5f5; padding: 20px; border-radius: 10px; }
+                    .detail-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
+                    .detail-label { font-weight: bold; }
+                    @media print {
+                        .no-print { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="profile-card">
+                    ${printContent.innerHTML}
+                </div>
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        window.close();
+                    };
+                <\/script>
+
+                
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+}
+
+// Preview button functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const previewModal = document.getElementById('previewModal');
+    const closePreviewBtn = document.querySelector('.close-preview');
+    let currentMahasiswaId = null;
+    
+    // Open preview modal when clicking preview buttons
+    document.addEventListener('click', function(e) {
+        const previewBtn = e.target.closest('.previewBtn');
+        if (previewBtn) {
+            // Get data from button attributes
+            const mahasiswaId = previewBtn.getAttribute('data-id');
+            const nama = previewBtn.getAttribute('data-nama');
+            const nim = previewBtn.getAttribute('data-nim');
+            const prodi = previewBtn.getAttribute('data-prodi');
+            const kelas = previewBtn.getAttribute('data-kelas');
+            const telepon = previewBtn.getAttribute('data-telepon');
+            const username = previewBtn.getAttribute('data-username');
+            const password = previewBtn.getAttribute('data-password');
+
+            currentMahasiswaId = mahasiswaId;
+            
+            // Update modal content
+            document.getElementById('previewNama').textContent = nama;
+            document.getElementById('previewNim').textContent = nim;
+            document.getElementById('previewTelepon').textContent = telepon;
+            document.getElementById('previewUsername').textContent = username;
+            document.getElementById('previewPassword').textContent = password;
+            document.getElementById('previewId').textContent = mahasiswaId;
+            
+            // Update avatar with initials
+            const initials = getInitials(nama);
+            document.getElementById('profileAvatar').textContent = initials;
+            
+            // Update prodi badge
+            const prodiBadge = document.getElementById('previewProdiBadge');
+            prodiBadge.textContent = prodi;
+            const prodiColor = getProdiColor(prodi);
+            prodiBadge.style.backgroundColor = prodiColor.bg;
+            prodiBadge.style.color = prodiColor.text;
+            
+            // Update kelas badge
+            const kelasBadge = document.getElementById('previewKelasBadge');
+            kelasBadge.textContent = kelas;
+            const kelasColor = getKelasColor(kelas);
+            kelasBadge.style.backgroundColor = kelasColor.bg;
+            kelasBadge.style.color = kelasColor.text;
+            
+            // Update edit button to edit this mahasiswa
+            document.getElementById('previewEditBtn').onclick = function() {
+                previewModal.style.display = 'none';
+                editMahasiswa(mahasiswaId);
+            };
+            
+            // Update email button
+            document.getElementById('previewEmailBtn').onclick = function() {
+                const email = prompt('Masukkan email untuk mahasiswa ini:', '');
+                if (email) {
+                    alert(`Email akan dikirim ke: ${email}\nFitur ini akan diimplementasi kemudian.`);
+                }
+            };
+            
+            // Show modal with animation
+            previewModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    });
+    
+    // Close preview modal
+    closePreviewBtn.addEventListener('click', function() {
+        previewModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    });
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === previewModal) {
+            previewModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+    
+    // Close with ESC key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && previewModal.style.display === 'block') {
+            previewModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+});
+
+// Function to edit mahasiswa (connect with existing edit modal)
+function editMahasiswa(id) {
+    // Tutup preview modal jika terbuka
+    const previewModal = document.getElementById('previewModal');
+    if (previewModal.style.display === 'block') {
+        previewModal.style.display = 'none';
+    }
+    
+    // Buka edit modal
+    const editModal = document.getElementById('editModal');
+    const closeEditModal = document.getElementById('closeEditModal');
+    
+    // Fetch data mahasiswa untuk diisi di form edit
+    fetch(`get_mahasiswa.php?id=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Isi form edit dengan data
+                document.getElementById('edit_id').value = data.mahasiswa.id_mahasiswa;
+                document.getElementById('edit_name').value = data.mahasiswa.nama_mahasiswa;
+                document.getElementById('edit_nim').value = data.mahasiswa.nim;
+                document.getElementById('edit_prodi').value = data.mahasiswa.prodi;
+                document.getElementById('edit_kelas').value = data.mahasiswa.kelas;
+                document.getElementById('edit_telepon').value = data.mahasiswa.nomor_telepon;
+                document.getElementById('edit_username').value = data.mahasiswa.username;
+                document.getElementById('edit_password').value = data.mahasiswa.password;
+                
+                // Tampilkan modal edit
+                editModal.style.display = 'flex';
+                
+                // Update close button functionality
+                closeEditModal.onclick = function() {
+                    editModal.style.display = 'none';
+                };
+                
+                // Close when clicking outside
+                window.onclick = function(event) {
+                    if (event.target == editModal) {
+                        editModal.style.display = 'none';
+                    }
+                };
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Gagal memuat data untuk edit');
+        });
+}
             </script>
 
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -542,6 +824,41 @@ if ($row) {
   <!-- Custom js for this page-->
   <script src="../../Template/skydash/js/dashboard.js"></script>
   <script src="../../Template/skydash/js/Chart.roundedBarCharts.js"></script>
+
+<script>
+document.addEventListener("click", function (e) {
+  const btn = e.target.closest(".previewMhsBtn");
+  if (!btn) return;
+
+  document.getElementById("m_nama").innerText = btn.dataset.nama;
+  document.getElementById("m_nim").innerText = btn.dataset.nim;
+  document.getElementById("m_kelas").innerText = btn.dataset.kelas;
+  document.getElementById("m_prodi").innerText = btn.dataset.prodi;
+  document.getElementById("m_telp").innerText = btn.dataset.telp;
+  document.getElementById("m_username").innerText = btn.dataset.username;
+
+  // password dummy
+  document.getElementById("m_password").innerText = "••••••••";
+
+  document.getElementById("previewMhsModal").style.display = "flex";
+});
+
+// close button
+document.getElementById("closePreviewMhs").onclick = function () {
+  document.getElementById("previewMhsModal").style.display = "none";
+};
+
+// klik luar modal
+window.addEventListener("click", function (e) {
+  const modal = document.getElementById("previewMhsModal");
+  if (e.target === modal) {
+    modal.style.display = "none";
+  }
+});
+</script>
+
+
+
   <!-- End custom js for this page-->
 </body>
 

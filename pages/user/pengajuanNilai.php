@@ -349,7 +349,7 @@ function getDocumentStatus($nama_mahasiswa, $id, $document_type)
                       url: '../../fetch_notif.php',
                       method: 'GET',
                       success: function(data) {
-                        const notifications = JSON.parse(data);
+                        const notifications = data;
                         const notificationCount = $('#notificationCount');
                         const notificationList = $('#notifications');
 

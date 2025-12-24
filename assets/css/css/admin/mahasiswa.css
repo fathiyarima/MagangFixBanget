@@ -315,3 +315,125 @@ button:focus, select:focus, input:focus, textarea:focus {
 * {
     transition: all 0.3s ease;
 }
+
+
+/* Reset modal display */
+#previewModal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    align-items: center;
+    justify-content: center;
+}
+
+#previewModal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalFadeIn 0.3s;
+}
+
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= DETAIL MAHASISWA MODAL ================= */
+#previewMhsModal .modal-content {
+  max-width: 420px;
+  width: 90%;
+  padding: 24px 26px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  animation: fadeScale 0.25s ease;
+  position: relative;
+}
+
+/* avatar */
+#previewMhsModal .avatar {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4B49AC, #6f6de8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 48px;
+}
+
+/* nama mahasiswa */
+#previewMhsModal h3 {
+  text-align: center;
+  margin-bottom: 18px;
+  color: #4B49AC;
+  font-weight: 700;
+}
+
+/* isi detail */
+#previewMhsModal p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  background: #f6f7fb;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+/* label */
+#previewMhsModal p strong {
+  color: #4B49AC;
+  font-weight: 600;
+}
+
+/* value */
+#previewMhsModal span {
+  color: #333;
+  font-weight: 500;
+  word-break: break-word;
+  text-align: right;
+}
+
+/* close button */
+#previewMhsModal .close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #999;
+  cursor: pointer;
+}
+
+#previewMhsModal .close:hover {
+  color: #e74c3c;
+}
+
+/* animasi halus */
+@keyframes fadeScale {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

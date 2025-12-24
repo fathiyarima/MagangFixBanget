@@ -1,10 +1,10 @@
 Array
 (
-    [nama_mahasiswa] => Alexis
-    [nim] => K43241834
+    [nama_mahasiswa] => Dinnn
+    [nim] => K3456799
     [prodi] => Teknologi Informasi
-    [kelas] => B
-    [nomor_telepon] => 085555555555
-    [username] => Alecis
-    [pass] => admin
+    [kelas] => A
+    [nomor_telepon] => 082222222222
+    [username] => dinda
+    [pass] => 12345
 )
