@@ -38,8 +38,8 @@ if ($row) {
   <!-- endinject -->
   <link rel="shortcut icon" href="../../assets/img/Logo.webp" />
 
-  <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/dosen.css">
-  <link rel="stylesheet" href="../../assets/css/css/admin/dosen.css">
+  <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/mahasiswa.css">
+  <link rel="stylesheet" href="../../assets/css/css/admin/mahasiswa.css">
   <link rel="stylesheet" href="../../assets/css/admin/daftardosen.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
