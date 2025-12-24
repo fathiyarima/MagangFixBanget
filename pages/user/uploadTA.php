@@ -19,13 +19,14 @@ include '../../config/connection.php';
 $conn2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Mengubah query untuk mengambil nim dan nama_mahasiswa
-$check = "SELECT nim, nama_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
+$check = "SELECT nim, id_mahasiswa, nama_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
 $checkNim = $conn2->prepare($check);
 $checkNim->execute([':nama' => $nama_mahasiswa]);
 $row = $checkNim->fetch(PDO::FETCH_ASSOC);
 
 if ($row) {
     $nim = $row['nim'];
+    $id_mahasiswa = $row['id_mahasiswa'];
     $nama = $row['nama_mahasiswa'];
     $prodi = $row['prodi'];
 } else {
@@ -107,15 +108,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
         $result = $stmt->execute();
         
         if ($result) {
-            showNotification('success', 'File berhasil diupload! Silakan tunggu verifikasi dari admin.');
-        } else {
-            throw new Exception("Gagal menyimpan ke database");
-        }
-        
+        showNotification('success', 'File berhasil diupload! Silakan tunggu verifikasi dari admin.');
+    
+} else {
+    throw new Exception("Gagal menyimpan ke database");
+}
+
     } catch (Exception $e) {
         showNotification('error', 'Error: ' . $e->getMessage());
     }
 }
+
 // Fungsi untuk mendapatkan status file dari database
 function getFileStatus($nama_mahasiswa, $fileCategory)
 {
