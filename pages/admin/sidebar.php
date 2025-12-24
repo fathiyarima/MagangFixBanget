@@ -26,6 +26,14 @@
 
   <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/css/admin/dashboard.css">
+  <style>
+    .nav-link.active {
+  background: #4b49ac;
+  position: relative;
+  color: white !important;
+  border-radius: 10px;
+}
+    </style>
 </head>
 
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">

@@ -43,6 +43,12 @@ if ($row) {
 <script src="../../Template/skydash/js/settings.js"></script>
 <script src="../../Template/skydash/js/todolist.js"></script>
   <style>
+    .nav-link.active {
+  background: #4b49ac;
+  position: relative;
+  color: white !important;
+  border-radius: 10px;
+}
     body.dark-mode {
   background-color: #121212;
   color: #e0e0e0;
