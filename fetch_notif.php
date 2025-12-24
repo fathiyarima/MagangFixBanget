@@ -20,7 +20,7 @@ try {
     $userTypes = [
         'dosen_pembimbing' => ['id_dosen', 'status_dosen'],
         'mahasiswa' => ['id_mahasiswa', 'status_mahasiswa'],
-        'admin' => ['id_admin', 'status_admin']
+        'admin' => ['id', 'status_admin']
     ];
 
     foreach ($userTypes as $table => [$userIdField, $statusField]) {

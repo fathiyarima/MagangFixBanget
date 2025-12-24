@@ -130,7 +130,7 @@ body.dark-mode td {
     <div class="spinner-border text-primary"></div>
   </div>
   <div class="container-scroller">
-    <?php include "sidebar2.php"; ?>
+    <?php include "sidebar.php"; ?>
     <div class="main-panel">
       <div class="content-wrapper">
         <div class="d-flex justify-content-between align-items-center mb-3">

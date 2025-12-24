@@ -64,12 +64,14 @@
                   url: '../../fetch_notif.php',
                   method: 'GET',
                   success: function(data) {
-                    const notifications = JSON.parse(data);
+                    const notifications = data;
                     const notificationCount = $('#notificationCount');
                     const notificationList = $('#notifications');
                           
                     notificationCount.text(notifications.length);
                     notificationList.empty();
+                    console.log('Notifications type:', typeof notifications);
+                    console.log('Notifications value:', notifications);
 
                     if (notifications.length === 0 || notifications.message === 'No unread notifications') {
                       notificationList.append(`

@@ -70,6 +70,8 @@
                           
                     notificationCount.text(notifications.length);
                     notificationList.empty();
+                    console.log('Notifications type:', typeof notifications);
+                    console.log('Notifications value:', notifications);
 
                     if (notifications.length === 0 || notifications.message === 'No unread notifications') {
                       notificationList.append(`
