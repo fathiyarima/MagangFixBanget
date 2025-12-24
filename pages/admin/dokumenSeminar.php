@@ -55,6 +55,10 @@ if ($row) {
       <!-- partial -->
       
       <style>
+          .table-responsive {
+              overflow-x: auto;
+              width: 100%;
+          }
         table {
             border-collapse: collapse;
             width: 100%;
@@ -63,9 +67,21 @@ if ($row) {
             overflow: hidden;
         }
 
+        th {
+    background: linear-gradient(135deg, #4B49AC 0%, #6c5ce7 100%) !important;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
         /* Header tetap berwarna biru */
         th {
-            background-color: #1b4f72 !important;
+            background-color: #4B49AC !important;
             color: white;
             padding: 12px;
             text-align: center;
@@ -92,6 +108,10 @@ if ($row) {
         /* Menghilangkan garis di baris terakhir agar lebih rapi */
         tr:last-child {
             border-bottom: none;
+        }
+
+        .card-title{
+          text-align: center;
         }
 
 
