@@ -42,6 +42,7 @@ if ($row) {
   <link rel="stylesheet" href="../../assets/css/css/admin/dosen.css">
   <link rel="stylesheet" href="../../assets/css/admin/daftardosen.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -159,7 +160,7 @@ if ($row) {
             </div>
             <div class="d-flex justify-content-end gap-2 mb-4">
               <button id="openModalBtn" class="btn btn-primary">➕ Add Data</button>
-              <button id="openModal" class="btn btn-outline-primary">📥 Add Batch</button>
+              <button id="openModalBatch" class="btn btn-outline-primary">📥 Add Batch</button>
             </div>
 
 
@@ -345,7 +346,7 @@ if ($row) {
                   })
                   .catch(error => console.error("Error:", error));
               };
-              document.getElementById("openModal").onclick = function() {
+              document.getElementById("openModalBatch").onclick = function() {
                 document.getElementById("ModalBatch").style.display = "flex";
               }
 
@@ -358,27 +359,6 @@ if ($row) {
                   document.getElementById("myModal").style.display = "none";
                 }
               };
-
-              document.querySelectorAll(".editBtn").forEach(button => {
-                button.addEventListener("click", function() {
-                  var id = this.getAttribute("data-id");
-
-                  fetch(`getDosen.php?id=${id}`)
-                    .then(response => response.json())
-                    .then(data => {
-                      document.getElementById("edit_id").value = data.id_dosen;
-                      document.getElementById("edit_name").value = data.nama_dosen;
-                      document.getElementById("edit_nip").value = data.nip;
-                      document.getElementById("edit_prodi").value = data.prodi;
-                      document.getElementById("edit_phone").value = data.nomor_telepon;
-                      document.getElementById("edit_username").value = data.username;
-                      document.getElementById("edit_pass").value = data.pass;
-
-                      document.getElementById("editModal").style.display = "flex";
-                    })
-                    .catch(error => console.error("Error fetching data:", error));
-                });
-              });
 
               document.querySelector("#editModal .close").onclick = function() {
                 document.getElementById("editModal").style.display = "none";
@@ -407,26 +387,48 @@ if ($row) {
               };
 
               document.getElementById("studentForm").onsubmit = function(event) {
-                event.preventDefault();
-                var formData = new FormData(document.getElementById("studentForm"));
+  event.preventDefault();
 
-                fetch("addDosen.php", {
-                    method: "POST",
-                    body: formData
-                  })
-                  .then(response => response.text())
-                  .then(response => {
-                    Swal.fire({
-                      icon: "success",
-                      title: "Berhasil!",
-                      text: "Data dosen berhasil ditambahkan!",
-                    }).then(() => {
-                      document.getElementById("myModal").style.display = "none";
-                      document.getElementById("studentForm").reset();
-                    });
-                  })
-                  .catch(error => console.error("Error:", error));
-              };
+  var name = document.getElementById("name").value;
+  var nip = document.getElementById("nip").value;
+  var phone = document.getElementById("phone").value;
+
+  if (!name || !nip || !phone) {
+    Swal.fire("Oops", "Please fill in all fields", "warning");
+    return;
+  }
+
+  var phoneRegex = /^[0-9]{10,15}$/;
+  if (!phoneRegex.test(phone)) {
+    Swal.fire("Invalid", "Phone number is not valid", "error");
+    return;
+  }
+
+  var formData = new FormData(this);
+
+  Swal.fire({
+    title: "Are you sure?",
+    icon: "question",
+    showCancelButton: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "addDosen.php", true);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          Swal.fire("Success", "Data added", "success")
+            .then(() => {
+              document.getElementById("myModal").style.display = "none";
+              document.getElementById("studentForm").reset();
+            });
+        } else {
+          Swal.fire("Error", xhr.statusText, "error");
+        }
+      };
+      xhr.send(formData);
+    }
+  });
+};
 
               document.querySelectorAll(".deleteBtn").forEach(button => {
                 button.addEventListener("click", function() {
@@ -449,7 +451,7 @@ if ($row) {
                           },
                           body: "id_dosen=" + id
                         })
-                        .then(response => response.text())
+                        .then(response => response.json())
                         .then(response => {
                           Swal.fire({
                             icon: "success",
@@ -464,10 +466,6 @@ if ($row) {
                 });
               });
             </script>
-
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
           </div>
         </div>
         <!-- content-wrapper ends -->
