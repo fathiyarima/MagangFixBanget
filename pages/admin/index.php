@@ -173,6 +173,11 @@ body.dark-mode td {
             </a>
           </div>
           <div class="col">
+            <a href="daftarDosen.php" class="btn btn-outline-primary w-100">
+              <i class="ti-user"></i> Data Dosen
+            </a>
+          </div>
+          <div class="col">
             <a href="dokumenTA.php" class="btn btn-outline-secondary w-100">
               <i class="ti-folder"></i> Dokumen
             </a>
