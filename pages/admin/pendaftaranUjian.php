@@ -201,6 +201,7 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
             select {
                 padding: 5px;
                 border-radius: 5px;
+                color: white;
                 border: none;
                 cursor: pointer;
                 font-weight: bold;
@@ -321,13 +322,28 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
               background-color: #0056b3;
           }
 
+            .btn-add-nilai {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 8px 16px;
+                border: none;
+                border-radius: 8px;
+                color: white;
+                cursor: pointer;
+                font-size: 0.85rem;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+        
+
           /* Style untuk teks "No File" */
           .no-file {
               color: red;
               font-weight: bold;
           }
 
-          .modal {
+        .modal {
             display: none;
             position: fixed;
             z-index: 1;
@@ -339,6 +355,7 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
             justify-content: center;
             align-items: center;
         }
+
         /* Tampilkan modal ketika memiliki class 'active' */
         .modal.active {
             display: flex;
@@ -358,14 +375,180 @@ if (strpos($currentPage, 'pendaftaranTA.php') !== false) {
             transform: translate(-50%, -50%);
         }
 
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            cursor: pointer;
+        /* HEADER */ 
+        .modal-content h3, 
+        .modal-content h4 { 
+            margin: 0; 
+            padding: 18px;
+            color: black; 
+            font-size: 20px; 
+            font-weight: 600; 
         }
 
+        /* BODY */ .modal-content 
+        .modal-body { 
+            padding: 22px; 
+        }
+
+        /* LABEL */ 
+        .modal-content label { 
+            text-align: left; 
+            font-size: 15px; 
+            font-weight: 600; 
+            margin-bottom: 6px; 
+            color: #444; 
+        }
+
+        /* INPUT */ 
+        .modal-content input { 
+            width: 100%; 
+            padding: 10px 14px; 
+            margin-bottom: 14px; 
+            border-radius: 10px; 
+            border: 1px solid #ddd; 
+            font-size: 14px; 
+            transition: 0.3s; 
+        }
+
+        /* Fokus input */ 
+        .modal-content input:focus { 
+            border-color: #1b4f72; 
+            box-shadow: 0 0 0 3px rgba(27, 79, 114, 0.2); 
+            outline: none; 
+        }
+
+        /* RATA-RATA */ 
+        .modal-content input[readonly] { 
+            background: #ecf5ff; 
+            font-weight: bold; 
+            color: #1b4f72; 
+            text-align: center; 
+        }
+
+        /* FOOTER */ 
+        .modal-content 
+        .modal-footer { 
+            padding: 15px 22px; 
+            background: #f8f9fa; 
+            display: flex; 
+            justify-content: flex-end; 
+            gap: 10px; 
+        }
+
+        /* TOMBOL SIMPAN */ 
+        .modal-content button { 
+            padding: 8px 20px; 
+            border-radius: 10px; 
+            border: none; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff; 
+            font-size: 14px; 
+            cursor: pointer; 
+            transition: all 0.25s ease; } 
+        .modal-content button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 14px rgba(0,0,0,0.25); 
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute; t
+            op: 12px; right: 16px; 
+            font-size: 22px; 
+            cursor: pointer; 
+            color: #fff; 
+            transition: color 0.2s; 
+        }
+        
+
+        .close-modal:hover {
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        /* Form styling untuk modal */
+        .modal-title {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #444;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+
+        .average-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #eaeaea;
+        }
+
+        .average-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .average-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: #3498db;
+        }
+
+        .btn-save {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-save:hover {
+            background-color: #2980b9;
+        }
 
 /* Stats Cards Enhancement */
 .card-light-danger {
@@ -759,23 +942,6 @@ select[name="dosen_pembimbing"] option {
     line-height: 1.4;
 }
 
-/* Footer Enhancement */
-.footer {
-    background: white;
-    border-top: 1px solid #f0f0f0;
-    padding: 20px 0;
-    margin-top: 40px;
-}
-
-.footer a {
-    color: #4B49AC;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.footer a:hover {
-    color: #6c5ce7;
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
