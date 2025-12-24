@@ -38,8 +38,8 @@ if ($row) {
   <!-- endinject -->
   <link rel="shortcut icon" href="../../assets/img/Logo.webp" />
 
-  <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/mahasiswa.css">
-  <link rel="stylesheet" href="../../assets/css/css/admin/mahasiswa.css">
+  <link rel="stylesheet" type="text/css" href="../../assets/css/css/admin/dosen.css">
+  <link rel="stylesheet" href="../../assets/css/css/admin/dosen.css">
   <link rel="stylesheet" href="../../assets/css/admin/daftardosen.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -94,7 +94,6 @@ if ($row) {
                               <th>Password</th>
                               <th>Edit</th>
                               <th>Hapus</th>
-                              <th>Preview</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -110,21 +109,12 @@ if ($row) {
                               echo "<td>" . $row['pass'] . "</td>";
                               echo "<td><button class='editBtn' data-id='" . $row['id_dosen'] . "'>Edit</button></td>";
                               echo "<td><button class='deleteBtn' data-id='" . $row['id_dosen'] . "'>Hapus</button></td>";
-                              echo "<td><button class='previewBtn' data-id='" . $row['id_dosen'] . "' 
-                                data-nama='" . htmlspecialchars($row['nama_dosen']) . "'
-                                data-nip='" . htmlspecialchars($row['nip']) . "'
-                                data-prodi='" . htmlspecialchars($row['prodi']) . "'
-                                data-telepon='" . htmlspecialchars($row['nomor_telepon']) . "'
-                                data-username='" . htmlspecialchars($row['username']) . "'
-                                data-password='" . htmlspecialchars($row['pass']) . "'
-                                >👁️ Preview</button></td>";
                               echo "</tr>";
                             }
                             ?>
                           </tbody>
                         </table>
                       </div>
-                      
 
                       <hr>
 
@@ -420,47 +410,23 @@ if ($row) {
               document.getElementById("studentForm").onsubmit = function(event) {
                 event.preventDefault();
                 var formData = new FormData(document.getElementById("studentForm"));
-                Swal.fire({
-                  title: 'Are you sure?',
-                  text: "Do you want to submit this data?",
-                  icon: 'question',
-                  showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33',
-                  confirmButtonText: 'Yes, submit it!'
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("POST", "addDosen.php", true);
-                    xhr.onload = function() {
-                      console.log('Response from PHP:', xhr.responseText);
-                      if (xhr.status === 200) {
-                        Swal.fire({
-                          icon: 'success',
-                          title: 'Success!',
-                          text: 'Data added successfully!'
-                        }).then(() => {
-                          document.getElementById("myModal").style.display = "none";
-                          document.getElementById("studentForm").reset();
-                        });
-                      } else {
-                        Swal.fire({
-                          icon: 'error',
-                          title: 'Error',
-                          text: 'Error: ' + xhr.statusText
-                        });
-                      }
-                    };
-                    xhr.onerror = function() {
-                      Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'An error occurred during the request. Please try again.'
-                      });
-                    };
-                    xhr.send(formData);
-                  }
-                });
+
+                fetch("addDosen.php", {
+                    method: "POST",
+                    body: formData
+                  })
+                  .then(response => response.text())
+                  .then(response => {
+                    Swal.fire({
+                      icon: "success",
+                      title: "Berhasil!",
+                      text: "Data dosen berhasil ditambahkan!",
+                    }).then(() => {
+                      document.getElementById("myModal").style.display = "none";
+                      document.getElementById("studentForm").reset();
+                    });
+                  })
+                  .catch(error => console.error("Error:", error));
               };
 
               document.querySelectorAll(".deleteBtn").forEach(button => {
