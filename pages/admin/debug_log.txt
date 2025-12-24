@@ -1,10 +1,10 @@
 Array
 (
-    [nama_mahasiswa] => Alex
-    [nim] => K4324182
-    [prodi] => Seni Kuliner
-    [kelas] => B
-    [nomor_telepon] => 085555555555
-    [username] => Alex
-    [pass] => Alex
+    [nama_mahasiswa] => fathiya
+    [nim] => K3522020
+    [prodi] => Perhotelan
+    [kelas] => A
+    [nomor_telepon] => 08880256387
+    [username] => fathiya
+    [pass] => fathiya
 )
