@@ -73,13 +73,14 @@ function checkSeminarDocsVerification($nama_mahasiswa)
 }
 
 // Mengubah query untuk mengambil nim dan nama_mahasiswa
-$check = "SELECT nim, nama_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
+$check = "SELECT nim, nama_mahasiswa, id_mahasiswa, prodi FROM mahasiswa WHERE username = :nama";
 $checkNim = $conn2->prepare($check);
 $checkNim->execute([':nama' => $nama_mahasiswa]);
 $row = $checkNim->fetch(PDO::FETCH_ASSOC);
 
 if ($row) {
     $nim = $row['nim'];
+    $id_mahasiswa = $row['id_mahasiswa'];
     $nama = $row['nama_mahasiswa'];
     $prodi = $row['prodi'];
 } else {
@@ -168,46 +169,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
 
             if ($result) {
                 showNotification('success', 'File berhasil diupload! Silakan tunggu verifikasi dari admin.');
-                if ($id_mahasiswa !== null && $id_mahasiswa !== '') {
-            // Check if student exists in tugas_akhir table
             $checkPeserta = "
-                SELECT 1 FROM tugas_akhir 
+                SELECT 1 FROM ujian 
                 WHERE id_mahasiswa = :id_mahasiswa
             ";
             $checkStmt = $conn2->prepare($checkPeserta);
             $checkStmt->execute([':id_mahasiswa' => $id_mahasiswa]);
-        
-            echo "Check result: " . $checkStmt->rowCount() . "<br>";
-            echo "ID Mahasiswa: " . $id_mahasiswa . "<br>";
-        
-            // If student doesn't exist, insert them
             if ($checkStmt->rowCount() === 0) {
             $insertPeserta = "
-                INSERT INTO tugas_akhir (id_mahasiswa, create_at)
-                VALUES (:id_mahasiswa, NOW())
+                INSERT INTO ujian (id_mahasiswa)
+                VALUES (:id_mahasiswa)
             ";
             $insertStmt = $conn2->prepare($insertPeserta);
             $insertResult = $insertStmt->execute([':id_mahasiswa' => $id_mahasiswa]);
-            
-            if ($insertResult) {
-                echo "Successfully inserted into tugas_akhir<br>";
-            } else {
-                echo "Failed to insert into tugas_akhir<br>";
-                print_r($insertStmt->errorInfo());
-            }
-        } else {
-            echo "Student already exists in tugas_akhir<br>";
         }
-    } else {
-        echo "ID Mahasiswa is null or empty<br>";
+    
+} else {
+    throw new Exception("Gagal menyimpan ke database");
+}
+
+    } catch (Exception $e) {
+        showNotification('error', 'Error: ' . $e->getMessage());
     }
-            } else {
-                throw new Exception("Gagal menyimpan ke database");
-            }
-        } catch (Exception $e) {
-            showNotification('error', 'Error: ' . $e->getMessage());
-        }
-    }
+}
 }
 // Fungsi untuk mendapatkan status file dari database
 function getFileStatus($nama_mahasiswa, $tipe_file)
