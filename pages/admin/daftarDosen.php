@@ -130,15 +130,12 @@ data-id="<?= $r['id_dosen'] ?>">Hapus</button>
                           <?php endif; ?>
                         </div>
                       </div>
-
+</div>
+</div>
 <div class="d-flex justify-content-end gap-2 mt-3">
 <button id="openModalBtn" class="btn btn-primary">➕ Add Data</button>
 <button id="openModalBatch" class="btn btn-outline-primary">📥 Add Batch</button>
 </div>
-
-</div>
-</div>
-
 </div>
 </div>
 </div>
